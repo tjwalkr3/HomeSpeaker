@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using HomeSpeaker.Lib;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HomeSpeaker.Web.Data
 {
@@ -12,5 +14,7 @@ namespace HomeSpeaker.Web.Data
             : base(options)
         {
         }
+
+        public DbSet<Song> Songs { get; set; }
     }
 }

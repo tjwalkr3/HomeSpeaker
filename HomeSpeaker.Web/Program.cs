@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HomeSpeaker.Lib;
 using HomeSpeaker.Web.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,8 @@ namespace HomeSpeaker.Web
             }
 
             host.Run();
+
+            var lib = host.Services.GetService<Mp3Library>();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using HomeSpeaker.Lib;
 
 namespace HomeSpeaker.Web
 {
@@ -41,6 +42,11 @@ namespace HomeSpeaker.Web
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Home Speaker", Version = "v1" });
             });
+            services.AddScoped<IDataStore, SqliteDataStore>();
+            services.AddScoped<IFileSource>(services => new DefaultFileSource(Configuration["MediaFolder"]));
+            services.AddScoped<ITagParser, DefaultTagParser>();
+            services.AddScoped<IMusicPlayer, WindowsMusicPlayer>();
+            services.AddScoped<Mp3Library>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,6 +75,7 @@ namespace HomeSpeaker.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
 
             app.UseSwagger();
