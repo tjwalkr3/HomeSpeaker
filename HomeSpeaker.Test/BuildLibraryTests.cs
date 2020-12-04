@@ -6,6 +6,8 @@ using FluentAssertions;
 using Moq;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System;
 
 namespace HomeSpeaker.Test
 {
@@ -55,7 +57,10 @@ namespace HomeSpeaker.Test
             tagParser = tpMock.Object;
 
             var library = new Mp3Library(fileSource, tagParser, dataStore);
-            Task.WaitAll(library.LibrarySyncTask);
+            while(Mp3Library.SyncCompleted is false)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(250));
+            }
             library.Songs.Single().Should().BeEquivalentTo(expectedSong, options =>
                 options.AllowingInfiniteRecursion()
             );

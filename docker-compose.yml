@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  homespeaker.web:
+    image: ${DOCKER_REGISTRY-}homespeakerweb
+    build:
+      context: .
+      dockerfile: HomeSpeaker.Web/Dockerfile

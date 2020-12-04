@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HomeSpeaker.Web
@@ -18,7 +20,9 @@ namespace HomeSpeaker.Web
             foreach (var existingVlc in Process.GetProcessesByName("vlc"))
                 existingVlc.Kill();
 
-            Process.Start(vlc, $"\"{filePath}\"");
+            //Process.Start(vlc, $"\"{filePath}\"");
+
+  
         }
     }
 }

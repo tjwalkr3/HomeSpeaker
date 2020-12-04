@@ -1,10 +1,27 @@
 ﻿@page
 @model IndexModel
+@using HomeSpeaker.Lib;
+
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Music Player";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Pick a song, any song</h1>
+    @if(Mp3Library.SyncCompleted)
+    {
+        <h5>Sync Complete!</h5>
+    }
+    else
+    {
+        <h5>Note: Sync is not yet complete</h5>
+    }
+    <ul>
+    @foreach(var song in Model.Mp3Library.Songs)
+    {
+        <li>
+            <a asp-controller="music" asp-action="get" asp-route-id="@song.SongId">@song.Artist | @song.Album | @song.Name</a>
+        </li>
+    }
+    </ul>
 </div>

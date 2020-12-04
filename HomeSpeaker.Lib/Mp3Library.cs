@@ -18,14 +18,15 @@ namespace HomeSpeaker.Lib
             this.tagParser = tagParser ?? throw new ArgumentNullException(nameof(tagParser));
             this.dataStore = dataStore ?? throw new ArgumentNullException(nameof(dataStore));
 
-            if(syncCount == 0)
+            if(SyncStarted is false)
             {
-                syncCount = 1;
+                SyncStarted = true;
                 SyncLibrary();
             }
         }
 
-        private static int syncCount = 0;
+        public static bool SyncStarted { get; private set; }
+        public static bool SyncCompleted { get; private set; }
 
         private async Task SyncLibrary()
         {
@@ -34,6 +35,7 @@ namespace HomeSpeaker.Lib
                 var song = tagParser.CreateSong(file);
                 await dataStore.AddOrUpdateAsync(song);
             }
+            SyncCompleted = true;
         }
 
         public IEnumerable<Artist> Artists => dataStore.GetArtists();
