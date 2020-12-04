@@ -1,0 +1,34 @@
+version: '3.5'
+
+services:
+  homespeaker:
+    image: ${DOCKER_REGISTRY-}snowjallen/homespeaker:${BuildID}
+    ports:
+     - 80:80
+    networks:
+     pantrynet:
+    restart: unless-stopped
+
+  # reverseProxy:
+  #   image: linuxserver/swag:latest
+  #   environment:
+  #    - TZ=America/Denver
+  #    - URL=beta.sanpetepantry.org
+  #    #- SUBDOMAINS=beta
+  #    - VALIDATION=http
+  #    #- STAGING=true
+  #   volumes:
+  #    - ./default.conf:/config/nginx/site-confs/default
+  #    - cachedcerts:/config
+  #   ports:
+  #    - 443:443
+  #    - 80:80
+  #   restart: unless-stopped
+  #   networks:
+  #    pantrynet:
+
+networks:
+  pantrynet:
+
+volumes: 
+  cachedcerts: 
