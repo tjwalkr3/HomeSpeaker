@@ -11,7 +11,7 @@ services:
     devices:
     - /dev/snd:/dev/snd
     volumes:
-    - music:/music
+    - "/home/pi/music:/music"
 
   # reverseProxy:
   #   image: linuxserver/swag:latest
@@ -31,8 +31,8 @@ services:
   #   networks:
   #    pantrynet:
 
-networks:
-  pantrynet:
+#networks:
+#  pantrynet:
 
 volumes: 
   cachedcerts: 
