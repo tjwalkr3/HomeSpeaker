@@ -8,6 +8,10 @@ services:
     networks:
      pantrynet:
     restart: unless-stopped
+    devices:
+    - /dev/snd:/dev/snd
+    volumes:
+    - music:/music
 
   # reverseProxy:
   #   image: linuxserver/swag:latest
