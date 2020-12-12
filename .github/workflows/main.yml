@@ -39,7 +39,7 @@ jobs:
       with:
         file: HomeSpeaker.Web/Dockerfile
         push: true
-        platforms: linux/arm/v7,linux/armv7
+        platforms: linux/arm/v7,linux/armv7,linux/arm32v7
         tags: ${{ steps.prepare.outputs.tag }}
         build-args: |
           exampleArg=exampleArgValue
