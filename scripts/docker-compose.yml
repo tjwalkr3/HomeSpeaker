@@ -6,7 +6,7 @@ services:
     ports:
      - 80:80
     networks:
-     pantrynet:
+     homenet:
     restart: unless-stopped
     devices:
     - /dev/snd:/dev/snd
@@ -29,10 +29,10 @@ services:
   #    - 80:80
   #   restart: unless-stopped
   #   networks:
-  #    pantrynet:
+  #    homenet:
 
-#networks:
-#  pantrynet:
+networks:
+  homenet:
 
 volumes: 
   cachedcerts: 
