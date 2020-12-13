@@ -60,7 +60,7 @@ jobs:
     - name: Start the service
       uses: garygrossgarten/github-action-ssh@v0.5.0
       with:      
-        command: cd scripts && /usr/bin/powershell/pwsh ./restart.ps1 -tag ${{ steps.prepare.outputs.tag}}
+        command: cd scripts && pwsh ./restart.ps1 -tag ${{ steps.prepare.outputs.tag}}
         host: ${{ secrets.LINODE_SERVER }}
         username: ${{ secrets.LINODE_USER }}
         password:  ${{ secrets.LINODE_PASSWORD }}    
