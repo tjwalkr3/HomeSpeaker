@@ -10,8 +10,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env:
-      DOCKER_TARGET_PLATFORM: linux/arm/v7
 
     steps:
     - uses: actions/checkout@v2
@@ -41,7 +39,7 @@ jobs:
       with:
         file: HomeSpeaker.Web/Dockerfile
         push: true
-        platforms: linux/arm/v7,linux/armv7,linux/arm32v7
+        platforms: linux/arm64,linux/x64
         tags: ${{ steps.prepare.outputs.tag }}
         build-args: |
           exampleArg=exampleArgValue
