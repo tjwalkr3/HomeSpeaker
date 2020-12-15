@@ -11,7 +11,9 @@ services:
     devices:
     - /dev/snd:/dev/snd
     volumes:
-    - "/home/pi/music:/music"
+    - "/home/pi/Music:/music"
+    environment:
+    - "MediaFolder": "/music"
 
   # reverseProxy:
   #   image: linuxserver/swag:latest
