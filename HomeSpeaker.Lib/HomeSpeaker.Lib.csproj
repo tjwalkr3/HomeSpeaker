@@ -8,6 +8,7 @@
     <PackageReference Include="Dapper" Version="2.0.78" />
     <PackageReference Include="DapperExtensions" Version="1.6.3" />
     <PackageReference Include="ID3.Files" Version="0.5.0-beta.1" />
+    <PackageReference Include="microsoft.extensions.logging" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

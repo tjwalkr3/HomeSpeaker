@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace HomeSpeaker.Lib
 {
@@ -20,7 +21,7 @@ namespace HomeSpeaker.Lib
             this.dataStore = dataStore ?? throw new ArgumentNullException(nameof(dataStore));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            logger.Debug($"Initialized with fileSource {fileSource.RootFolder}");
+            logger.LogDebug($"Initialized with fileSource {fileSource.RootFolder}");
 
             if(SyncStarted is false)
             {
