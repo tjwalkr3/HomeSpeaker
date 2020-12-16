@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using HomeSpeaker.Lib;
+using System.Runtime.InteropServices;
 
 namespace HomeSpeaker.Web
 {
@@ -42,11 +43,14 @@ namespace HomeSpeaker.Web
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Home Speaker", Version = "v1" });
             });
-            services.AddScoped<IDataStore, SqliteDataStore>();
-            services.AddScoped<IFileSource>(services => new DefaultFileSource(Configuration["MediaFolder"]));
-            services.AddScoped<ITagParser, DefaultTagParser>();
-            services.AddScoped<IMusicPlayer, WindowsMusicPlayer>();
-            services.AddScoped<Mp3Library>();
+            services.AddSingleton<IDataStore, OnDiskDataStore>();
+            services.AddSingleton<IFileSource>(services => new DefaultFileSource(Configuration["MediaFolder"]));
+            services.AddSingleton<ITagParser, DefaultTagParser>();
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                services.AddSingleton<IMusicPlayer, WindowsMusicPlayer>();
+            else
+                services.AddSingleton<IMusicPlayer, LinuxSoxMusicPlayer>();
+            services.AddSingleton<Mp3Library>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

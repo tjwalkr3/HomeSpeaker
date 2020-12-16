@@ -21,7 +21,7 @@ namespace HomeSpeaker.Lib
             this.dataStore = dataStore ?? throw new ArgumentNullException(nameof(dataStore));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            logger.LogDebug($"Initialized with fileSource {fileSource.RootFolder}");
+            logger.LogInformation($"Initialized with fileSource {fileSource.RootFolder}");
 
             if(SyncStarted is false)
             {
@@ -38,9 +38,11 @@ namespace HomeSpeaker.Lib
             foreach(var file in fileSource.GetAllMp3s())
             {
                 var song = tagParser.CreateSong(file);
+                logger.LogInformation($"Found {song}, adding to data store...");
                 await dataStore.AddOrUpdateAsync(song);
             }
             SyncCompleted = true;
+            logger.LogInformation($"Sync Completed! {dataStore.GetSongs().Count():n0} songs in database.");
         }
 
         public IEnumerable<Artist> Artists => dataStore.GetArtists();

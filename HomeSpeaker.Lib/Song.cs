@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HomeSpeaker.Lib
 {
-    public class Song
+    public record Song
     {
         public int SongId { get; set; }
         public string Name { get; set; }

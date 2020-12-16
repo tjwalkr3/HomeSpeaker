@@ -20,6 +20,7 @@
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
             },
             "env": {
+                "MediaFolder": "~/Music",
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
