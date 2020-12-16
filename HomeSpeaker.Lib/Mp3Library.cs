@@ -11,12 +11,16 @@ namespace HomeSpeaker.Lib
         private readonly IFileSource fileSource;
         private readonly ITagParser tagParser;
         private readonly IDataStore dataStore;
+        private readonly ILogger<Mp3Library> logger;
 
-        public Mp3Library(IFileSource fileSource, ITagParser tagParser, IDataStore dataStore)
+        public Mp3Library(IFileSource fileSource, ITagParser tagParser, IDataStore dataStore, ILogger<Mp3Library> logger)
         {
             this.fileSource = fileSource ?? throw new ArgumentNullException(nameof(fileSource));
             this.tagParser = tagParser ?? throw new ArgumentNullException(nameof(tagParser));
             this.dataStore = dataStore ?? throw new ArgumentNullException(nameof(dataStore));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            logger.Debug($"Initialized with fileSource {fileSource.RootFolder}");
 
             if(SyncStarted is false)
             {

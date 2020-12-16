@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/HomeSpeaker.Web/bin/Debug/netcoreapp3.1/HomeSpeaker.Web.dll",
+            "program": "${workspaceFolder}/HomeSpeaker.Web/bin/Debug/net5.0/HomeSpeaker.Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}/HomeSpeaker.Web",
             "stopAtEntry": false,

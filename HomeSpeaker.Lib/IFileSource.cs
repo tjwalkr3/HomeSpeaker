@@ -9,6 +9,7 @@ namespace HomeSpeaker.Lib
     public interface IFileSource
     {
         IEnumerable<FileInfo> GetAllMp3s();
+        string RootFolder{get;}
     }
 
     public class DefaultFileSource : IFileSource
@@ -19,6 +20,8 @@ namespace HomeSpeaker.Lib
         {
             this.rootFolder = rootFolder;
         }
+
+        public string RootFolder => rootFolder;
 
         public IEnumerable<FileInfo> GetAllMp3s()
         {
