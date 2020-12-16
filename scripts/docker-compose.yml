@@ -13,7 +13,7 @@ services:
     volumes:
     - "/home/pi/Music:/music"
     environment:
-    - "MediaFolder": "/music"
+    - MediaFolder=/music
 
   # reverseProxy:
   #   image: linuxserver/swag:latest
