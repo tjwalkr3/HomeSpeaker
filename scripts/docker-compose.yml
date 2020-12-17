@@ -15,6 +15,7 @@ services:
     environment:
     - MediaFolder=/music
     - ASPNETCORE_ENVIRONMENT=Development
+    - ALSA_CARD=Headphones
 
   # reverseProxy:
   #   image: linuxserver/swag:latest

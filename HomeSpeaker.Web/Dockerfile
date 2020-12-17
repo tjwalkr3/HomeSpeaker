@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim-arm64v8 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
-RUN apt update && apt install --yes sox libsox-fmt-mp3
+RUN apt update && apt install --yes sox libsox-fmt-mp3 alsa-utils
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim-arm64v8 AS build
 WORKDIR /src
