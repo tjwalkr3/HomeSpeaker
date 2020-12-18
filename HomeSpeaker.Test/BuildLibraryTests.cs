@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace HomeSpeaker.Test
 {
@@ -56,7 +57,9 @@ namespace HomeSpeaker.Test
             });
             tagParser = tpMock.Object;
 
-            var library = new Mp3Library(fileSource, tagParser, dataStore);
+            var loggerMock = new Mock<ILogger<Mp3Library>>();
+
+            var library = new Mp3Library(fileSource, tagParser, dataStore, loggerMock.Object);
             while(Mp3Library.SyncCompleted is false)
             {
                 Thread.Sleep(TimeSpan.FromMilliseconds(250));
