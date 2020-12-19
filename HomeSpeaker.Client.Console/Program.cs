@@ -1,13 +1,28 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading.Tasks;
 using static System.Console;
 
 namespace HomeSpeaker.Client.Console
 {
     class Program
     {
-        static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            WriteLine("Hello World!");
+            await Host.CreateDefaultBuilder(args)
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<ConsoleHostedService>();
+                    services.AddSingleton<HomeSpeakerClient>();
+                })
+                .ConfigureHostConfiguration(configHost =>
+                {
+                    configHost.AddEnvironmentVariables();
+                    configHost.AddCommandLine(args);
+                })
+                .RunConsoleAsync();
         }
     }
 }

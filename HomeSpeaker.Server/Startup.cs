@@ -51,6 +51,7 @@ namespace HomeSpeaker.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<GreeterService>();
+                endpoints.MapGrpcService<Greeter2Service>();
 
                 endpoints.MapGet("/", async context =>
                 {
