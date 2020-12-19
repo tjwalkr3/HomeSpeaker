@@ -27,14 +27,14 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Get smart tag
-      id: prepare
+      id: prepare-server
       uses: Surgo/docker-smart-tag-action@v1
       with:
         docker_image: snowjallen/homespeakerserver
         tag_with_sha: true
 
     - name: Build and push
-      id: docker_build
+      id: docker_build_server
       uses: docker/build-push-action@v2.2.1
       with:
         file: HomeSpeaker.Server/Dockerfile
@@ -46,14 +46,14 @@ jobs:
           otherArg=$GITHUB_SHA
 
     - name: Get smart tag
-      id: prepare
+      id: prepare_clientweb
       uses: Surgo/docker-smart-tag-action@v1
       with:
         docker_image: snowjallen/homespeakerclientweb
         tag_with_sha: true
 
     - name: Build and push
-      id: docker_build
+      id: docker_build_clientweb
       uses: docker/build-push-action@v2.2.1
       with:
         file: HomeSpeaker.Client.Web/Dockerfile
