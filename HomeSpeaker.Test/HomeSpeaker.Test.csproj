@@ -18,7 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HomeSpeaker.Lib\HomeSpeaker.Lib.csproj" />
+    <ProjectReference Include="..\HomeSpeaker.Server\HomeSpeaker.Server.csproj" />
+    <ProjectReference Include="..\HomeSpeaker.Shared\HomeSpeaker.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,3 @@
-using HomeSpeaker.Lib;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using System.Linq;
@@ -9,6 +8,8 @@ using System.IO;
 using System.Threading;
 using System;
 using Microsoft.Extensions.Logging;
+using HomeSpeaker.Shared;
+using HomeSpeaker.Server;
 
 namespace HomeSpeaker.Test
 {

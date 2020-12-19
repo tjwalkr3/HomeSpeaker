@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>dotnet-HomeSpeaker.Server-C2495F7F-5FC7-42AB-8618-7DD1DB613C73</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ID3" Version="0.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeSpeaker.Transport.gRPC\HomeSpeaker.Transport.gRPC.csproj" />
+  </ItemGroup>
+</Project>
