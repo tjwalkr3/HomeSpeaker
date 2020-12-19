@@ -55,11 +55,18 @@ namespace HomeSpeaker.Client.Console
                         _logger.LogInformation("Asking server for songs...");
                         var client2 = new HomeSpeaker.Server.HomeSpeaker.HomeSpeakerClient(GrpcChannel.ForAddress(config["HomeSpeaker.Server"]));
                         var songsResponse = client2.GetSongs(new Server.GetSongsRequest { });
-                        await foreach(var song in songsResponse.ResponseStream.ReadAllAsync())
+                        await foreach(var reply in songsResponse.ResponseStream.ReadAllAsync())
                         {
-                            WriteLine(song);
+                            foreach(var song in reply.Songs)
+                            {
+                                WriteLine($"{song.SongId,4}: {song.Name}");
+                            }
                         }
                         _logger.LogInformation("All done getting songs");
+
+                        WriteLine("What song id would you like to play?");
+                        var songToPlay = int.Parse(ReadLine());
+                        client2.PlaySong(new Server.PlaySongRequest { SongId = songToPlay });
                     }
                     catch (Exception ex)
                     {

@@ -22,14 +22,19 @@ message HelloReply2 {
 
 service HomeSpeaker {
 	rpc GetSongs(GetSongsRequest) returns (stream GetSongsReply);
+	rpc PlaySong(PlaySongRequest) returns (PlaySongReply);
 }
 
-message GetSongsRequest {
-
-}
-
+message GetSongsRequest { }
 message GetSongsReply {
   repeated SongMessage Songs = 1;
+}
+
+message PlaySongRequest{
+	int32 SongId=1;
+}
+message PlaySongReply{
+	bool Ok=1;
 }
 
 message SongMessage {

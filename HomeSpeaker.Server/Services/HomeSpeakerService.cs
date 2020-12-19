@@ -9,11 +9,13 @@ namespace HomeSpeaker.Server
     {
         private readonly ILogger<GreeterService> _logger;
         private readonly Mp3Library library;
+        private readonly IMusicPlayer musicPlayer;
 
-        public HomeSpeakerService(ILogger<GreeterService> logger, Mp3Library library)
+        public HomeSpeakerService(ILogger<GreeterService> logger, Mp3Library library, IMusicPlayer musicPlayer)
         {
-            _logger = logger;
-            this.library = library;
+            _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
+            this.library = library ?? throw new System.ArgumentNullException(nameof(library));
+            this.musicPlayer = musicPlayer ?? throw new System.ArgumentNullException(nameof(musicPlayer));
         }
 
         public override async Task GetSongs(GetSongsRequest request, IServerStreamWriter<GetSongsReply> responseStream, ServerCallContext context)
@@ -29,6 +31,18 @@ namespace HomeSpeaker.Server
             var reply = new GetSongsReply();
             reply.Songs.AddRange(songs);
             await responseStream.WriteAsync(reply);
+        }
+
+        public override Task<PlaySongReply> PlaySong(PlaySongRequest request, ServerCallContext context)
+        {
+            var song = library.Songs.FirstOrDefault(s => s.SongId == request.SongId);
+            var reply = new PlaySongReply { Ok = false };
+            if (song != null)
+            {
+                musicPlayer.PlaySong(song.Path);
+                reply.Ok = true;
+            }
+            return Task.FromResult(reply);
         }
     }
 }
