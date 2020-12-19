@@ -27,7 +27,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Get smart tag
-      id: prepare-server
+      id: prepare_server
       uses: Surgo/docker-smart-tag-action@v1
       with:
         docker_image: snowjallen/homespeakerserver
@@ -40,7 +40,7 @@ jobs:
         file: HomeSpeaker.Server/Dockerfile
         push: true
         platforms: linux/arm64
-        tags: ${{ steps.prepare.outputs.tag }}
+        tags: ${{ steps.prepare_server.outputs.tag }}
         build-args: |
           exampleArg=exampleArgValue
           otherArg=$GITHUB_SHA
@@ -59,7 +59,7 @@ jobs:
         file: HomeSpeaker.Client.Web/Dockerfile
         push: true
         platforms: linux/arm64
-        tags: ${{ steps.prepare.outputs.tag }}
+        tags: ${{ steps.prepare_clientweb.outputs.tag }}
         build-args: |
           exampleArg=exampleArgValue
           otherArg=$GITHUB_SHA
