@@ -8,6 +8,7 @@ RUN apt update && apt install --yes sox libsox-fmt-mp3 alsa-utils
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim-arm64v8 AS build
 WORKDIR /src
+COPY ["HomeSpeaker.Server/HomeSpeaker.Server.csproj", "HomeSpeaker.Server/"]
 COPY ["HomeSpeaker.Shared/HomeSpeaker.Shared.csproj", "HomeSpeaker.Shared/"]
 RUN dotnet restore "HomeSpeaker.Server/HomeSpeaker.Server.csproj"
 COPY . .
