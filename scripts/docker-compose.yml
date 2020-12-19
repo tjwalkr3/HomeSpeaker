@@ -1,10 +1,27 @@
 version: '3.5'
 
 services:
-  homespeaker:
-    image: ${DOCKER_REGISTRY-}snowjallen/homespeaker:${BuildID}
+  homespeaker.client.web:
+    image: ${DOCKER_REGISTRY-}homespeakerclientweb
+    build:
+      context: .
+      dockerfile: HomeSpeaker.Client.Web/Dockerfile
     ports:
      - 80:80
+    networks:
+     homenet:
+    restart: unless-stopped
+    environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+    - HomeSpeakerServer=http://homespeaker.server:8080
+
+  homespeaker.server:
+    image: ${DOCKER_REGISTRY-}homespeakerserver
+    build:
+      context: .
+      dockerfile: HomeSpeaker.Server/Dockerfile
+    ports:
+     - 8080:80
     networks:
      homenet:
     restart: unless-stopped
@@ -38,5 +55,5 @@ services:
 networks:
   homenet:
 
-volumes: 
-  cachedcerts: 
+volumes:
+  cachedcerts:

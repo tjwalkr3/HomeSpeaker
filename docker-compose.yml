@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  homespeaker.client.web:
+    image: ${DOCKER_REGISTRY-}homespeakerclientweb
+    build:
+      context: .
+      dockerfile: HomeSpeaker.Client.Web/Dockerfile
+
+
+  homespeaker.server:
+    image: ${DOCKER_REGISTRY-}homespeakerserver
+    build:
+      context: .
+      dockerfile: HomeSpeaker.Server/Dockerfile
+

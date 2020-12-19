@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 
-namespace HomeSpeaker.Transport.gRPC
+namespace HomeSpeaker.Server
 {
     public class GreeterService : Greeter.GreeterBase
     {

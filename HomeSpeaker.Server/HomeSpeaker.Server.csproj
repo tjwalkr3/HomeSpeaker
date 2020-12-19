@@ -1,16 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>dotnet-HomeSpeaker.Server-C2495F7F-5FC7-42AB-8618-7DD1DB613C73</UserSecretsId>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <UserSecretsId>31cfd71b-dd42-4529-810c-dde0723849d5</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ID3" Version="0.6.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <Protobuf Include="..\HomeSpeaker.Shared\homespeaker.proto" GrpcServices="Server">
+      <Link>Protos\homespeaker.proto</Link>
+    </Protobuf>
+    <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HomeSpeaker.Transport.gRPC\HomeSpeaker.Transport.gRPC.csproj" />
+    <PackageReference Include="ID3" Version="0.6.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.32.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeSpeaker.Shared\HomeSpeaker.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

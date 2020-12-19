@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeSpeaker.Shared\HomeSpeaker.Shared.csproj" />
-    <ProjectReference Include="..\HomeSpeaker.Transport.gRPC\HomeSpeaker.Transport.gRPC.csproj" />
   </ItemGroup>
 
 </Project>

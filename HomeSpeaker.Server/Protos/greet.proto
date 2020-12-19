@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "HomeSpeaker.Transport.gRPC";
+option csharp_namespace = "HomeSpeaker.Server";
 
 package greet;
 
