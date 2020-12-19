@@ -61,7 +61,7 @@ namespace HomeSpeaker.Test
             var loggerMock = new Mock<ILogger<Mp3Library>>();
 
             var library = new Mp3Library(fileSource, tagParser, dataStore, loggerMock.Object);
-            while(Mp3Library.SyncCompleted is false)
+            while(library.SyncCompleted is false)
             {
                 Thread.Sleep(TimeSpan.FromMilliseconds(250));
             }

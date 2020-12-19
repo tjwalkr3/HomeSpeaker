@@ -19,3 +19,23 @@ message HelloRequest2 {
 message HelloReply2 {
   string message = 1;
 }
+
+service HomeSpeaker {
+	rpc GetSongs(GetSongsRequest) returns (stream GetSongsReply);
+}
+
+message GetSongsRequest {
+
+}
+
+message GetSongsReply {
+  repeated SongMessage Songs = 1;
+}
+
+message SongMessage {
+  int32 SongId=1;
+  string Name=2;
+  string Path=3;
+  string Album=4;
+  string Artist=5;
+}

@@ -31,8 +31,8 @@ namespace HomeSpeaker.Server
             }
         }
 
-        public static bool SyncStarted { get; private set; }
-        public static bool SyncCompleted { get; private set; }
+        public bool SyncStarted { get; private set; }
+        public bool SyncCompleted { get; private set; }
 
         private async Task SyncLibrary()
         {

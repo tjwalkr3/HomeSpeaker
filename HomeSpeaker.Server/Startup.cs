@@ -10,11 +10,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace HomeSpeaker.Server
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -39,7 +41,7 @@ namespace HomeSpeaker.Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -52,12 +54,16 @@ namespace HomeSpeaker.Server
             {
                 endpoints.MapGrpcService<GreeterService>();
                 endpoints.MapGrpcService<Greeter2Service>();
+                endpoints.MapGrpcService<HomeSpeakerService>();
 
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
                 });
             });
+
+            var library = app.ApplicationServices.GetService<Mp3Library>();
+            logger.LogInformation($"Sync Started? {library.SyncStarted}; Sync Completed? {library.SyncCompleted}");
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Grpc.Core;
+using Grpc.Net.Client;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,15 +17,18 @@ namespace HomeSpeaker.Client.Console
     {
         private readonly ILogger _logger;
         private readonly HomeSpeakerClient homeSpeakerClient;
+        private readonly IConfiguration config;
         private readonly IHostApplicationLifetime _appLifetime;
 
         public ConsoleHostedService(
             ILogger<ConsoleHostedService> logger,
             IHostApplicationLifetime appLifetime,
-            HomeSpeakerClient homeSpeakerClient)
+            HomeSpeakerClient homeSpeakerClient,
+            IConfiguration config)
         {
             _logger = logger;
             this.homeSpeakerClient = homeSpeakerClient ?? throw new ArgumentNullException(nameof(homeSpeakerClient));
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
             _appLifetime = appLifetime;
         }
 
@@ -45,6 +51,15 @@ namespace HomeSpeaker.Client.Console
                         var myValue = ReadLine();
                         var response = homeSpeakerClient.DoGreeting(myValue);
                         WriteLine($"Response from server: {response}");
+
+                        _logger.LogInformation("Asking server for songs...");
+                        var client2 = new HomeSpeaker.Server.HomeSpeaker.HomeSpeakerClient(GrpcChannel.ForAddress(config["HomeSpeaker.Server"]));
+                        var songsResponse = client2.GetSongs(new Server.GetSongsRequest { });
+                        await foreach(var song in songsResponse.ResponseStream.ReadAllAsync())
+                        {
+                            WriteLine(song);
+                        }
+                        _logger.LogInformation("All done getting songs");
                     }
                     catch (Exception ex)
                     {
