@@ -7,6 +7,23 @@ EXPOSE 443
 RUN apt update && apt install --yes sox libsox-fmt-mp3 alsa-utils
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim-arm64v8 AS build
+# add debian backports to get a fresh grpc plugin
+RUN echo "deb http://deb.debian.org/debian buster-backports main" | sudo tee /etc/apt/sources.list.d/backports.list
+
+# add debian keys to use backports
+RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010
+RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC
+
+# install protoc+plugin
+RUN sudo apt update
+RUN sudo apt install -t buster-backports protobuf-compiler-grpc
+
+# tell dotnet to use the local protoc
+RUN export PROTOBUF_PROTOC=/usr/bin/protoc
+
+# trick dotnet to use the local grpc plugin as there are no environment variable to help
+RUN ln -s /usr/bin ~/.nuget/packages/grpc.tools/2.29.0/tools/linux_
+
 WORKDIR /src
 COPY ["HomeSpeaker.Server/HomeSpeaker.Server.csproj", "HomeSpeaker.Server/"]
 COPY ["HomeSpeaker.Shared/HomeSpeaker.Shared.csproj", "HomeSpeaker.Shared/"]
