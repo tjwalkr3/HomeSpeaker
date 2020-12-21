@@ -16,7 +16,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC
 
 # install protoc+plugin
 RUN apt update
-RUN apt install --yes -t buster-backports protobuf-compiler-grpc
+RUN apt install --yes -t gnupg2 buster-backports protobuf-compiler-grpc
 
 # tell dotnet to use the local protoc
 RUN export PROTOBUF_PROTOC=/usr/bin/protoc
