@@ -49,6 +49,8 @@ RUN make -j4 grpc_csharp_ext
 
 #Copy the file back to repository root and rename it to what gRPC.Core currently looks for
 RUN cp libgrpc_csharp_ext.so ../../../libgrpc_csharp_ext.x86.so
+ENV PROTOBUF_TOOLS_CPU=x86
+ENV PROTOBUF_TOOLS_OS=linux
 
 ## add debian backports to get a fresh grpc plugin
 #RUN echo "deb http://deb.debian.org/debian buster-backports main" | tee /etc/apt/sources.list.d/backports.list
