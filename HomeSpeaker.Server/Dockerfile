@@ -12,6 +12,7 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim-arm64v8 AS build
 #Install Tool Chain
 ###
 
+RUN apt update
 RUN apt-get install --yes build-essential autoconf libtool pkg-config
 RUN apt-get install --yes libgflags-dev libgtest-dev
 RUN apt-get install --yes clang libc++-dev
