@@ -35,11 +35,11 @@ RUN git submodule update --init
 RUN set -ex
 
 #intended to be run from the repository root
-RUN cd grpc/
+#RUN cd grpc/ #we're already in grpc
 
 #create location for build files
 RUN mkdir -p cmake/build
-RUN cd cmake/build
+WORKDIR cmake/build
 
 #setup the build files
 RUN cmake -DgRPC_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE="${MSBUILD_CONFIG}" ../..
