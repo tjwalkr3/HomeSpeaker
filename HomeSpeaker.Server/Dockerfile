@@ -11,6 +11,7 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim-arm64v8 AS build
 RUN echo "deb http://deb.debian.org/debian buster-backports main" | tee /etc/apt/sources.list.d/backports.list
 
 # add debian keys to use backports
+RUN apt update && apt install --yes gnupg2
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC
 
