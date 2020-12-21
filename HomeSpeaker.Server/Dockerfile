@@ -22,8 +22,8 @@ RUN apt update && apt install --yes -t buster-backports protobuf-compiler-grpc
 RUN export PROTOBUF_PROTOC=/usr/bin/protoc
 
 # trick dotnet to use the local grpc plugin as there are no environment variable to help
-RUN mkdir -p /root/.nuget/packages/grpc.tools/2.29.0/tools/linux_
-RUN ln -s /usr/bin ~/.nuget/packages/grpc.tools/2.29.0/tools/linux_
+RUN mkdir -p /root/.nuget/packages/grpc.tools/2.32.0/tools/linux_
+RUN ln -s /usr/bin ~/.nuget/packages/grpc.tools/2.32.0/tools/linux_
 
 WORKDIR /src
 COPY ["HomeSpeaker.Server/HomeSpeaker.Server.csproj", "HomeSpeaker.Server/"]
