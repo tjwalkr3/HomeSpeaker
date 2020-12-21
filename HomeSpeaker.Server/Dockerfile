@@ -24,7 +24,7 @@ RUN apt-get install --yes cmake git
 
 #RUN git clone -b $(curl -L https://grpc.io/release) https://github.com/grpc/grpc
 RUN git clone -b v1.34.0 https://github.com/grpc/grpc
-RUN cd grpc
+RUN cd grpc && ls
 RUN git submodule update --init
 
 
