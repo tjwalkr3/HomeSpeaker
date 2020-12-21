@@ -22,12 +22,7 @@ RUN apt update && apt install --yes -t buster-backports protobuf-compiler-grpc
 RUN export PROTOBUF_PROTOC=/usr/bin/protoc
 
 # trick dotnet to use the local grpc plugin as there are no environment variable to help
-RUN mkdir ~/.nuget
-RUN mkdir ~/.nuget/packages/
-RUN mkdir ~/.nuget/packages/grpc.tools/
-RUN mkdir ~/.nuget/packages/grpc.tools/2.29.0/
-RUN mkdir ~/.nuget/packages/grpc.tools/2.29.0/tools/
-RUN mkdir ~/.nuget/packages/grpc.tools/2.29.0/tools/linux_
+RUN mkdir -p /root/.nuget/packages/grpc.tools/2.29.0/tools/linux_
 RUN ln -s /usr/bin ~/.nuget/packages/grpc.tools/2.29.0/tools/linux_
 
 WORKDIR /src
