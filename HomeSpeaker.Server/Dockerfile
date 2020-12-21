@@ -8,7 +8,7 @@ RUN apt update && apt install --yes sox libsox-fmt-mp3 alsa-utils
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim-arm64v8 AS build
 # add debian backports to get a fresh grpc plugin
-RUN echo "deb http://deb.debian.org/debian buster-backports main" | sudo tee /etc/apt/sources.list.d/backports.list
+RUN echo "deb http://deb.debian.org/debian buster-backports main" | tee /etc/apt/sources.list.d/backports.list
 
 # add debian keys to use backports
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010
