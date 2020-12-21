@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim-arm64v8 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
-RUN apt update && apt install --yes sox libsox-fmt-mp3 alsa-utils
+RUN apt update && apt install --yes sox libsox-fmt-mp3 alsa-utils gnupg2
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim-arm64v8 AS build
 # add debian backports to get a fresh grpc plugin
@@ -16,7 +16,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC
 
 # install protoc+plugin
 RUN apt update
-RUN apt install -t buster-backports protobuf-compiler-grpc
+RUN apt install --yes -t buster-backports protobuf-compiler-grpc
 
 # tell dotnet to use the local protoc
 RUN export PROTOBUF_PROTOC=/usr/bin/protoc
