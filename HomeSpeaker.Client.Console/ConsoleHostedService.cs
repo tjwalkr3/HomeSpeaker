@@ -42,7 +42,15 @@ namespace HomeSpeaker.Client.Console
                 {
                     try
                     {
-                        _logger.LogInformation("Hello World!");
+                        _logger.LogInformation("gRPC Console Client!");
+                        var client2 = new HomeSpeaker.Server.HomeSpeaker.HomeSpeakerClient(GrpcChannel.ForAddress(config["HomeSpeaker.Server"]));
+
+                        if(config["SongID"] != null)
+                        {
+                            var songId = int.Parse(config["SongID"]);
+                            client2.PlaySong(new Server.PlaySongRequest { SongId = songId });
+                            return;
+                        }
 
                         // Simulate real work is being done
                         await Task.Delay(1000);
@@ -53,7 +61,6 @@ namespace HomeSpeaker.Client.Console
                         WriteLine($"Response from server: {response}");
 
                         _logger.LogInformation("Asking server for songs...");
-                        var client2 = new HomeSpeaker.Server.HomeSpeaker.HomeSpeakerClient(GrpcChannel.ForAddress(config["HomeSpeaker.Server"]));
                         var songsResponse = client2.GetSongs(new Server.GetSongsRequest { });
                         await foreach(var reply in songsResponse.ResponseStream.ReadAllAsync())
                         {
