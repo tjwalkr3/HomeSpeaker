@@ -39,7 +39,7 @@ jobs:
       with:
         file: HomeSpeaker.Server/Dockerfile
         push: true
-        platforms: linux/arm64
+        platforms: linux/amd64
         tags: ${{ steps.prepare_server.outputs.tag }}
         build-args: |
           exampleArg=exampleArgValue
