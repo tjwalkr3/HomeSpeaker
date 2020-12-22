@@ -5,7 +5,8 @@ param(
 
 write-host "Got tag $tag from parameter"
 
-$sha = $tag.split(":") | where  -filterscript {$_ -like  "sha*" }
+#$sha = $tag.split(":") | where  -filterscript {$_ -like  "sha*" }
+$sha = $tag
 write-host "Setting 'BuildID' to $sha"
 $ENV:BuildID=$sha
 
