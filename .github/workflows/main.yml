@@ -32,18 +32,24 @@ jobs:
       with:
         docker_image: snowjallen/homespeakerserver
         tag_with_sha: true
+        
+    - name: Build Image (simple)
+      id: build_server
+      run: |
+        docker build -t snowjallen/homespeakerserver -f HomeSpeaker.Server/Dockerfile .
+        docker push snowjallen/homespeakerserver
 
-    - name: Build and push
-      id: docker_build_server
-      uses: docker/build-push-action@v2.2.1
-      with:
-        file: HomeSpeaker.Server/Dockerfile
-        push: true
+#    - name: Build and push
+#      id: docker_build_server
+#      uses: docker/build-push-action@v2.2.1
+#      with:
+#        file: HomeSpeaker.Server/Dockerfile
+        #push: true
         #platforms: linux/amd64
-        tags: ${{ steps.prepare_server.outputs.tag }}
-        build-args: |
-          exampleArg=exampleArgValue
-          otherArg=$GITHUB_SHA
+#        tags: ${{ steps.prepare_server.outputs.tag }}
+#        build-args: |
+#          exampleArg=exampleArgValue
+#          otherArg=$GITHUB_SHA
 
     - name: Get smart tag
       id: prepare_clientweb
