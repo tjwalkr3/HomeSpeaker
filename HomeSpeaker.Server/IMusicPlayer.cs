@@ -8,7 +8,7 @@ namespace HomeSpeaker.Server
 {
     public interface IMusicPlayer
     {
-        Task PlaySongAsync(string filePath);
+        void PlaySong(string filePath);
         bool StillPlaying { get; }
         void EnqueueSong(string path);
         PlayerStatus Status { get; }

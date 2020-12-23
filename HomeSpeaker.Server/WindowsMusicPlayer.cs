@@ -23,7 +23,7 @@ namespace HomeSpeaker.Server
         private readonly ILogger<WindowsMusicPlayer> logger;
         private Process playerProcess;
 
-        public async Task PlaySongAsync(string filePath)
+        public void PlaySong(string filePath)
         {
             foreach (var existingVlc in Process.GetProcessesByName("vlc"))
                 existingVlc.Kill();

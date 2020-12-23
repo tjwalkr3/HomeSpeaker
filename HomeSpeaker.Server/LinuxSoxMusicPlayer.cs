@@ -27,7 +27,7 @@ namespace HomeSpeaker.Server
 
         public PlayerStatus Status { get; private set; }
 
-        public async Task PlaySongAsync(string filePath)
+        public void PlaySong(string filePath)
         {
             foreach (var existingVlc in Process.GetProcessesByName("play"))
                 existingVlc.Kill();
@@ -76,7 +76,7 @@ namespace HomeSpeaker.Server
             {
                 if (songQueue.TryDequeue(out var nextSong))
                 {
-                    PlaySongAsync(nextSong.Path);
+                    PlaySong(nextSong.Path);
                 }
             }
             else
@@ -123,7 +123,7 @@ namespace HomeSpeaker.Server
             else
             {
                 story.AppendLine("Nothing playing, so instead of queuing I'll just play it...");
-                PlaySongAsync(path);
+                PlaySong(path);
             }
             logger.LogInformation(story.ToString());
         }
