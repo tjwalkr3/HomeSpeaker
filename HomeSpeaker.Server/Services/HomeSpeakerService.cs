@@ -22,16 +22,24 @@ namespace HomeSpeaker.Server
 
         public override async Task GetSongs(GetSongsRequest request, IServerStreamWriter<GetSongsReply> responseStream, ServerCallContext context)
         {
-            var songs = library.Songs.Select(s => new SongMessage
-            {
-                Album = s.Album,
-                Artist = s.Artist,
-                Name = s.Name,
-                Path = s.Path,
-                SongId = s.SongId
-            });
             var reply = new GetSongsReply();
-            reply.Songs.AddRange(songs);
+            if (library?.Songs?.Any() ?? false)
+            {
+                _logger.LogInformation("Found songs!  Sending to client.");
+                var songs = library.Songs.Select(s => new SongMessage
+                {
+                    Album = s.Album,
+                    Artist = s.Artist,
+                    Name = s.Name,
+                    Path = s.Path,
+                    SongId = s.SongId
+                });
+                reply.Songs.AddRange(songs);
+            }
+            else
+            {
+                _logger.LogInformation("No songs found.  Sending back empty list.");
+            }
             await responseStream.WriteAsync(reply);
         }
 
