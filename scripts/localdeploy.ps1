@@ -5,15 +5,27 @@
 param(
     [switch]$skipBuild,
     [string]$server=192.168.1.20
+    [switch]$deployingFromSnow
 )
+
+if($deployingFromSnow) {
+    $server = "209.213.45.45"
+}
+
+git pull
+write-host "I just pulled...everything look ok?"
+read-host
 
 $version = 0;
 if(test-path "version.txt") {
     $version = [int](get-content "version.txt")
+    write-host "Version is currently $version"
 }
 
 if($skipBuild -eq $false) {
-    ($version++) | set-content "version.txt"
+    $version = $version + 1
+    $version | set-content "version.txt"
+    write-host "Building new version # $(get-content version.txt)";
     $tag = "v$version"
 
     write-host "** Building Images (tag $tag) **"
