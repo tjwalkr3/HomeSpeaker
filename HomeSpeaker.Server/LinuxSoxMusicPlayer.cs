@@ -35,22 +35,11 @@ namespace HomeSpeaker.Server
 
             playerProcess.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
             {
-                try
-                {
-                    var parts = e.Data.Split(new char[] { ' ', '%', '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
-                    var percentComplete = decimal.Parse(parts[0])/100;
-                    var elapsedTime = parts[1];
-                    var remainingTime = parts[2];
-                    logger.LogInformation($"Elapsed: {elapsedTime}; Remaining: {remainingTime}; Percent Complete: {percentComplete:p}");
-                }
-                catch
-                {
-                    logger.LogInformation(e.Data);
-                }
+                parsePlayerOutput(e);
             });
             playerProcess.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
             {
-                logger.LogError(e.Data);
+                parsePlayerOutput(e);
             });
 
             logger.LogInformation($"Starting to play {filePath}");
@@ -63,6 +52,22 @@ namespace HomeSpeaker.Server
             //{
             //    logger.LogInformation(outputLine);
             //}
+        }
+
+        private void parsePlayerOutput(DataReceivedEventArgs e)
+        {
+            try
+            {
+                var parts = e.Data.Split(new char[] { ' ', '%', '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+                var percentComplete = decimal.Parse(parts[0]) / 100;
+                var elapsedTime = parts[1];
+                var remainingTime = parts[2];
+                logger.LogInformation($"Elapsed: {elapsedTime}; Remaining: {remainingTime}; Percent Complete: {percentComplete:p}");
+            }
+            catch
+            {
+                logger.LogInformation(e.Data);
+            }
         }
 
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
