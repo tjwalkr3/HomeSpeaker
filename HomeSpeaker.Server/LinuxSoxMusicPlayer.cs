@@ -132,7 +132,14 @@ namespace HomeSpeaker.Server
             logger.LogInformation(story.ToString());
         }
 
-        public bool StillPlaying => startedPlaying || (playerProcess?.HasExited ?? true == false);
+        public bool StillPlaying
+        {
+            get
+            {
+                logger.LogInformation($"StillPlaying: startedPlaying {startedPlaying} || (playerProcess?.HasExited {playerProcess?.HasExited} ?? true) {playerProcess?.HasExited ?? false} == false) {playerProcess?.HasExited ?? true == false}");
+                return startedPlaying || (playerProcess?.HasExited ?? true == false);
+            }
+        }
 
         private ConcurrentQueue<Song> songQueue = new ConcurrentQueue<Song>();
 
