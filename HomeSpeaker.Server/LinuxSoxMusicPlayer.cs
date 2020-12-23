@@ -35,11 +35,17 @@ namespace HomeSpeaker.Server
 
             playerProcess.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
             {
-                parsePlayerOutput(e);
+                if (TryParsePlayerOutput(e.Data, out var status))
+                {
+                    logger.LogInformation(status.ToString());
+                }
             });
             playerProcess.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
             {
-                parsePlayerOutput(e);
+                if (TryParsePlayerOutput(e.Data, out var status))
+                {
+                    logger.LogInformation(status.ToString());
+                }
             });
 
             logger.LogInformation($"Starting to play {filePath}");
@@ -54,22 +60,37 @@ namespace HomeSpeaker.Server
             //}
         }
 
-        private void parsePlayerOutput(DataReceivedEventArgs e)
+        public static bool TryParsePlayerOutput(string output, out PlayerStatus playerStatus)
         {
             try
             {
-                var parts = e.Data.Split(new char[] { ' ', '%', '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
-                var percentComplete = decimal.Parse(parts[0]) / 100;
-                var elapsedTime = parts[1];
-                var remainingTime = parts[2];
-                logger.LogInformation($"Elapsed: {elapsedTime}; Remaining: {remainingTime}; Percent Complete: {percentComplete:p}");
+                var parts = output.Split(new char[] { ' ', '%', '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+                var percentComplete = decimal.Parse(parts[0].Substring(parts[0].IndexOf(':') + 1)) / 100;
+                var elapsedTime = TimeSpan.Parse(parts[1]);
+                var remainingTime = TimeSpan.Parse(parts[2]);
+                playerStatus = new PlayerStatus
+                {
+                    Elapsed = elapsedTime,
+                    PercentComplete = percentComplete,
+                    Remaining = remainingTime,
+                    StillPlaying = true
+                };
+                return true;
             }
             catch
             {
-                logger.LogInformation(e.Data);
+                playerStatus = null;
+                return false;
             }
         }
 
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
+    }
+    public record PlayerStatus
+    {
+        public decimal PercentComplete { get; init; }
+        public TimeSpan Elapsed { get; init; }
+        public TimeSpan Remaining { get; init; }
+        public bool StillPlaying { get; init; }
     }
 }
