@@ -22,7 +22,7 @@ namespace HomeSpeaker.Server
         private readonly ILogger<WindowsMusicPlayer> logger;
         private Process playerProcess;
 
-        public void PlaySong(string filePath)
+        public async Task PlaySongAsync(string filePath)
         {
             foreach (var existingVlc in Process.GetProcessesByName("vlc"))
                 existingVlc.Kill();
@@ -37,5 +37,5 @@ namespace HomeSpeaker.Server
         }
 
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
-    }    
+    }
 }

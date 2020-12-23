@@ -21,7 +21,7 @@ namespace HomeSpeaker.Server
             this.logger = logger;
         }
 
-        public void PlaySong(string filePath)
+        public async Task PlaySongAsync(string filePath)
         {
             foreach (var existingVlc in Process.GetProcessesByName("play"))
                 existingVlc.Kill();
@@ -31,9 +31,15 @@ namespace HomeSpeaker.Server
             playerProcess.StartInfo.Arguments = $"\"{filePath}\"";
             playerProcess.StartInfo.UseShellExecute = false;
             playerProcess.StartInfo.RedirectStandardOutput = true;
-            playerProcess.OutputDataReceived += (sender, args) => logger.LogInformation(args.Data);
+
+            logger.LogInformation($"Starting to play {filePath}");
             playerProcess.Start();
-            playerProcess.BeginOutputReadLine();
+            //playerProcess.BeginOutputReadLine();
+            string outputLine;
+            while((outputLine = await playerProcess.StandardOutput.ReadLineAsync()) != null)
+            {
+                logger.LogInformation(outputLine);
+            }
         }
 
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;

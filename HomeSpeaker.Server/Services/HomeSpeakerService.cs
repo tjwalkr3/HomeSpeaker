@@ -49,7 +49,9 @@ namespace HomeSpeaker.Server
             var reply = new PlaySongReply { Ok = false };
             if (song != null)
             {
-                musicPlayer.PlaySong(song.Path);
+                Task.Run(() =>
+                    musicPlayer.PlaySongAsync(song.Path)
+                );
                 reply.Ok = true;
             }
             return Task.FromResult(reply);
