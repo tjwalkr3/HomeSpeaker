@@ -41,7 +41,6 @@ namespace HomeSpeaker.Server
                 try
                 {
                     var song = tagParser.CreateSong(file);
-                    logger.LogInformation($"Found {song}, adding to data store...");
                     dataStore.Add(song);
                 }
                 catch (Exception ex)
