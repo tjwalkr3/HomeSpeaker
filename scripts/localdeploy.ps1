@@ -4,7 +4,7 @@
 # ...or at least I'm incapable of making them do so.
 param(
     [switch]$skipBuild,
-    [string]$server=192.168.1.20
+    [string]$server=192.168.1.20,
     [switch]$deployingFromSnow
 )
 
