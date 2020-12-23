@@ -27,8 +27,11 @@ namespace HomeSpeaker.Server
 
         public PlayerStatus Status { get; private set; }
 
+        private bool startedPlaying = false;
+
         public void PlaySong(string filePath)
         {
+            startedPlaying = true;
             foreach (var existingVlc in Process.GetProcessesByName("play"))
                 existingVlc.Kill();
 
@@ -68,6 +71,7 @@ namespace HomeSpeaker.Server
 
             playerProcess.BeginOutputReadLine();
             playerProcess.BeginErrorReadLine();
+            startedPlaying = false;
         }
 
         private void PlayerProcess_Exited(object sender, EventArgs e)
@@ -128,7 +132,7 @@ namespace HomeSpeaker.Server
             logger.LogInformation(story.ToString());
         }
 
-        public bool StillPlaying => playerProcess?.HasExited ?? true == false;
+        public bool StillPlaying => startedPlaying || (playerProcess?.HasExited ?? true == false);
 
         private ConcurrentQueue<Song> songQueue = new ConcurrentQueue<Song>();
 
