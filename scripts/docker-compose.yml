@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
     environment:
     - ASPNETCORE_ENVIRONMENT=Development
-    - HomeSpeaker.Server=http://homespeaker.server:8080
+    - HomeSpeaker.Server=http://homespeaker.server
 
   homespeaker.server:
     image: ${DOCKER_REGISTRY-}snowjallen/homespeakerserver:${BuildID}
