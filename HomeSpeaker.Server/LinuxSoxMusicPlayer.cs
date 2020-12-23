@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -50,14 +51,21 @@ namespace HomeSpeaker.Server
 
             logger.LogInformation($"Starting to play {filePath}");
             playerProcess.Start();
+            playerProcess.Exited += PlayerProcess_Exited;
 
             playerProcess.BeginOutputReadLine();
             playerProcess.BeginErrorReadLine();
-            //string outputLine;
-            //while((outputLine = await playerProcess.StandardOutput.Read()) != null)
-            //{
-            //    logger.LogInformation(outputLine);
-            //}
+        }
+
+        private void PlayerProcess_Exited(object sender, EventArgs e)
+        {
+            if(songQueue.Count > 0)
+            {
+                if(songQueue.TryDequeue(out string nextSong))
+                {
+                    PlaySongAsync(nextSong);
+                }
+            }
         }
 
         public static bool TryParsePlayerOutput(string output, out PlayerStatus playerStatus)
@@ -84,7 +92,21 @@ namespace HomeSpeaker.Server
             }
         }
 
+        public void EnqueueSong(string path)
+        {
+            if (StillPlaying)
+            {
+                songQueue.Enqueue(path);
+            }
+            else
+            {
+                PlaySongAsync(path);
+            }
+        }
+
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
+
+        private ConcurrentQueue<string> songQueue = new ConcurrentQueue<string>();
     }
     public record PlayerStatus
     {

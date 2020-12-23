@@ -9,5 +9,6 @@ namespace HomeSpeaker.Server
     {
         Task PlaySongAsync(string filePath);
         bool StillPlaying { get; }
+        void EnqueueSong(string path);
     }
 }

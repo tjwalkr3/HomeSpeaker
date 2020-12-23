@@ -25,6 +25,7 @@ message HelloReply2 {
 service HomeSpeaker {
 	rpc GetSongs(GetSongsRequest) returns (stream GetSongsReply);
 	rpc PlaySong(PlaySongRequest) returns (PlaySongReply);
+	rpc EnqueueSong(PlaySongRequest) returns (PlaySongReply);
 	rpc ResetLibrary(google.protobuf.Empty) returns (google.protobuf.Empty);
 }
 

@@ -36,6 +36,11 @@ namespace HomeSpeaker.Server
             playerProcess.Start();
         }
 
+        public void EnqueueSong(string path)
+        {
+            logger.LogError("Windows player does not support queuing");
+        }
+
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
     }
 }

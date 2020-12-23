@@ -28,6 +28,12 @@ namespace HomeSpeaker.Web.Pages
         public async Task OnGetAsync()
         {
             _logger.LogInformation("Getting songs...");
+            await getSongs();
+            _logger.LogInformation($"Found {songs.Count} songs");
+        }
+
+        private async Task getSongs()
+        {
             var getSongsReply = homeSpeakerClient.GetSongs(new Server.gRPC.GetSongsRequest { });
             await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
             {
@@ -36,13 +42,23 @@ namespace HomeSpeaker.Web.Pages
                     songs.Add(new Song(song.SongId, song.Name, song.Album, song.Artist, song.Path));
                 }
             }
-            _logger.LogInformation($"Found {songs.Count} songs");
         }
 
         public async Task<IActionResult> OnGetPlaySongAsync(int songId)
         {
             _logger.LogInformation($"User requested to play song {songId}");
             await homeSpeakerClient.PlaySongAsync(new Server.gRPC.PlaySongRequest { SongId = songId });
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostPlayAlbumAsync(string artist, string album)
+        {
+            _logger.LogInformation($"Queuing {artist} | {album}");
+            await getSongs();
+            foreach (var song in songs.Where(s => s.Artist == artist && s.Album == album))
+            {
+                await homeSpeakerClient.EnqueueSongAsync(new Server.gRPC.PlaySongRequest { SongId = song.Id });
+            }
             return RedirectToPage();
         }
     }

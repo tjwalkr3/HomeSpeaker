@@ -26,6 +26,11 @@
             {
                 <li>
                     <h6>@album</h6>
+                    <form method="post">
+                        <input type="hidden" value="@album" name="album" />
+                        <input type="hidden" value="@artist" name="artist" />
+                        <button class="btn" asp-page-handler="PlayAlbum">Play Album</button>
+                    </form>
                     <ul>
                         @foreach(var song in Model.Songs.Where(s => s.Artist == artist && s.Album == album).OrderBy(s => s.Name))
                         {

@@ -62,5 +62,19 @@ namespace HomeSpeaker.Server
             library.ResetLibrary();
             return Task.FromResult(new Empty());
         }
+
+        public override Task<PlaySongReply> EnqueueSong(PlaySongRequest request, ServerCallContext context)
+        {
+            var song = library.Songs.FirstOrDefault(s => s.SongId == request.SongId);
+            var reply = new PlaySongReply { Ok = false };
+            if (song != null)
+            {
+                Task.Run(() =>
+                    musicPlayer.EnqueueSong(song.Path)
+                );
+                reply.Ok = true;
+            }
+            return Task.FromResult(reply);
+        }
     }
 }
