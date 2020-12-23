@@ -76,5 +76,41 @@ namespace HomeSpeaker.Server
             }
             return Task.FromResult(reply);
         }
+
+        public override Task<GetStatusReply> GetPlayerStatus(GetStatusRequest request, ServerCallContext context)
+        {
+            var status = musicPlayer.Status;
+            return Task.FromResult(new GetStatusReply
+            {
+                Elapsed = Duration.FromTimeSpan(status.Elapsed),
+                PercentComplete = (double)status.PercentComplete,
+                Remaining = Duration.FromTimeSpan(status.Remaining),
+                StilPlaying = status.StillPlaying
+            });
+        }
+
+        public override async Task GetPlayQueue(GetSongsRequest request, IServerStreamWriter<GetSongsReply> responseStream, ServerCallContext context)
+        {
+            var reply = new GetSongsReply();
+            System.Collections.Generic.IEnumerable<Shared.Song> songQueue = musicPlayer.SongQueue;
+            if (songQueue.Any())
+            {
+                _logger.LogInformation("Found songs in queue!  Sending to client.");
+                var songs = songQueue.Select(s => new SongMessage
+                {
+                    Album = s.Album,
+                    Artist = s.Artist,
+                    Name = s.Name ?? "[ No Name ]",
+                    Path = s.Path,
+                    SongId = s.SongId
+                });
+                reply.Songs.AddRange(songs);
+            }
+            else
+            {
+                _logger.LogInformation("No songs in queue.  Sending back empty list.");
+            }
+            await responseStream.WriteAsync(reply);
+        }
     }
 }

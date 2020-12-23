@@ -1,3 +1,4 @@
+using HomeSpeaker.Shared;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -15,12 +16,16 @@ namespace HomeSpeaker.Server
     public class LinuxSoxMusicPlayer : IMusicPlayer
     {
         private readonly ILogger<LinuxSoxMusicPlayer> logger;
+        private readonly Mp3Library library;
         private Process playerProcess;
 
-        public LinuxSoxMusicPlayer(ILogger<LinuxSoxMusicPlayer> logger)
+        public LinuxSoxMusicPlayer(ILogger<LinuxSoxMusicPlayer> logger, Mp3Library library)
         {
             this.logger = logger;
+            this.library = library;
         }
+
+        public PlayerStatus Status { get; private set; }
 
         public async Task PlaySongAsync(string filePath)
         {
@@ -38,14 +43,22 @@ namespace HomeSpeaker.Server
             {
                 if (TryParsePlayerOutput(e.Data, out var status))
                 {
-                    logger.LogInformation(status.ToString());
+                    Status = status;
+                }
+                else
+                {
+                    Status = new PlayerStatus();
                 }
             });
             playerProcess.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
             {
                 if (TryParsePlayerOutput(e.Data, out var status))
                 {
-                    logger.LogInformation(status.ToString());
+                    Status = status;
+                }
+                else
+                {
+                    Status = new PlayerStatus();
                 }
             });
 
@@ -59,12 +72,16 @@ namespace HomeSpeaker.Server
 
         private void PlayerProcess_Exited(object sender, EventArgs e)
         {
-            if(songQueue.Count > 0)
+            if (songQueue.Count > 0)
             {
-                if(songQueue.TryDequeue(out string nextSong))
+                if (songQueue.TryDequeue(out var nextSong))
                 {
-                    PlaySongAsync(nextSong);
+                    PlaySongAsync(nextSong.Path);
                 }
+            }
+            else
+            {
+                Status = new PlayerStatus();
             }
         }
 
@@ -87,7 +104,7 @@ namespace HomeSpeaker.Server
             }
             catch
             {
-                playerStatus = null;
+                playerStatus = new PlayerStatus();
                 return false;
             }
         }
@@ -96,7 +113,8 @@ namespace HomeSpeaker.Server
         {
             if (StillPlaying)
             {
-                songQueue.Enqueue(path);
+                var song = library.Songs.Single(s => s.Path == path);
+                songQueue.Enqueue(song);
             }
             else
             {
@@ -106,7 +124,9 @@ namespace HomeSpeaker.Server
 
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
 
-        private ConcurrentQueue<string> songQueue = new ConcurrentQueue<string>();
+        private ConcurrentQueue<Song> songQueue = new ConcurrentQueue<Song>();
+
+        public IEnumerable<Song> SongQueue => songQueue.ToArray();
     }
     public record PlayerStatus
     {

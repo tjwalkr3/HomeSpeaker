@@ -1,6 +1,7 @@
 ﻿syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/duration.proto";
 
 option csharp_namespace = "HomeSpeaker.Server.gRPC";
 
@@ -27,6 +28,16 @@ service HomeSpeaker {
 	rpc PlaySong(PlaySongRequest) returns (PlaySongReply);
 	rpc EnqueueSong(PlaySongRequest) returns (PlaySongReply);
 	rpc ResetLibrary(google.protobuf.Empty) returns (google.protobuf.Empty);
+	rpc GetPlayerStatus(GetStatusRequest) returns (GetStatusReply);
+	rpc GetPlayQueue(GetSongsRequest) returns (stream GetSongsReply);
+}
+
+message GetStatusRequest{}
+message GetStatusReply {
+	google.protobuf.Duration Elapsed=1;
+	google.protobuf.Duration Remaining=2;
+	bool StilPlaying=3;
+	double PercentComplete=4;
 }
 
 message GetSongsRequest { }

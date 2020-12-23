@@ -24,6 +24,7 @@ namespace HomeSpeaker.Web.Pages
 
         private List<Song> songs = new List<Song>();
         public IEnumerable<Song> Songs => songs;
+        public IEnumerable<Song> Queue { get; private set; }
 
         public async Task OnGetAsync()
         {
@@ -41,6 +42,13 @@ namespace HomeSpeaker.Web.Pages
                 {
                     songs.Add(new Song(song.SongId, song.Name, song.Album, song.Artist, song.Path));
                 }
+            }
+
+            var getQueueReply = homeSpeakerClient.GetPlayQueue(new Server.gRPC.GetSongsRequest { });
+            await foreach(var reply in getQueueReply.ResponseStream.ReadAllAsync())
+            {
+                Queue = from song in reply.Songs
+                        select new Song(song.SongId, song.Name, song.Album, song.Artist, song.Path);
             }
         }
 

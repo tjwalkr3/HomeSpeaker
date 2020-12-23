@@ -6,44 +6,72 @@
     var artistNum = 0;
 }
 
-<div id="accordion">
-<div class="panel-group" id="accordionY">
-@foreach(var artist in Model.Songs.Select(s => s.Artist).Distinct().OrderBy(a => a))
-{
-    artistNum++;
+<style>
+    .grid-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: 1fr;
+    gap: 5px 5px;
+    grid-template-areas:
+    "songList songQueue";
+    }
 
-    <div class="card">
-        <div class="card-header" id="heading-@artistNum">
-            <h3 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-@artistNum" aria-expanded="false" aria-controls="collapse-@artistNum">
-                    @artist
-                </button>
-            </h3>
-        </div>
-        <div id="collapse-@artistNum" class="collapse" aria-labelledby="heading-@artistNum" data-parent="#accordion">
-            <ul>
-            @foreach(var album in Model.Songs.Where(s => s.Artist == artist).Select(a => a.Album).Distinct().OrderBy(a => a))
-            {
-                <li>
-                    <h6>@album</h6>
-                    <form method="post">
-                        <input type="hidden" value="@album" name="album" />
-                        <input type="hidden" value="@artist" name="artist" />
-                        <button class="btn" asp-page-handler="PlayAlbum">Play Album</button>
-                    </form>
-                    <ul>
-                        @foreach(var song in Model.Songs.Where(s => s.Artist == artist && s.Album == album).OrderBy(s => s.Name))
-                        {
+    .songList { grid-area: songList; }
+
+    .songQueue { grid-area: songQueue; }
+</style>
+
+<div class="grid-container">
+    <div class="songList">
+        <div id="accordion">
+            <div class="panel-group" id="accordionY">
+                @foreach (var artist in Model.Songs.Select(s => s.Artist).Distinct().OrderBy(a => a))
+                {
+                    artistNum++;
+
+                <div class="card">
+                    <div class="card-header" id="heading-@artistNum">
+                        <h3 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-@artistNum" aria-expanded="false" aria-controls="collapse-@artistNum">
+                                @artist
+                            </button>
+                        </h3>
+                    </div>
+                    <div id="collapse-@artistNum" class="collapse" aria-labelledby="heading-@artistNum" data-parent="#accordion">
+                        <ul>
+                            @foreach (var album in Model.Songs.Where(s => s.Artist == artist).Select(a => a.Album).Distinct().OrderBy(a => a))
+                                {
                             <li>
-                                <a asp-page-handler="PlaySong" asp-route-songId="@song.Id" title="@song.Path">@song.Name</a>
+                                <h6>@album</h6>
+                                <form method="post">
+                                    <input type="hidden" value="@album" name="album" />
+                                    <input type="hidden" value="@artist" name="artist" />
+                                    <button class="btn" asp-page-handler="PlayAlbum">Play Album</button>
+                                </form>
+                                <ul>
+                                    @foreach (var song in Model.Songs.Where(s => s.Artist == artist && s.Album == album).OrderBy(s => s.Name))
+                                            {
+                                    <li>
+                                        <a asp-page-handler="PlaySong" asp-route-songId="@song.Id" title="@song.Path">@song.Name</a>
+                                    </li>
+                                    }
+                                </ul>
                             </li>
-                        }
-                    </ul>
-                </li>
-            }
-            </ul>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                }
+            </div>
         </div>
     </div>
-}
+    <div class="songQueue">
+        <ul>
+        @foreach(var song in Model.Queue)
+        {
+            <li>@song.Name</li>
+        }
+        </ul>
+    </div>
 </div>
-</div>
+

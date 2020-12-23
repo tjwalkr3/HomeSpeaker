@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using HomeSpeaker.Shared;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -42,5 +43,9 @@ namespace HomeSpeaker.Server
         }
 
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
+
+        public PlayerStatus Status => throw new NotImplementedException();
+
+        public IEnumerable<Song> SongQueue => throw new NotImplementedException();
     }
 }
