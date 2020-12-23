@@ -36,11 +36,18 @@ namespace HomeSpeaker.Server
         private void SyncLibrary()
         {
             SyncStarted = true;
-            foreach(var file in fileSource.GetAllMp3s())
+            foreach (var file in fileSource.GetAllMp3s())
             {
-                var song = tagParser.CreateSong(file);
-                logger.LogInformation($"Found {song}, adding to data store...");
-                dataStore.Add(song);
+                try
+                {
+                    var song = tagParser.CreateSong(file);
+                    logger.LogInformation($"Found {song}, adding to data store...");
+                    dataStore.Add(song);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Trouble parsing tag info!");
+                }
             }
             SyncCompleted = true;
             logger.LogInformation($"Sync Completed! {dataStore.GetSongs().Count():n0} songs in database.");
