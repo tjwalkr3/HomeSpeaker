@@ -13,7 +13,7 @@ if(test-path "version.txt") {
 }
 
 if($skipBuild -eq $false) {
-    $version++ | set-content "version.txt"
+    ($version++) | set-content "version.txt"
     $tag = "v$version"
 
     write-host "** Building Images (tag $tag) **"
