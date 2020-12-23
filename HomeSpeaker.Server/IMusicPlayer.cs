@@ -7,5 +7,6 @@ namespace HomeSpeaker.Server
     public interface IMusicPlayer
     {
         void PlaySong(string filePath);
+        bool StillPlaying { get; }
     }
 }

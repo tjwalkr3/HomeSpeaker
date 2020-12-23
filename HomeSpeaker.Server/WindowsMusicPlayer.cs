@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,14 +13,29 @@ namespace HomeSpeaker.Server
 {
     public class WindowsMusicPlayer : IMusicPlayer
     {
+        public WindowsMusicPlayer(ILogger<WindowsMusicPlayer> logger)
+        {
+            this.logger = logger;
+        }
+
         const string vlc = @"c:\program files\videolan\vlc\vlc.exe";
+        private readonly ILogger<WindowsMusicPlayer> logger;
+        private Process playerProcess;
 
         public void PlaySong(string filePath)
         {
             foreach (var existingVlc in Process.GetProcessesByName("vlc"))
                 existingVlc.Kill();
 
-            Process.Start(vlc, $"\"{filePath}\"");
+            playerProcess = new Process();
+            playerProcess.StartInfo.FileName = vlc;
+            playerProcess.StartInfo.Arguments = $"\"{filePath}\"";
+            playerProcess.StartInfo.UseShellExecute = false;
+            playerProcess.StartInfo.RedirectStandardOutput = true;
+            playerProcess.OutputDataReceived += (sender, args) => logger.LogInformation(args.Data);
+            playerProcess.Start();
         }
-    }
+
+        public bool StillPlaying => playerProcess?.HasExited ?? true == false;
+    }    
 }
