@@ -111,15 +111,21 @@ namespace HomeSpeaker.Server
 
         public void EnqueueSong(string path)
         {
+            var story = new StringBuilder($"Queuing up {path}");
+
             if (StillPlaying)
             {
+                story.AppendLine("StillPlaying is true, so I'll add to queue.");
                 var song = library.Songs.Single(s => s.Path == path);
                 songQueue.Enqueue(song);
+                story.AppendLine($"Added song# {song.SongId} to queue, now contains {songQueue.Count} songs.");
             }
             else
             {
+                story.AppendLine("Nothing playing, so instead of queuing I'll just play it...");
                 PlaySongAsync(path);
             }
+            logger.LogInformation(story.ToString());
         }
 
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;

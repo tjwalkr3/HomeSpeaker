@@ -8,12 +8,11 @@
 
 <style>
     .grid-container {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    grid-template-rows: 1fr;
-    gap: 5px 5px;
-    grid-template-areas:
-    "songList songQueue";
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 700px));
+        grid-gap: 5px;
+        grid-template-areas:
+        "songList songQueue";
     }
 
     .songList { grid-area: songList; }
@@ -66,6 +65,7 @@
         </div>
     </div>
     <div class="songQueue">
+        <h4>Up Next</h4>
         <ul>
         @foreach(var song in Model.Queue)
         {
