@@ -32,8 +32,8 @@ namespace HomeSpeaker.Server
             playerProcess.StartInfo.UseShellExecute = false;
             playerProcess.StartInfo.RedirectStandardOutput = true;
             playerProcess.OutputDataReceived += (sender, args) => logger.LogInformation(args.Data);
-            playerProcess.BeginOutputReadLine();
             playerProcess.Start();
+            playerProcess.BeginOutputReadLine();
         }
 
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
