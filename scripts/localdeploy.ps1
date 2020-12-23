@@ -3,7 +3,8 @@
 # incapable of building an arm64 image that works.
 # ...or at least I'm incapable of making them do so.
 param(
-    [switch]$skipBuild
+    [switch]$skipBuild,
+    [string]$server=192.168.1.20
 )
 
 $version = 0;
@@ -27,8 +28,8 @@ if($skipBuild -eq $false) {
 }
 
 write-host "** Copy latest restart.ps1 and docker-compose.yml files **"
-scp scripts/restart.ps1 pi@192.168.1.20:~/scripts/
-scp scripts/docker-compose.yml pi@192.168.1.20:~/scripts/
+scp scripts/restart.ps1 "pi@$($server):~/scripts/"
+scp scripts/docker-compose.yml "pi@$($server):~/scripts/"
 
 write-host "** Restarting docker-compose on rpi4  (tag $tag) **"
-ssh rpi4 "cd scripts && pwsh ./restart.ps1 -tag $tag"
+ssh pi@$server "cd scripts && pwsh ./restart.ps1 -tag $tag"
