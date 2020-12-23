@@ -2,21 +2,29 @@
 # ...becuase github actions and docker hub are
 # incapable of building an arm64 image that works.
 # ...or at least I'm incapable of making them do so.
+param(
+    [switch]$skipBuild
+)
 
 $version = 0;
 if(test-path "version.txt") {
-	$version = [int](get-content "version.txt")
+    $version = [int](get-content "version.txt")
 }
-$version++ | set-content "version.txt"
-$tag = "v$version"
 
-write-host "** Building Images (tag $tag) **"
-docker build -t snowjallen/homespeakerserver:$tag -f ./HomeSpeaker.Server/Dockerfile .
-docker build -t snowjallen/homespeakerwebclient:$tag -f ./HomeSpeaker.Client.Web/Dockerfile .
+if($skipBuild -eq $false) {
+    $version++ | set-content "version.txt"
+    $tag = "v$version"
 
-write-host "** Pushing Images (tag $tag)**"
-docker push snowjallen/homespeakerserver:$tag
-docker push snowjallen/homespeakerwebclient:$tag
+    write-host "** Building Images (tag $tag) **"
+    docker build -t snowjallen/homespeakerserver:$tag -f ./HomeSpeaker.Server/Dockerfile .
+    docker build -t snowjallen/homespeakerwebclient:$tag -f ./HomeSpeaker.Client.Web/Dockerfile .
+
+    write-host "** Pushing Images (tag $tag)**"
+    docker push snowjallen/homespeakerserver:$tag
+    docker push snowjallen/homespeakerwebclient:$tag
+} else {
+    $tag = "v$version"
+}
 
 write-host "** Copy latest restart.ps1 and docker-compose.yml files **"
 scp scripts/restart.ps1 pi@192.168.1.20:~/scripts/

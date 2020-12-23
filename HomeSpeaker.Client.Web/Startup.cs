@@ -12,14 +12,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Runtime.InteropServices;
+using Grpc.Net.Client;
+using static HomeSpeaker.Server.HomeSpeaker;
+using Microsoft.Extensions.Logging;
 
 namespace HomeSpeaker.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly ILogger logger;
+
+        public Startup(IConfiguration configuration, ILogger logger)
         {
             Configuration = configuration;
+            this.logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -27,6 +33,8 @@ namespace HomeSpeaker.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            logger.LogInformation($"Using server @ {Configuration["HomeSpeaker.Server"]}");
+            services.AddScoped((s) => new HomeSpeakerClient(GrpcChannel.ForAddress(Configuration["HomeSpeaker.Server"])));
             services.AddRazorPages();
             services.AddControllers(configuration =>
             {
@@ -52,8 +60,8 @@ namespace HomeSpeaker.Web
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

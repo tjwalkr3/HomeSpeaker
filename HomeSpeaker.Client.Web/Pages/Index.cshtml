@@ -8,3 +8,10 @@
 <div class="text-center">
 <p>This is the new web client</p>T
 </div>
+
+<ul>
+@foreach(var song in Model.Songs)
+{
+    <a asp-page-handler="PlaySong" asp-route-songId="@song.Id">@song.Name</a>
+}
+</ul>

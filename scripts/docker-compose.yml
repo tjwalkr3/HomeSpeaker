@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   homespeaker.client.web:
-    image: ${DOCKER_REGISTRY-}snowjallen/homespeakerwebclient:latest
+    image: ${DOCKER_REGISTRY-}snowjallen/homespeakerwebclient:${BuildID}
 #    build:
 #      context: .
 #      dockerfile: HomeSpeaker.Client.Web/Dockerfile
@@ -13,10 +13,10 @@ services:
     restart: unless-stopped
     environment:
     - ASPNETCORE_ENVIRONMENT=Development
-    - HomeSpeakerServer=http://homespeaker.server:8080
+    - HomeSpeaker.Server=http://homespeaker.server:8080
 
   homespeaker.server:
-    image: ${DOCKER_REGISTRY-}snowjallen/homespeakerserver:latest
+    image: ${DOCKER_REGISTRY-}snowjallen/homespeakerserver:${BuildID}
 #    build:
 #      context: .
 #      dockerfile: HomeSpeaker.Server/Dockerfile

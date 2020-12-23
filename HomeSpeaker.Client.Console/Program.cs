@@ -15,7 +15,6 @@ namespace HomeSpeaker.Client.Console
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<ConsoleHostedService>();
-                    services.AddSingleton<HomeSpeakerClient>();
                 })
                 .ConfigureHostConfiguration(configHost =>
                 {

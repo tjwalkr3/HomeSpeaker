@@ -16,18 +16,15 @@ namespace HomeSpeaker.Client.Console
     internal sealed class ConsoleHostedService : IHostedService
     {
         private readonly ILogger _logger;
-        private readonly HomeSpeakerClient homeSpeakerClient;
         private readonly IConfiguration config;
         private readonly IHostApplicationLifetime _appLifetime;
 
         public ConsoleHostedService(
             ILogger<ConsoleHostedService> logger,
             IHostApplicationLifetime appLifetime,
-            HomeSpeakerClient homeSpeakerClient,
             IConfiguration config)
         {
             _logger = logger;
-            this.homeSpeakerClient = homeSpeakerClient ?? throw new ArgumentNullException(nameof(homeSpeakerClient));
             this.config = config ?? throw new ArgumentNullException(nameof(config));
             _appLifetime = appLifetime;
         }
@@ -51,14 +48,6 @@ namespace HomeSpeaker.Client.Console
                             client2.PlaySong(new Server.PlaySongRequest { SongId = songId });
                             return;
                         }
-
-                        // Simulate real work is being done
-                        await Task.Delay(1000);
-
-                        WriteLine("What greeting would you like to send?");
-                        var myValue = ReadLine();
-                        var response = homeSpeakerClient.DoGreeting(myValue);
-                        WriteLine($"Response from server: {response}");
 
                         _logger.LogInformation("Asking server for songs...");
                         var songsResponse = client2.GetSongs(new Server.GetSongsRequest { });
