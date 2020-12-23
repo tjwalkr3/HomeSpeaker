@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace HomeSpeaker.Client
 {
-    public record Song(string Name, int Id);
+    public record Song(int Id, string Name, string Album, string Artist, string Path);
 }

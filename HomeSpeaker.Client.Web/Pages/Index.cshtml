@@ -10,8 +10,26 @@
 </div>
 
 <ul>
-@foreach(var song in Model.Songs)
+@foreach(var artist in Model.Songs.Select(s => s.Artist).Distinct())
 {
-    <a asp-page-handler="PlaySong" asp-route-songId="@song.Id">@song.Name</a>
+    <li>
+        <h3>@artist</h3>
+        <ul>
+        @foreach(var album in Model.Songs.Where(s => s.Artist == artist).Select(a => a.Album).Distinct())
+        {
+            <li>
+                <h4>@album</h4>
+                <ul>
+                    @foreach(var song in Model.Songs.Where(s => s.Artist == artist && s.Album == album))
+                    {
+                        <li>
+                            <a asp-page-handler="PlaySong" asp-route-songId="@song.Id">@song.Name (@song.Path)</a>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+        </ul>
+    </li>
 }
 </ul>

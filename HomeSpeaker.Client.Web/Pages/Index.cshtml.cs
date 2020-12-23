@@ -33,7 +33,7 @@ namespace HomeSpeaker.Web.Pages
             {
                 foreach (var song in reply.Songs)
                 {
-                    songs.Add(new Song(song.Name, song.SongId));
+                    songs.Add(new Song(song.SongId, song.Name, song.Album, song.Artist, song.Path));
                 }
             }
             _logger.LogInformation($"Found {songs.Count} songs");
