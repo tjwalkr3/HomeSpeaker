@@ -31,15 +31,27 @@ namespace HomeSpeaker.Server
             playerProcess.StartInfo.Arguments = $"\"{filePath}\"";
             playerProcess.StartInfo.UseShellExecute = false;
             playerProcess.StartInfo.RedirectStandardOutput = true;
+            playerProcess.StartInfo.RedirectStandardError = true;
+
+            playerProcess.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
+            {
+                logger.LogInformation(e.Data);
+            });
+            playerProcess.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
+            {
+                logger.LogInformation(e.Data);
+            });
 
             logger.LogInformation($"Starting to play {filePath}");
             playerProcess.Start();
-            //playerProcess.BeginOutputReadLine();
-            string outputLine;
-            while((outputLine = await playerProcess.StandardOutput.ReadLineAsync()) != null)
-            {
-                logger.LogInformation(outputLine);
-            }
+
+            playerProcess.BeginOutputReadLine();
+            playerProcess.BeginErrorReadLine();
+            //string outputLine;
+            //while((outputLine = await playerProcess.StandardOutput.Read()) != null)
+            //{
+            //    logger.LogInformation(outputLine);
+            //}
         }
 
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
