@@ -20,12 +20,9 @@ namespace HomeSpeaker.Web
 {
     public class Startup
     {
-        private readonly ILogger logger;
-
-        public Startup(IConfiguration configuration, ILogger logger)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            this.logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -33,7 +30,7 @@ namespace HomeSpeaker.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            logger.LogInformation($"Using server @ {Configuration["HomeSpeaker.Server"]}");
+            Console.WriteLine($"Using server @ {Configuration["HomeSpeaker.Server"]}");
             services.AddScoped((s) => new HomeSpeakerClient(GrpcChannel.ForAddress(Configuration["HomeSpeaker.Server"])));
             services.AddRazorPages();
             services.AddControllers(configuration =>
