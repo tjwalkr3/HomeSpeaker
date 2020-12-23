@@ -35,11 +35,22 @@ namespace HomeSpeaker.Server
 
             playerProcess.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
             {
-                logger.LogInformation(e.Data);
+                try
+                {
+                    var parts = e.Data.Split(new char[] { ' ', '%', '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+                    var percentComplete = decimal.Parse(parts[0])/100;
+                    var elapsedTime = parts[1];
+                    var remainingTime = parts[2];
+                    logger.LogInformation($"Elapsed: {elapsedTime}; Remaining: {remainingTime}; Percent Complete: {percentComplete:p}");
+                }
+                catch
+                {
+                    logger.LogInformation(e.Data);
+                }
             });
             playerProcess.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
             {
-                logger.LogInformation(e.Data);
+                logger.LogError(e.Data);
             });
 
             logger.LogInformation($"Starting to play {filePath}");
