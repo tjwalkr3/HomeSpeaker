@@ -3,33 +3,42 @@
 
 @{
     ViewData["Title"] = "Music Player";
+    var artistNum = 0;
 }
 
-<div class="text-center">
-<p>This is the new web client</p>T
-</div>
-
-<ul>
-@foreach(var artist in Model.Songs.Select(s => s.Artist).Distinct())
+<div id="accordion">
+<div class="panel-group" id="accordionY">
+@foreach(var artist in Model.Songs.Select(s => s.Artist).Distinct().OrderBy(a => a))
 {
-    <li>
-        <h3>@artist</h3>
-        <ul>
-        @foreach(var album in Model.Songs.Where(s => s.Artist == artist).Select(a => a.Album).Distinct())
-        {
-            <li>
-                <h4>@album</h4>
-                <ul>
-                    @foreach(var song in Model.Songs.Where(s => s.Artist == artist && s.Album == album))
-                    {
-                        <li>
-                            <a asp-page-handler="PlaySong" asp-route-songId="@song.Id">@song.Name (@song.Path)</a>
-                        </li>
-                    }
-                </ul>
-            </li>
-        }
-        </ul>
-    </li>
+    artistNum++;
+
+    <div class="card">
+        <div class="card-header" id="heading-@artistNum">
+            <h3 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-@artistNum" aria-expanded="false" aria-controls="collapse-@artistNum">
+                    @artist
+                </button>
+            </h3>
+        </div>
+        <div id="collapse-@artistNum" class="collapse" aria-labelledby="heading-@artistNum" data-parent="#accordion">
+            <ul>
+            @foreach(var album in Model.Songs.Where(s => s.Artist == artist).Select(a => a.Album).Distinct().OrderBy(a => a))
+            {
+                <li>
+                    <h6>@album</h6>
+                    <ul>
+                        @foreach(var song in Model.Songs.Where(s => s.Artist == artist && s.Album == album).OrderBy(s => s.Name))
+                        {
+                            <li>
+                                <a asp-page-handler="PlaySong" asp-route-songId="@song.Id" title="@song.Path">@song.Name</a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+            </ul>
+        </div>
+    </div>
 }
-</ul>
+</div>
+</div>
