@@ -9,13 +9,13 @@ namespace HomeSpeaker.Server
 {
     public class HomeSpeakerService : gRPC.HomeSpeaker.HomeSpeakerBase
     {
-        private readonly ILogger<GreeterService> _logger;
+        private readonly ILogger<GreeterService> logger;
         private readonly Mp3Library library;
         private readonly IMusicPlayer musicPlayer;
 
         public HomeSpeakerService(ILogger<GreeterService> logger, Mp3Library library, IMusicPlayer musicPlayer)
         {
-            _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
+            this.logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
             this.library = library ?? throw new System.ArgumentNullException(nameof(library));
             this.musicPlayer = musicPlayer ?? throw new System.ArgumentNullException(nameof(musicPlayer));
         }
@@ -25,7 +25,7 @@ namespace HomeSpeaker.Server
             var reply = new GetSongsReply();
             if (library?.Songs?.Any() ?? false)
             {
-                _logger.LogInformation("Found songs!  Sending to client.");
+                logger.LogInformation("Found songs!  Sending to client.");
                 var songs = library.Songs.Select(s => new SongMessage
                 {
                     Album = s.Album,
@@ -38,7 +38,7 @@ namespace HomeSpeaker.Server
             }
             else
             {
-                _logger.LogInformation("No songs found.  Sending back empty list.");
+                logger.LogInformation("No songs found.  Sending back empty list.");
             }
             await responseStream.WriteAsync(reply);
         }
@@ -69,9 +69,8 @@ namespace HomeSpeaker.Server
             var reply = new PlaySongReply { Ok = false };
             if (song != null)
             {
-                Task.Run(() =>
-                    musicPlayer.EnqueueSong(song.Path)
-                );
+                logger.LogInformation($"Queuing up #{song.SongId}: {song.Name}");
+                musicPlayer.EnqueueSong(song.Path);
                 reply.Ok = true;
             }
             return Task.FromResult(reply);
@@ -95,7 +94,7 @@ namespace HomeSpeaker.Server
             System.Collections.Generic.IEnumerable<Shared.Song> songQueue = musicPlayer.SongQueue;
             if (songQueue.Any())
             {
-                _logger.LogInformation("Found songs in queue!  Sending to client.");
+                logger.LogInformation("Found songs in queue!  Sending to client.");
                 var songs = songQueue.Select(s => new SongMessage
                 {
                     Album = s.Album,
@@ -108,7 +107,7 @@ namespace HomeSpeaker.Server
             }
             else
             {
-                _logger.LogInformation("No songs in queue.  Sending back empty list.");
+                logger.LogInformation("No songs in queue.  Sending back empty list.");
             }
             await responseStream.WriteAsync(reply);
         }

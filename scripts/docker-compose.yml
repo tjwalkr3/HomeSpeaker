@@ -11,6 +11,8 @@ services:
     networks:
      homenet:
     restart: unless-stopped
+    depends_on:
+    - homespeaker.server
     environment:
     - ASPNETCORE_ENVIRONMENT=Development
     - HomeSpeaker.Server=http://homespeaker.server
