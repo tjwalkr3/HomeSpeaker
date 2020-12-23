@@ -1,11 +1,13 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using HomeSpeaker.Server.gRPC;
 using Microsoft.Extensions.Logging;
 
 namespace HomeSpeaker.Server
 {
-    public class HomeSpeakerService : HomeSpeaker.HomeSpeakerBase
+    public class HomeSpeakerService : gRPC.HomeSpeaker.HomeSpeakerBase
     {
         private readonly ILogger<GreeterService> _logger;
         private readonly Mp3Library library;
@@ -43,6 +45,12 @@ namespace HomeSpeaker.Server
                 reply.Ok = true;
             }
             return Task.FromResult(reply);
+        }
+
+        public override Task<Empty> ResetLibrary(Empty request, ServerCallContext context)
+        {
+            library.ResetLibrary();
+            return Task.FromResult(new Empty());
         }
     }
 }

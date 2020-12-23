@@ -26,7 +26,6 @@ namespace HomeSpeaker.Server
 
             if(SyncStarted is false)
             {
-                SyncStarted = true;
                 SyncLibrary();
             }
         }
@@ -34,13 +33,14 @@ namespace HomeSpeaker.Server
         public bool SyncStarted { get; private set; }
         public bool SyncCompleted { get; private set; }
 
-        private async Task SyncLibrary()
+        private void SyncLibrary()
         {
+            SyncStarted = true;
             foreach(var file in fileSource.GetAllMp3s())
             {
                 var song = tagParser.CreateSong(file);
                 logger.LogInformation($"Found {song}, adding to data store...");
-                await dataStore.AddOrUpdateAsync(song);
+                dataStore.Add(song);
             }
             SyncCompleted = true;
             logger.LogInformation($"Sync Completed! {dataStore.GetSongs().Count():n0} songs in database.");
@@ -49,5 +49,11 @@ namespace HomeSpeaker.Server
         public IEnumerable<Artist> Artists => dataStore.GetArtists();
         public IEnumerable<Album> Albums => dataStore.GetAlbums();
         public IEnumerable<Song> Songs => dataStore.GetSongs();
+
+        public void ResetLibrary()
+        {
+            dataStore.Clear();
+            SyncLibrary();
+        }
     }
 }

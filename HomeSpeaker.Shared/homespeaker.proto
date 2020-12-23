@@ -1,8 +1,10 @@
 ﻿syntax = "proto3";
 
-option csharp_namespace = "HomeSpeaker.Server";
+import "google/protobuf/empty.proto";
 
-package greet;
+option csharp_namespace = "HomeSpeaker.Server.gRPC";
+
+package homespeaker;
 
 // The greeting service definition.
 service Greeter2 {
@@ -23,6 +25,7 @@ message HelloReply2 {
 service HomeSpeaker {
 	rpc GetSongs(GetSongsRequest) returns (stream GetSongsReply);
 	rpc PlaySong(PlaySongRequest) returns (PlaySongReply);
+	rpc ResetLibrary(google.protobuf.Empty) returns (google.protobuf.Empty);
 }
 
 message GetSongsRequest { }

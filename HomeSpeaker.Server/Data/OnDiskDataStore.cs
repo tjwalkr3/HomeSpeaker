@@ -11,32 +11,17 @@ namespace HomeSpeaker.Server.Data
 
     public class OnDiskDataStore : IDataStore
     {
-        const string filePath = "songs.json";
         public OnDiskDataStore()
         {
-            if(File.Exists(filePath))
-                songs = JsonSerializer.Deserialize<List<Song>>(File.ReadAllText(filePath));
-            else 
-                songs = new();
+            songs = new();
         }
 
         private List<Song> songs;
 
-        public async Task AddOrUpdateAsync(Song song)
+        public void Add(Song song)
         {
-            var existingSong = songs.FirstOrDefault(s => s.Path == song.Path);
-            if (existingSong == null)
-            {
-                song.SongId = songs.Count;
-                songs.Add(song);
-                await serializeSongs();
-            }
-        }
-
-        private async Task serializeSongs()
-        {
-            var jsonString = JsonSerializer.Serialize(songs);
-            File.WriteAllText(filePath, jsonString);
+            song.SongId = songs.Count;
+            songs.Add(song);
         }
 
         public IEnumerable<Album> GetAlbums()
@@ -69,9 +54,8 @@ namespace HomeSpeaker.Server.Data
             }
         }
 
-        public IEnumerable<Song> GetSongs()
-        {
-            return songs.AsEnumerable();
-        }
+        public IEnumerable<Song> GetSongs() => songs.AsEnumerable();
+
+        public void Clear() => songs.Clear();
     }
 }

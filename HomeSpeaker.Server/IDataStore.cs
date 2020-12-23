@@ -8,9 +8,10 @@ namespace HomeSpeaker.Server
 {
     public interface IDataStore
     {
-        Task AddOrUpdateAsync(Song song);
+        void Add(Song song);
         IEnumerable<Artist> GetArtists();
         IEnumerable<Album> GetAlbums();
         IEnumerable<Song> GetSongs();
+        void Clear();
     }
 }

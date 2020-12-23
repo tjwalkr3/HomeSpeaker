@@ -7,7 +7,7 @@ using HomeSpeaker.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using static HomeSpeaker.Server.HomeSpeaker;
+using static HomeSpeaker.Server.gRPC.HomeSpeaker;
 
 namespace HomeSpeaker.Web.Pages
 {
@@ -28,7 +28,7 @@ namespace HomeSpeaker.Web.Pages
         public async Task OnGetAsync()
         {
             _logger.LogInformation("Getting songs...");
-            var getSongsReply = homeSpeakerClient.GetSongs(new Server.GetSongsRequest { });
+            var getSongsReply = homeSpeakerClient.GetSongs(new Server.gRPC.GetSongsRequest { });
             await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
             {
                 foreach (var song in reply.Songs)
@@ -42,7 +42,7 @@ namespace HomeSpeaker.Web.Pages
         public async Task<IActionResult> OnGetPlaySongAsync(int songId)
         {
             _logger.LogInformation($"User requested to play song {songId}");
-            await homeSpeakerClient.PlaySongAsync(new Server.PlaySongRequest { SongId = songId });
+            await homeSpeakerClient.PlaySongAsync(new Server.gRPC.PlaySongRequest { SongId = songId });
             return RedirectToPage();
         }
     }

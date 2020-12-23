@@ -43,7 +43,7 @@ namespace HomeSpeaker.Test
             fileSource = fsMock.Object;
 
             var dsMock = new Mock<IDataStore>();
-            dsMock.Setup(m => m.AddOrUpdateAsync(It.IsAny<Song>())).Callback<Song>(s => songs.Add(s));
+            dsMock.Setup(m => m.Add(It.IsAny<Song>())).Callback<Song>(s => songs.Add(s));
             dsMock.Setup(m => m.GetSongs()).Returns(songs);
             dataStore = dsMock.Object;
 

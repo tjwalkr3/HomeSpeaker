@@ -40,17 +40,17 @@ namespace HomeSpeaker.Client.Console
                     try
                     {
                         _logger.LogInformation("gRPC Console Client!");
-                        var client2 = new HomeSpeaker.Server.HomeSpeaker.HomeSpeakerClient(GrpcChannel.ForAddress(config["HomeSpeaker.Server"]));
+                        var client2 = new HomeSpeaker.Server.gRPC.HomeSpeaker.HomeSpeakerClient(GrpcChannel.ForAddress(config["HomeSpeaker.Server"]));
 
                         if(config["SongID"] != null)
                         {
                             var songId = int.Parse(config["SongID"]);
-                            client2.PlaySong(new Server.PlaySongRequest { SongId = songId });
+                            client2.PlaySong(new Server.gRPC.PlaySongRequest { SongId = songId });
                             return;
                         }
 
                         _logger.LogInformation("Asking server for songs...");
-                        var songsResponse = client2.GetSongs(new Server.GetSongsRequest { });
+                        var songsResponse = client2.GetSongs(new Server.gRPC.GetSongsRequest { });
                         await foreach(var reply in songsResponse.ResponseStream.ReadAllAsync())
                         {
                             foreach(var song in reply.Songs)
@@ -62,7 +62,7 @@ namespace HomeSpeaker.Client.Console
 
                         WriteLine("What song id would you like to play?");
                         var songToPlay = int.Parse(ReadLine());
-                        client2.PlaySong(new Server.PlaySongRequest { SongId = songToPlay });
+                        client2.PlaySong(new Server.gRPC.PlaySongRequest { SongId = songToPlay });
                     }
                     catch (Exception ex)
                     {

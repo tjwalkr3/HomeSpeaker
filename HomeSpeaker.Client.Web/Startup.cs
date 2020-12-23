@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Runtime.InteropServices;
 using Grpc.Net.Client;
-using static HomeSpeaker.Server.HomeSpeaker;
+using static HomeSpeaker.Server.gRPC.HomeSpeaker;
 using Microsoft.Extensions.Logging;
 
 namespace HomeSpeaker.Web
