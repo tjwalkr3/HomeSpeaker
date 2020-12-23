@@ -30,7 +30,7 @@ namespace HomeSpeaker.Server
                 {
                     Album = s.Album,
                     Artist = s.Artist,
-                    Name = s.Name,
+                    Name = s.Name ?? "[ No Name ]",
                     Path = s.Path,
                     SongId = s.SongId
                 });
