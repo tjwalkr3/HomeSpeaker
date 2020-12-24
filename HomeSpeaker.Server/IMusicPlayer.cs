@@ -13,5 +13,10 @@ namespace HomeSpeaker.Server
         void EnqueueSong(string path);
         PlayerStatus Status { get; }
         IEnumerable<Song> SongQueue { get; }
+        void ClearQueue();
+        void ResumePlay();
+        void SkipToNext();
+        void Stop();
+        void SetVolume(int level0to100);
     }
 }

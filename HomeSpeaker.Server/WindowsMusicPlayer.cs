@@ -42,6 +42,28 @@ namespace HomeSpeaker.Server
             logger.LogError("Windows player does not support queuing");
         }
 
+        public void ClearQueue()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ResumePlay()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SkipToNext()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Stop()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetVolume(int level) => throw new NotImplementedException();
+
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
 
         public PlayerStatus Status => throw new NotImplementedException();

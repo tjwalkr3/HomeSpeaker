@@ -114,5 +114,30 @@ namespace HomeSpeaker.Server
                 SongId = s?.SongId ?? -1
             };
         }
+
+        public override Task<PlayerControlReply> PlayerControl(PlayerControlRequest request, ServerCallContext context)
+        {
+            if(request.ClearQueue)
+            {
+                musicPlayer.ClearQueue();
+            }
+            if(request.Play)
+            {
+                musicPlayer.ResumePlay();
+            }
+            if(request.SkipToNext)
+            {
+                musicPlayer.SkipToNext();
+            }
+            if(request.Stop)
+            {
+                musicPlayer.Stop();
+            }
+            if(request.SetVolume)
+            {
+                musicPlayer.SetVolume(request.VolumeLevel);
+            }
+            return Task.FromResult(new PlayerControlReply { });
+        }
     }
 }

@@ -35,8 +35,8 @@ namespace HomeSpeaker.Server
         {
             startedPlaying = true;
             currentSong = library.Songs.Single(s => s.Path == filePath);
-            foreach (var existingVlc in Process.GetProcessesByName("play"))
-                existingVlc.Kill();
+            stopPlaying();
+            stoppedSong = null;
 
             playerProcess = new Process();
             playerProcess.StartInfo.FileName = "play";
@@ -78,22 +78,33 @@ namespace HomeSpeaker.Server
             startedPlaying = false;
         }
 
+        private static void stopPlaying()
+        {
+            foreach (var existingVlc in Process.GetProcessesByName("play"))
+                existingVlc.Kill();
+        }
+
         private void PlayerProcess_Exited(object sender, EventArgs e)
         {
             logger.LogInformation("Finished playing a song.");
             currentSong = null;
             if (songQueue.Count > 0)
             {
-                logger.LogInformation($"There are still {songQueue.Count} songs in the queue, so I'll play the next one:");
-                if (songQueue.TryDequeue(out var nextSong))
-                {
-                    PlaySong(nextSong.Path);
-                }
+                playNextSongInQueue();
             }
             else
             {
                 logger.LogInformation("Nothing in the queue, so Status is now empty.");
                 status = new PlayerStatus();
+            }
+        }
+
+        private void playNextSongInQueue()
+        {
+            logger.LogInformation($"There are still {songQueue.Count} songs in the queue, so I'll play the next one:");
+            if (songQueue.TryDequeue(out var nextSong))
+            {
+                PlaySong(nextSong.Path);
             }
         }
 
@@ -138,6 +149,47 @@ namespace HomeSpeaker.Server
                 PlaySong(path);
             }
             logger.LogInformation(story.ToString());
+        }
+
+        public void ClearQueue()
+        {
+            songQueue.Clear();
+        }
+
+        public void ResumePlay()
+        {
+            if (StillPlaying == false && stoppedSong != null)
+            {
+                PlaySong(stoppedSong.Path);
+            }
+            else if (songQueue.Any())
+            {
+                playNextSongInQueue();
+            }
+        }
+
+        public void SkipToNext()
+        {
+            throw new NotImplementedException();
+        }
+
+        private Song stoppedSong;
+
+        public void Stop()
+        {
+            stoppedSong = currentSong;
+            stopPlaying();
+        }
+
+        public void SetVolume(int level0to100)
+        {
+            int actualMin = 40;
+            int actualMax = 100;
+            var percent = Math.Max(0, Math.Min(100, level0to100)) / 100M;
+            var newLevel = (actualMax - actualMin) * percent + actualMin;
+            logger.LogInformation("Desired volume: {level0to100}; newLevel {newLevel} = (actualMax {actualMax} - actual Min {actualMin}) * percent {percent} + actualMin {actualMin}",
+                level0to100, newLevel, actualMax, actualMin, percent, actualMin);
+            Process.Start("amixer", $"--card 0 sset Headphone,0 {newLevel}%");
         }
 
         public bool StillPlaying
