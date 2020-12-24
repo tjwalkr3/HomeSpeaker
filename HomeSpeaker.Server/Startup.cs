@@ -29,6 +29,7 @@ namespace HomeSpeaker.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGrpc();
+            services.AddGrpcReflection();
 
             services.AddSingleton<IDataStore, OnDiskDataStore>();
             services.AddSingleton<IFileSource>(services => new DefaultFileSource(Configuration["MediaFolder"]));
@@ -54,6 +55,8 @@ namespace HomeSpeaker.Server
             {
                 endpoints.MapGrpcService<GreeterService>();
                 endpoints.MapGrpcService<HomeSpeakerService>();
+
+                endpoints.MapGrpcReflectionService();
 
                 endpoints.MapGet("/", async context =>
                 {
