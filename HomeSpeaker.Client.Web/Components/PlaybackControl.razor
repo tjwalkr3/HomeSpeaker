@@ -1,0 +1,33 @@
+﻿@using Microsoft.Extensions.Logging
+@inject HomeSpeaker.Server.gRPC.HomeSpeaker.HomeSpeakerClient client
+@inject ILogger<PlayerStatusComponent> logger
+@using HomeSpeaker.Client;
+@using HomeSpeaker.Shared
+@using System.Threading
+
+<button @onclick="stop">⏹</button>
+<button @onclick="play">▶</button>
+<button @onclick="skip">⏩</button>
+<button @onclick="clearQueue">❌</button>
+
+@code {
+    void stop()
+    {
+        client.PlayerControl(new Server.gRPC.PlayerControlRequest { Stop = true });
+    }
+
+    void play()
+    {
+        client.PlayerControl(new Server.gRPC.PlayerControlRequest { Play = true });
+    }
+
+    void skip()
+    {
+        client.PlayerControl(new Server.gRPC.PlayerControlRequest { SkipToNext = true });
+    }
+
+    void clearQueue()
+    {
+        client.PlayerControl(new Server.gRPC.PlayerControlRequest { ClearQueue = true });
+    }
+}

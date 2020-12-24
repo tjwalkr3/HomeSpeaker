@@ -170,7 +170,8 @@ namespace HomeSpeaker.Server
 
         public void SkipToNext()
         {
-            throw new NotImplementedException();
+            Stop();
+            playNextSongInQueue();
         }
 
         private Song stoppedSong;
