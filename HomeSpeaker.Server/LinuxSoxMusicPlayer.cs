@@ -115,7 +115,7 @@ namespace HomeSpeaker.Server
 
         public void EnqueueSong(string path)
         {
-            var story = new StringBuilder($"Queuing up {path}");
+            var story = new StringBuilder($"Queuing up {path}\n");
 
             if (StillPlaying)
             {

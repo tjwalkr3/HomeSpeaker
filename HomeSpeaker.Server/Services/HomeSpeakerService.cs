@@ -9,11 +9,11 @@ namespace HomeSpeaker.Server
 {
     public class HomeSpeakerService : gRPC.HomeSpeaker.HomeSpeakerBase
     {
-        private readonly ILogger<GreeterService> logger;
+        private readonly ILogger<HomeSpeakerService> logger;
         private readonly Mp3Library library;
         private readonly IMusicPlayer musicPlayer;
 
-        public HomeSpeakerService(ILogger<GreeterService> logger, Mp3Library library, IMusicPlayer musicPlayer)
+        public HomeSpeakerService(ILogger<HomeSpeakerService> logger, Mp3Library library, IMusicPlayer musicPlayer)
         {
             this.logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
             this.library = library ?? throw new System.ArgumentNullException(nameof(library));
