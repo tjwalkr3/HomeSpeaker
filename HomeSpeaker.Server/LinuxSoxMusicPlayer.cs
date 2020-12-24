@@ -76,8 +76,10 @@ namespace HomeSpeaker.Server
 
         private void PlayerProcess_Exited(object sender, EventArgs e)
         {
+            logger.LogInformation("Finished playing a song.");
             if (songQueue.Count > 0)
             {
+                logger.LogInformation($"There are still {songQueue.Count} songs in the queue, so I'll play the next one:");
                 if (songQueue.TryDequeue(out var nextSong))
                 {
                     PlaySong(nextSong.Path);
@@ -85,6 +87,7 @@ namespace HomeSpeaker.Server
             }
             else
             {
+                logger.LogInformation("Nothing in the queue, so Status is now empty.");
                 Status = new PlayerStatus();
             }
         }
