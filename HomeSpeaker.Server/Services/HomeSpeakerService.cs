@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -26,15 +27,7 @@ namespace HomeSpeaker.Server
             if (library?.Songs?.Any() ?? false)
             {
                 logger.LogInformation("Found songs!  Sending to client.");
-                var songs = library.Songs.Select(s => new SongMessage
-                {
-                    Album = s.Album ?? "[ No Album ]",
-                    Artist = s.Artist ?? "[ No Artist ]",
-                    Name = s.Name ?? "[ No Name ]",
-                    Path = s.Path,
-                    SongId = s.SongId
-                });
-                reply.Songs.AddRange(songs);
+                reply.Songs.AddRange(translateSongs(library.Songs));
             }
             else
             {
@@ -95,21 +88,25 @@ namespace HomeSpeaker.Server
             if (songQueue.Any())
             {
                 logger.LogInformation("Found songs in queue!  Sending to client.");
-                var songs = songQueue.Select(s => new SongMessage
-                {
-                    Album = s.Album,
-                    Artist = s.Artist,
-                    Name = s.Name ?? "[ No Name ]",
-                    Path = s.Path,
-                    SongId = s.SongId
-                });
-                reply.Songs.AddRange(songs);
+                reply.Songs.AddRange(translateSongs(songQueue));
             }
             else
             {
                 logger.LogInformation("No songs in queue.  Sending back empty list.");
             }
             await responseStream.WriteAsync(reply);
+        }
+
+        private static IEnumerable<SongMessage> translateSongs(IEnumerable<Shared.Song> songQueue)
+        {
+            return songQueue.Select(s => new SongMessage
+            {
+                Album = s.Album ?? "[ No Album ]",
+                Artist = s.Artist ?? "[ No Artist ]",
+                Name = s.Name ?? "[ No Name ]",
+                Path = s.Path,
+                SongId = s.SongId
+            });
         }
     }
 }
