@@ -71,7 +71,7 @@ namespace HomeSpeaker.Server
 
         public override Task<GetStatusReply> GetPlayerStatus(GetStatusRequest request, ServerCallContext context)
         {
-            var status = musicPlayer.Status;
+            var status = musicPlayer?.Status ?? new Shared.PlayerStatus();
             return Task.FromResult(new GetStatusReply
             {
                 Elapsed = Duration.FromTimeSpan(status.Elapsed),
