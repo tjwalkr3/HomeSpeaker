@@ -136,8 +136,8 @@ namespace HomeSpeaker.Server
         {
             get
             {
-                logger.LogInformation($"StillPlaying: startedPlaying {startedPlaying} || (playerProcess?.HasExited {playerProcess?.HasExited} ?? true) {playerProcess?.HasExited ?? false} == false) {playerProcess?.HasExited ?? true == false}");
-                return startedPlaying || (playerProcess?.HasExited ?? true == false);
+                logger.LogInformation($"StillPlaying: startedPlaying {startedPlaying} || (playerProcess?.HasExited {playerProcess?.HasExited} ?? true) {playerProcess?.HasExited ?? false} == false) {(playerProcess?.HasExited ?? true) == false}");
+                return startedPlaying || (playerProcess?.HasExited ?? true) == false;
             }
         }
 
