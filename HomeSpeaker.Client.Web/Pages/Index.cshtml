@@ -1,5 +1,6 @@
 ﻿@page
 @model IndexModel
+@using HomeSpeaker.Client.Web.Components
 
 @{
     ViewData["Title"] = "Music Player";
@@ -19,7 +20,7 @@
 
     .songQueue { grid-area: songQueue; }
 </style>
-
+<component type="typeof(PlayerStatusComponent)" render-mode="ServerPrerendered" />
 <div class="grid-container">
     <div class="songList">
         <div id="accordion">
@@ -51,7 +52,7 @@
                                     @foreach (var song in Model.Songs.Where(s => s.Artist == artist && s.Album == album).OrderBy(s => s.Name))
                                             {
                                     <li>
-                                        <a asp-page-handler="PlaySong" asp-route-songId="@song.Id" title="@song.Path">@song.Name</a>
+                                        <a asp-page-handler="PlaySong" asp-route-songId="@song.SongId" title="@song.Path">@song.Name</a>
                                     </li>
                                     }
                                 </ul>

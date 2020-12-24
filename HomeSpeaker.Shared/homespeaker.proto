@@ -38,6 +38,7 @@ message GetStatusReply {
 	google.protobuf.Duration Remaining=2;
 	bool StilPlaying=3;
 	double PercentComplete=4;
+	SongMessage CurrentSong=5;
 }
 
 message GetSongsRequest { }

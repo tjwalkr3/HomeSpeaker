@@ -77,7 +77,8 @@ namespace HomeSpeaker.Server
                 Elapsed = Duration.FromTimeSpan(status.Elapsed),
                 PercentComplete = (double)status.PercentComplete,
                 Remaining = Duration.FromTimeSpan(status.Remaining),
-                StilPlaying = status.StillPlaying
+                StilPlaying = status.StillPlaying,
+                CurrentSong = translateSong(status.CurrentSong)
             });
         }
 
@@ -99,14 +100,19 @@ namespace HomeSpeaker.Server
 
         private static IEnumerable<SongMessage> translateSongs(IEnumerable<Shared.Song> songQueue)
         {
-            return songQueue.Select(s => new SongMessage
+            return songQueue.Select(s => translateSong(s));
+        }
+
+        private static SongMessage translateSong(Shared.Song s)
+        {
+            return new SongMessage
             {
                 Album = s.Album ?? "[ No Album ]",
                 Artist = s.Artist ?? "[ No Artist ]",
                 Name = s.Name ?? "[ No Name ]",
                 Path = s.Path,
                 SongId = s.SongId
-            });
+            };
         }
     }
 }

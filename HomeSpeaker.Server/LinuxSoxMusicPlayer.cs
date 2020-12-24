@@ -25,13 +25,16 @@ namespace HomeSpeaker.Server
             this.library = library;
         }
 
-        public PlayerStatus Status { get; private set; }
+        private PlayerStatus status;
+        private Song currentSong;
+        public PlayerStatus Status => status with { CurrentSong = currentSong };
 
         private bool startedPlaying = false;
 
         public void PlaySong(string filePath)
         {
             startedPlaying = true;
+            currentSong = library.Songs.Single(s => s.Path == filePath);
             foreach (var existingVlc in Process.GetProcessesByName("play"))
                 existingVlc.Kill();
 
@@ -46,22 +49,22 @@ namespace HomeSpeaker.Server
             {
                 if (TryParsePlayerOutput(e.Data, out var status))
                 {
-                    Status = status;
+                    this.status = status;
                 }
                 else
                 {
-                    Status = new PlayerStatus();
+                    this.status = new PlayerStatus();
                 }
             });
             playerProcess.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
             {
                 if (TryParsePlayerOutput(e.Data, out var status))
                 {
-                    Status = status;
+                    this.status = status;
                 }
                 else
                 {
-                    Status = new PlayerStatus();
+                    this.status = new PlayerStatus();
                 }
             });
 
@@ -78,6 +81,7 @@ namespace HomeSpeaker.Server
         private void PlayerProcess_Exited(object sender, EventArgs e)
         {
             logger.LogInformation("Finished playing a song.");
+            currentSong = null;
             if (songQueue.Count > 0)
             {
                 logger.LogInformation($"There are still {songQueue.Count} songs in the queue, so I'll play the next one:");
@@ -89,7 +93,7 @@ namespace HomeSpeaker.Server
             else
             {
                 logger.LogInformation("Nothing in the queue, so Status is now empty.");
-                Status = new PlayerStatus();
+                status = new PlayerStatus();
             }
         }
 
@@ -148,12 +152,5 @@ namespace HomeSpeaker.Server
         private ConcurrentQueue<Song> songQueue = new ConcurrentQueue<Song>();
 
         public IEnumerable<Song> SongQueue => songQueue.ToArray();
-    }
-    public record PlayerStatus
-    {
-        public decimal PercentComplete { get; init; }
-        public TimeSpan Elapsed { get; init; }
-        public TimeSpan Remaining { get; init; }
-        public bool StillPlaying { get; init; }
     }
 }

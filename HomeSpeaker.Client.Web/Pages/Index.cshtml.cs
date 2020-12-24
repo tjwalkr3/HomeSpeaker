@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Grpc.Core;
-using HomeSpeaker.Client;
+using HomeSpeaker.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using HomeSpeaker.Client;
 using static HomeSpeaker.Server.gRPC.HomeSpeaker;
 
 namespace HomeSpeaker.Web.Pages
@@ -25,12 +26,26 @@ namespace HomeSpeaker.Web.Pages
         private List<Song> songs = new List<Song>();
         public IEnumerable<Song> Songs => songs;
         public IEnumerable<Song> Queue { get; private set; }
+        public PlayerStatus Status { get; private set; }
 
         public async Task OnGetAsync()
         {
             _logger.LogInformation("Getting songs...");
             await getSongs();
+            await getStatus();
             _logger.LogInformation($"Found {songs.Count} songs");
+        }
+
+        private async Task getStatus()
+        {
+            var statusReply = await homeSpeakerClient.GetPlayerStatusAsync(new Server.gRPC.GetStatusRequest { });
+            Status = new PlayerStatus
+            {
+                Elapsed = statusReply.Elapsed.ToTimeSpan(),
+                PercentComplete = (decimal)statusReply.PercentComplete,
+                Remaining = statusReply.Remaining.ToTimeSpan(),
+                StillPlaying = statusReply.StilPlaying
+            };
         }
 
         private async Task getSongs()
@@ -38,17 +53,14 @@ namespace HomeSpeaker.Web.Pages
             var getSongsReply = homeSpeakerClient.GetSongs(new Server.gRPC.GetSongsRequest { });
             await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
             {
-                foreach (var song in reply.Songs)
-                {
-                    songs.Add(new Song(song.SongId, song.Name, song.Album, song.Artist, song.Path));
-                }
+                songs.AddRange(reply.Songs.Select(s => s.ToSong()));
             }
 
             var getQueueReply = homeSpeakerClient.GetPlayQueue(new Server.gRPC.GetSongsRequest { });
             await foreach(var reply in getQueueReply.ResponseStream.ReadAllAsync())
             {
-                Queue = from song in reply.Songs
-                        select new Song(song.SongId, song.Name, song.Album, song.Artist, song.Path);
+                Queue = from songMessage in reply.Songs
+                        select songMessage.ToSong();
             }
         }
 
@@ -65,7 +77,7 @@ namespace HomeSpeaker.Web.Pages
             await getSongs();
             foreach (var song in songs.Where(s => s.Artist == artist && s.Album == album))
             {
-                await homeSpeakerClient.EnqueueSongAsync(new Server.gRPC.PlaySongRequest { SongId = song.Id });
+                await homeSpeakerClient.EnqueueSongAsync(new Server.gRPC.PlaySongRequest { SongId = song.SongId });
             }
             return RedirectToPage();
         }
