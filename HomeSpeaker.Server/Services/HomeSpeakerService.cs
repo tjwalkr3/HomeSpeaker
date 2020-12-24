@@ -28,8 +28,8 @@ namespace HomeSpeaker.Server
                 logger.LogInformation("Found songs!  Sending to client.");
                 var songs = library.Songs.Select(s => new SongMessage
                 {
-                    Album = s.Album,
-                    Artist = s.Artist,
+                    Album = s.Album ?? "[ No Album ]",
+                    Artist = s.Artist ?? "[ No Artist ]",
                     Name = s.Name ?? "[ No Name ]",
                     Path = s.Path,
                     SongId = s.SongId
