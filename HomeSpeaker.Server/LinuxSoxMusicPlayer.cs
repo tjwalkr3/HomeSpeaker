@@ -27,7 +27,7 @@ namespace HomeSpeaker.Server
 
         private PlayerStatus status;
         private Song currentSong;
-        public PlayerStatus Status => status with { CurrentSong = currentSong };
+        public PlayerStatus Status => (status ?? new PlayerStatus()) with { CurrentSong = currentSong };
 
         private bool startedPlaying = false;
 
