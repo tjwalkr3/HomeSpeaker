@@ -66,6 +66,7 @@ namespace HomeSpeaker.Server
             });
 
             logger.LogInformation($"Starting to play {filePath}");
+            playerProcess.EnableRaisingEvents = true;
             playerProcess.Start();
             playerProcess.Exited += PlayerProcess_Exited;
 
