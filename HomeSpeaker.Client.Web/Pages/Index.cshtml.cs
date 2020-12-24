@@ -14,12 +14,12 @@ namespace HomeSpeaker.Web.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly ILogger<IndexModel> logger;
         private readonly HomeSpeakerClient homeSpeakerClient;
 
         public IndexModel(ILogger<IndexModel> logger, HomeSpeakerClient homeSpeakerClient)
         {
-            this._logger = logger;
+            this.logger = logger;
             this.homeSpeakerClient = homeSpeakerClient;
         }
 
@@ -30,37 +30,44 @@ namespace HomeSpeaker.Web.Pages
 
         public async Task OnGetAsync()
         {
-            _logger.LogInformation("Getting songs...");
+            logger.LogInformation("Getting songs...");
             await getSongs();
-            _logger.LogInformation($"Found {songs.Count} songs");
+            logger.LogInformation($"Found {songs.Count} songs");
         }
 
         private async Task getSongs()
         {
-            var getSongsReply = homeSpeakerClient.GetSongs(new Server.gRPC.GetSongsRequest { });
-            await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
+            try
             {
-                songs.AddRange(reply.Songs.Select(s => s.ToSong()));
-            }
+                var getSongsReply = homeSpeakerClient.GetSongs(new Server.gRPC.GetSongsRequest { });
+                await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
+                {
+                    songs.AddRange(reply.Songs.Select(s => s.ToSong()));
+                }
 
-            var getQueueReply = homeSpeakerClient.GetPlayQueue(new Server.gRPC.GetSongsRequest { });
-            await foreach(var reply in getQueueReply.ResponseStream.ReadAllAsync())
+                var getQueueReply = homeSpeakerClient.GetPlayQueue(new Server.gRPC.GetSongsRequest { });
+                await foreach (var reply in getQueueReply.ResponseStream.ReadAllAsync())
+                {
+                    Queue = from songMessage in reply.Songs
+                            select songMessage.ToSong();
+                }
+            }
+            catch(Exception ex)
             {
-                Queue = from songMessage in reply.Songs
-                        select songMessage.ToSong();
+                logger.LogError(ex, "Trouble refreshing songs / queue");
             }
         }
 
         public async Task<IActionResult> OnGetPlaySongAsync(int songId)
         {
-            _logger.LogInformation($"User requested to play song {songId}");
+            logger.LogInformation($"User requested to play song {songId}");
             await homeSpeakerClient.PlaySongAsync(new Server.gRPC.PlaySongRequest { SongId = songId });
             return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostPlayAlbumAsync(string artist, string album)
         {
-            _logger.LogInformation($"Queuing {artist} | {album}");
+            logger.LogInformation($"Queuing {artist} | {album}");
             await getSongs();
             foreach (var song in songs.Where(s => s.Artist == artist && s.Album == album))
             {
