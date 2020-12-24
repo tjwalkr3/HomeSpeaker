@@ -107,11 +107,11 @@ namespace HomeSpeaker.Server
         {
             return new SongMessage
             {
-                Album = s.Album ?? "[ No Album ]",
-                Artist = s.Artist ?? "[ No Artist ]",
-                Name = s.Name ?? "[ No Name ]",
-                Path = s.Path,
-                SongId = s.SongId
+                Album = s?.Album ?? "[ No Album ]",
+                Artist = s?.Artist ?? "[ No Artist ]",
+                Name = s?.Name ?? "[ No Name ]",
+                Path = s?.Path,
+                SongId = s?.SongId ?? -1
             };
         }
     }

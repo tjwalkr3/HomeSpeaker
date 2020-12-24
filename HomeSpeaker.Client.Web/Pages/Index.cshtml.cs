@@ -32,20 +32,7 @@ namespace HomeSpeaker.Web.Pages
         {
             _logger.LogInformation("Getting songs...");
             await getSongs();
-            await getStatus();
             _logger.LogInformation($"Found {songs.Count} songs");
-        }
-
-        private async Task getStatus()
-        {
-            var statusReply = await homeSpeakerClient.GetPlayerStatusAsync(new Server.gRPC.GetStatusRequest { });
-            Status = new PlayerStatus
-            {
-                Elapsed = statusReply.Elapsed.ToTimeSpan(),
-                PercentComplete = (decimal)statusReply.PercentComplete,
-                Remaining = statusReply.Remaining.ToTimeSpan(),
-                StillPlaying = statusReply.StilPlaying
-            };
         }
 
         private async Task getSongs()
