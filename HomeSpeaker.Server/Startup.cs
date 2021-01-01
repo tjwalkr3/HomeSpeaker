@@ -14,6 +14,11 @@ using Microsoft.Extensions.Logging;
 
 namespace HomeSpeaker.Server
 {
+    public class ConfigKeys
+    {
+        public const string MediaFolder = "MediaFolder";
+    }
+
     public class Startup
     {
 
@@ -32,18 +37,23 @@ namespace HomeSpeaker.Server
             services.AddGrpcReflection();
 
             services.AddSingleton<IDataStore, OnDiskDataStore>();
-            services.AddSingleton<IFileSource>(services => new DefaultFileSource(Configuration["MediaFolder"]));
+            services.AddSingleton<IFileSource>(services => new DefaultFileSource(Configuration[ConfigKeys.MediaFolder]));
             services.AddSingleton<ITagParser, DefaultTagParser>();
             if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 services.AddSingleton<IMusicPlayer, WindowsMusicPlayer>();
             else
                 services.AddSingleton<IMusicPlayer, LinuxSoxMusicPlayer>();
             services.AddSingleton<Mp3Library>();
+            services.AddSingleton<LifecycleEvents>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger, IHostApplicationLifetime lifetime)
         {
+            var events = app.ApplicationServices.GetService<LifecycleEvents>();
+            lifetime.ApplicationStopping.Register(events.ApplicationStopping);
+            lifetime.ApplicationStarted.Register(events.ApplicationStarted);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
