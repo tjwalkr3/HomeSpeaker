@@ -3,9 +3,6 @@ version: '3.5'
 services:
   homespeaker.client.web:
     image: ${DOCKER_REGISTRY-}snowjallen/homespeakerwebclient:${BuildID}
-#    build:
-#      context: .
-#      dockerfile: HomeSpeaker.Client.Web/Dockerfile
     ports:
      - 80:80
     networks:
@@ -19,9 +16,6 @@ services:
 
   homespeaker.server:
     image: ${DOCKER_REGISTRY-}snowjallen/homespeakerserver:${BuildID}
-#    build:
-#      context: .
-#      dockerfile: HomeSpeaker.Server/Dockerfile
     ports:
      - 8080:80
     networks:
@@ -36,26 +30,5 @@ services:
     - ASPNETCORE_ENVIRONMENT=Development
     - ALSA_CARD=Headphones
 
-  # reverseProxy:
-  #   image: linuxserver/swag:latest
-  #   environment:
-  #    - TZ=America/Denver
-  #    - URL=beta.sanpetepantry.org
-  #    #- SUBDOMAINS=beta
-  #    - VALIDATION=http
-  #    #- STAGING=true
-  #   volumes:
-  #    - ./default.conf:/config/nginx/site-confs/default
-  #    - cachedcerts:/config
-  #   ports:
-  #    - 443:443
-  #    - 80:80
-  #   restart: unless-stopped
-  #   networks:
-  #    homenet:
-
 networks:
   homenet:
-
-volumes:
-  cachedcerts:
