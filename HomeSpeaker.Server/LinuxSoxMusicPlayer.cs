@@ -80,7 +80,8 @@ namespace HomeSpeaker.Server
 
         private void stopPlaying()
         {
-            playerProcess.Exited -= PlayerProcess_Exited;//stop listening to when the process ends.
+            if(playerProcess != null && playerProcess.HasExited is false)
+                playerProcess.Exited -= PlayerProcess_Exited;//stop listening to when the process ends.
 
             foreach (var existingVlc in Process.GetProcessesByName("play"))
                 existingVlc.Kill();
