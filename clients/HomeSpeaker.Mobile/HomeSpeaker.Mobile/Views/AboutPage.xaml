@@ -4,49 +4,48 @@
              x:Class="HomeSpeaker.Mobile.Views.AboutPage"
              xmlns:vm="clr-namespace:HomeSpeaker.Mobile.ViewModels"
              Title="{Binding Title}">
-    
+
     <ContentPage.BindingContext>
         <vm:AboutViewModel />
     </ContentPage.BindingContext>
-    
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="Accent">#96d1ff</Color>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <StackLayout BackgroundColor="{StaticResource Accent}" VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
-            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
-                <ContentView Padding="0,40,0,40" VerticalOptions="FillAndExpand">
-                    <Image Source="xamarin_logo.png" VerticalOptions="Center" HeightRequest="64" />
-                </ContentView>
-            </StackLayout>
-        </StackLayout>
-        <ScrollView Grid.Row="1">
-            <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
-                <Label Text="Start developing now" FontSize="Title"/>
-                <Label Text="Make changes to your XAML file and save to see your UI update in the running app with XAML Hot Reload. Give it a try!" FontSize="16" Padding="0,0,0,0"/>
-                <Label FontSize="16" Padding="0,24,0,0">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <FormattedString.Spans>
-                                <Span Text="Learn more at "/>
-                                <Span Text="https://aka.ms/xamarin-quickstart" FontAttributes="Bold"/>
-                            </FormattedString.Spans>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-                <Button Margin="0,10,0,0" Text="Learn more"
-                        Command="{Binding OpenWebCommand}"
-                        BackgroundColor="{StaticResource Primary}"
-                        TextColor="White" />
-            </StackLayout>
-        </ScrollView>
-    </Grid>
+    <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
+        <Label Text="{Binding Songs.Count, StringFormat='Found {0:n0} folders'}" HorizontalTextAlignment="End" />
+        <Label Text="{Binding Status}" IsVisible="{Binding StatusIsVisible}" />
+
+        <CollectionView ItemsSource="{Binding Songs}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Expander IsExpanded="{Binding IsExpanded}">
+                        <Expander.Header>
+                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" BackgroundColor="Beige" Margin="0,5">
+                                <Label Text="{Binding FolderName}" FontSize="Medium" Grid.ColumnSpan="2" TextColor="Black" />
+                                <Label Text="{Binding FolderPath}" FontSize="Small" Grid.Row="1" Grid.ColumnSpan="2" TextColor="DarkGray" />
+                                <Button Text="Play Folder" Grid.Row="2" HeightRequest="40" Command="{Binding PlayFolder}" />
+                                <Button Text="Enqueue Folder" Grid.Row="2" Grid.Column="1" HeightRequest="40" Command="{Binding EnqueueFolder}" />
+                            </Grid>
+                        </Expander.Header>
+                        <CollectionView ItemsSource="{Binding}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="*,Auto,Auto">
+                                        <Label Text="{Binding Name}" VerticalOptions="CenterAndExpand" TextColor="Black" />
+                                        <Button Grid.Column="1" Text="▶" Command="{Binding PlaySong}" Margin="3" HeightRequest="40" WidthRequest="40" />
+                                        <Button Grid.Column="2" Text="➕" Command="{Binding EnqueueSong}" Margin="3" HeightRequest="40" WidthRequest="40" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Expander>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
 
 </ContentPage>
