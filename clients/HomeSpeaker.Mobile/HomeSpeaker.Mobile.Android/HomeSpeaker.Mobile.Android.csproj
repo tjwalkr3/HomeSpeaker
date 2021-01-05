@@ -53,7 +53,7 @@
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <BundleAssemblies>false</BundleAssemblies>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
-    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidKeyStore>false</AndroidKeyStore>
     <AndroidSigningKeyStore>C:\Users\jonat\AppData\Local\Xamarin\Mono for Android\Keystore\My Keystore\My Keystore.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>jonathan</AndroidSigningStorePass>
   </PropertyGroup>

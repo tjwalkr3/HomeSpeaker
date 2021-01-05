@@ -29,16 +29,16 @@
                 <Button Text="❌" Command="{Binding Clear}" Grid.Column="3" />
             </Grid>
             <Label Text="Queue" TextColor="Black" />
-            <CollectionView ItemsSource="{Binding Queue}">
-                <CollectionView.ItemTemplate>
+            <ListView ItemsSource="{Binding Queue}">
+                <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid RowDefinitions="Auto,Auto">
-                            <Label Text="{Binding Name}" />
+                            <Label Text="{Binding Name}" Grid.Row="0"  />
                             <Label Text="{Binding Folder}" Grid.Row="1" FontSize="Micro" Margin="5,-10,0,0" />
                         </Grid>
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
         </ScrollView>
     </RefreshView>

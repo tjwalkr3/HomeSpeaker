@@ -20,6 +20,9 @@ namespace HomeSpeaker.Mobile.ViewModels
             client = DependencyService.Get<HomeSpeakerClient>();
         }
 
+        public string Name { get; set; }
+        public string Folder { get; set; }
+
         private string nowPlayingTitle;
         public string NowPlayingTitle
         {
