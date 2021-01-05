@@ -16,7 +16,7 @@ namespace HomeSpeaker.Mobile.ViewModels
         public StatusViewModel()
         {
             Title = "Status";
-
+            NowPlayingQueue = new ObservableCollection<SongViewModel>();
             client = DependencyService.Get<HomeSpeakerClient>();
             RefreshStatusCommand.Execute(this);
         }
@@ -51,8 +51,8 @@ namespace HomeSpeaker.Mobile.ViewModels
             get => percentComplete;
             set { SetProperty(ref percentComplete, value); }
         }
-        private IEnumerable<SongViewModel> queue;
-        public IEnumerable<SongViewModel> Queue
+        private ObservableCollection<SongViewModel> queue;
+        public ObservableCollection<SongViewModel> NowPlayingQueue
         {
             get => queue;
             set => SetProperty(ref queue, value);
@@ -90,12 +90,15 @@ namespace HomeSpeaker.Mobile.ViewModels
             IsBusy = true;
             try
             {
-
+                NowPlayingQueue.Clear();
                 var getQueueReply = client.GetPlayQueue(new Server.gRPC.GetSongsRequest { });
                 await foreach (var reply in getQueueReply.ResponseStream.ReadAllAsync())
                 {
-                    Queue = from songMessage in reply.Songs
-                            select songMessage.ToSongViewModel();
+                    foreach(var s in from songMessage in reply.Songs
+                            select songMessage.ToSongViewModel())
+                    {
+                        NowPlayingQueue.Add(s);
+                    }
                 }
 
                 var statusReply = client.GetPlayerStatus(new Server.gRPC.GetStatusRequest { });
