@@ -34,6 +34,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.github\workflows\main.yml = .github\workflows\main.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeSpeaker.Mobile.Android", "clients\HomeSpeaker.Mobile\HomeSpeaker.Mobile.Android\HomeSpeaker.Mobile.Android.csproj", "{5421DF79-C148-4382-825A-0D1FC7BAFBB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeSpeaker.Mobile", "clients\HomeSpeaker.Mobile\HomeSpeaker.Mobile\HomeSpeaker.Mobile.csproj", "{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,6 +132,36 @@ Global
 		{60D31E4C-8003-41C7-A4D9-E47A8191DEDC}.Release|x64.Build.0 = Release|Any CPU
 		{60D31E4C-8003-41C7-A4D9-E47A8191DEDC}.Release|x86.ActiveCfg = Release|Any CPU
 		{60D31E4C-8003-41C7-A4D9-E47A8191DEDC}.Release|x86.Build.0 = Release|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Debug|x64.Build.0 = Debug|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Debug|x86.Build.0 = Debug|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Release|x64.ActiveCfg = Release|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Release|x64.Build.0 = Release|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Release|x64.Deploy.0 = Release|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Release|x86.ActiveCfg = Release|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Release|x86.Build.0 = Release|Any CPU
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0}.Release|x86.Deploy.0 = Release|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Debug|x64.Build.0 = Debug|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Debug|x86.Build.0 = Debug|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Release|x64.ActiveCfg = Release|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Release|x64.Build.0 = Release|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Release|x86.ActiveCfg = Release|Any CPU
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +171,8 @@ Global
 		{C925198D-C684-496F-B686-43CDFCAA0295} = {D200B642-04C5-46AD-8608-3A678A95B30B}
 		{B62A90EE-642F-4133-A999-50E687CAFD24} = {D200B642-04C5-46AD-8608-3A678A95B30B}
 		{60D31E4C-8003-41C7-A4D9-E47A8191DEDC} = {51CCC28C-E641-4B49-8739-D0463F566A0D}
+		{5421DF79-C148-4382-825A-0D1FC7BAFBB0} = {D200B642-04C5-46AD-8608-3A678A95B30B}
+		{6C138AA2-F0CA-4BA8-B876-98E54D733A4D} = {D200B642-04C5-46AD-8608-3A678A95B30B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A6728AD7-708C-452D-872B-F927E6B9BDCF}
