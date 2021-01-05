@@ -15,6 +15,7 @@
       https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
     -->
     <RefreshView x:DataType="local:StatusViewModel" Command="{Binding RefreshStatusCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <ScrollView>
         <StackLayout Margin="25">
             <Label Text="Now Playing:" />
             <Label Text="{Binding NowPlayingTitle}" FontSize="Medium" TextColor="Black" />
@@ -39,5 +40,6 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </StackLayout>
+        </ScrollView>
     </RefreshView>
 </ContentPage>

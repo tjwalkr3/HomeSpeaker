@@ -15,8 +15,9 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
+    <ScrollView>
     <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
-        <Label Text="{Binding Songs.Count, StringFormat='Found {0:n0} folders'}" HorizontalTextAlignment="End" />
+        <Label Text="{Binding Songs.Count, StringFormat='Found {0:n0} folders'}" HorizontalTextAlignment="End" TextColor="DarkGray" />
         <Label Text="{Binding Status}" IsVisible="{Binding StatusIsVisible}" />
 
         <CollectionView ItemsSource="{Binding Songs}">
@@ -47,5 +48,5 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
     </StackLayout>
-
+    </ScrollView>
 </ContentPage>
