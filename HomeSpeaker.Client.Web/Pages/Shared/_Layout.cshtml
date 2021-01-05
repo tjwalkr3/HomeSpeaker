@@ -1,4 +1,5 @@
 ﻿@using HomeSpeaker.Client.Web.Components
+@inject Microsoft.Extensions.Configuration.IConfiguration config
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,6 +23,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
+                    </ul>
+                    <ul class="navbar-nav flex-grow-1">
+                        @foreach(var file in System.IO.Directory.GetFiles(config["ApkFolder"]))
+                        {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="@file">APK</a>
+                        </li>
+                        }
                     </ul>
                 </div>
             </div>

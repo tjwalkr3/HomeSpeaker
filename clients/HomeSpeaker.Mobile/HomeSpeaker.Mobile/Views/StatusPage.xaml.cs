@@ -12,15 +12,15 @@ using Xamarin.Forms.Xaml;
 
 namespace HomeSpeaker.Mobile.Views
 {
-    public partial class ItemsPage : ContentPage
+    public partial class StatusPage : ContentPage
     {
-        ItemsViewModel _viewModel;
+        StatusViewModel _viewModel;
 
-        public ItemsPage()
+        public StatusPage()
         {
             InitializeComponent();
 
-            BindingContext = _viewModel = new ItemsViewModel();
+            BindingContext = _viewModel = new StatusViewModel();
         }
 
         protected override void OnAppearing()

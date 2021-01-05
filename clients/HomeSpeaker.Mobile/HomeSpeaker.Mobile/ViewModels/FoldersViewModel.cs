@@ -9,9 +9,9 @@ using static HomeSpeaker.Server.gRPC.HomeSpeaker;
 
 namespace HomeSpeaker.Mobile.ViewModels
 {
-    public class AboutViewModel : BaseViewModel
+    public class FoldersViewModel : BaseViewModel
     {
-        public AboutViewModel()
+        public FoldersViewModel()
         {
             Songs = new ObservableCollection<SongGroup>();
             this.client = DependencyService.Get<HomeSpeakerClient>();

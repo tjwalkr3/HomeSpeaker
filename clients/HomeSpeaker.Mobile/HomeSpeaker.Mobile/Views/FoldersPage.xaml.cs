@@ -5,9 +5,9 @@ using Xamarin.Forms.Xaml;
 
 namespace HomeSpeaker.Mobile.Views
 {
-    public partial class AboutPage : ContentPage
+    public partial class FoldersPage : ContentPage
     {
-        public AboutPage()
+        public FoldersPage()
         {
             InitializeComponent();
         }

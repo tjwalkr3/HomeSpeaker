@@ -26,4 +26,13 @@
       <Link>Services\homespeaker.proto</Link>
     </Protobuf>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\FoldersPage.xaml.cs">
+      <DependentUpon>FoldersPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\StatusPage.xaml.cs">
+      <DependentUpon>StatusPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

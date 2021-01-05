@@ -25,10 +25,13 @@ services:
     - /dev/snd:/dev/snd
     volumes:
     - "/home/pi/Music:/music"
+    - "/home/pi/apk:/apk"
     environment:
     - MediaFolder=/music
+    - ApkFolder=/apk
     - ASPNETCORE_ENVIRONMENT=Development
     - ALSA_CARD=Headphones
+
 
 networks:
   homenet:
