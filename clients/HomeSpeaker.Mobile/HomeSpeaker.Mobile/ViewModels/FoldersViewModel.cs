@@ -21,12 +21,7 @@ namespace HomeSpeaker.Mobile.ViewModels
         private readonly HomeSpeakerClient client;
         public Command LoginCommand { get; }
         public ObservableCollection<SongGroup> Songs { get; private set; }
-        private IEnumerable<SongViewModel> queue;
-        public IEnumerable<SongViewModel> Queue
-        {
-            get => queue;
-            set => SetProperty(ref queue, value);
-        }
+
         private string status;
         public string Status
         {
@@ -58,13 +53,6 @@ namespace HomeSpeaker.Mobile.ViewModels
             foreach (var group in groups.OrderBy(g => g.Key))
             {
                 Songs.Add(new SongGroup(group.Key, group.Value.OrderBy(s=>s.Path).ToList()));
-            }
-
-            var getQueueReply = client.GetPlayQueue(new Server.gRPC.GetSongsRequest { });
-            await foreach (var reply in getQueueReply.ResponseStream.ReadAllAsync())
-            {
-                Queue = from songMessage in reply.Songs
-                        select songMessage.ToSongViewModel();
             }
 
             Status = null;
