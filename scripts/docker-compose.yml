@@ -10,8 +10,11 @@ services:
     restart: unless-stopped
     depends_on:
     - homespeaker.server
+    volumes:
+    - "/home/pi/apk:/apk"
     environment:
     - ASPNETCORE_ENVIRONMENT=Development
+    - ApkFolder=/apk
     - HomeSpeaker.Server=http://homespeaker.server
 
   homespeaker.server:
@@ -25,10 +28,8 @@ services:
     - /dev/snd:/dev/snd
     volumes:
     - "/home/pi/Music:/music"
-    - "/home/pi/apk:/apk"
     environment:
     - MediaFolder=/music
-    - ApkFolder=/apk
     - ASPNETCORE_ENVIRONMENT=Development
     - ALSA_CARD=Headphones
 

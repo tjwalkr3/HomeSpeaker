@@ -18,6 +18,7 @@ namespace HomeSpeaker.Mobile.ViewModels
             Title = "Status";
 
             client = DependencyService.Get<HomeSpeakerClient>();
+            RefreshStatusCommand.Execute(this);
         }
 
         public string Name { get; set; }
