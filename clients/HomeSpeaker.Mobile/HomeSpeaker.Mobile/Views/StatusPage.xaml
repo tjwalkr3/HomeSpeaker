@@ -16,30 +16,30 @@
     -->
     <RefreshView x:DataType="local:StatusViewModel" Command="{Binding RefreshStatusCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
         <ScrollView>
-        <StackLayout Margin="25">
-            <Label Text="Now Playing:" />
-            <Label Text="{Binding NowPlayingTitle}" FontSize="Medium" TextColor="Black" />
-            <Label Text="{Binding Elapsed, StringFormat='Elapsed: {0}'}" />
-            <Label Text="{Binding Remaining, StringFormat='Remaining: {0}'}" />
-            <ProgressBar Progress="{Binding PercentComplete}" />
-            <Grid ColumnDefinitions="*,*,*,*">
-                <Button Text="⏹" Command="{Binding Stop}" HeightRequest="80" />
-                <Button Text="▶" Command="{Binding Play}" Grid.Column="1"/>
-                <Button Text="⏩" Command="{Binding Forward}" Grid.Column="2" />
-                <Button Text="❌" Command="{Binding Clear}" Grid.Column="3" />
-            </Grid>
-            <Label Text="Queue" TextColor="Black" />
-            <CollectionView ItemsSource="{Binding NowPlayingQueue}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid RowDefinitions="Auto,Auto">
-                            <Label Text="{Binding Name}" Grid.Row="0"  />
-                            <Label Text="{Binding Folder}" Grid.Row="1" FontSize="Micro" Margin="5,-10,0,0" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </StackLayout>
+            <StackLayout Margin="25">
+                <Label Text="Now Playing:" TextColor="DarkGray" />
+                <Label Text="{Binding NowPlayingTitle}" FontSize="Medium" TextColor="Black" />
+                <Label Text="{Binding Elapsed, StringFormat='Elapsed: {0}'}" TextColor="DarkGray" />
+                <Label Text="{Binding Remaining, StringFormat='Remaining: {0}'}" TextColor="DarkGray" />
+                <ProgressBar Progress="{Binding PercentComplete}" />
+                <Grid ColumnDefinitions="*,*,*,*">
+                    <Button Text="⏹" Command="{Binding Stop}" HeightRequest="80" />
+                    <Button Text="▶" Command="{Binding Play}" Grid.Column="1"/>
+                    <Button Text="⏩" Command="{Binding Forward}" Grid.Column="2" />
+                    <Button Text="❌" Command="{Binding Clear}" Grid.Column="3" />
+                </Grid>
+                <Label Text="Queue" TextColor="Black" />
+                <CollectionView ItemsSource="{Binding NowPlayingQueue}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid RowDefinitions="Auto,Auto">
+                                <Label Text="{Binding Name}" Grid.Row="0" TextColor="Black" />
+                                <Label Text="{Binding Folder}" Grid.Row="1" FontSize="Micro" TextColor="DarkGray" Margin="5,-10,0,0" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
         </ScrollView>
     </RefreshView>
 </ContentPage>
