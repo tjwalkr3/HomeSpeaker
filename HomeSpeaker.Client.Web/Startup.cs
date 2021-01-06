@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using Grpc.Net.Client;
 using static HomeSpeaker.Server.gRPC.HomeSpeaker;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.FileProviders;
 
 namespace HomeSpeaker.Web
 {
@@ -55,6 +56,11 @@ namespace HomeSpeaker.Web
             }
 
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider("/apk"),
+                RequestPath="/apk"
+            });
 
             app.UseRouting();
 
