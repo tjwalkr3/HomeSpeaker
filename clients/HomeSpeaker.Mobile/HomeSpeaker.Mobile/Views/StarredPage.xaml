@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="HomeSpeaker.Mobile.Views.FoldersPage"
              xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             x:Class="HomeSpeaker.Mobile.Views.StarredPage"
              xmlns:vm="clr-namespace:HomeSpeaker.Mobile.ViewModels"
              Title="{Binding Title}">
 
     <ContentPage.BindingContext>
-        <vm:FoldersViewModel />
+        <vm:StarredViewModel />
     </ContentPage.BindingContext>
 
     <ContentPage.Resources>
@@ -30,7 +30,7 @@
                                     <Label Text="{Binding FolderName}" FontSize="Medium" Grid.ColumnSpan="2" TextColor="Black" />
                                     <Label Text="{Binding FolderPath}" FontSize="Small" Grid.Row="1" Grid.ColumnSpan="2" TextColor="DarkGray" />
                                     <Button Text="▶ Folder" Grid.Row="2" HeightRequest="40" Command="{Binding PlayFolder}" />
-                                    <Button Text="⭐ Folder" Grid.Row="2" Grid.Column="1" HeightRequest="40" Command="{Binding StarFolder}" />
+                                    <Button Text="Un-⭐ Folder" Grid.Row="2" Grid.Column="1" HeightRequest="40" Command="{Binding UnStarFolder}" />
                                     <Button Text="➕ Folder" Grid.Row="2" Grid.Column="2" HeightRequest="40" Command="{Binding EnqueueFolder}" />
                                 </Grid>
                             </xct:Expander.Header>
@@ -40,7 +40,7 @@
                                         <Grid ColumnDefinitions="*,Auto,Auto,Auto">
                                             <Label Text="{Binding Name}" VerticalOptions="CenterAndExpand" TextColor="Black" />
                                             <Button Grid.Column="1" Text="▶" Command="{Binding PlaySong}" Margin="3" HeightRequest="40" WidthRequest="40" />
-                                            <Button Grid.Column="2" Text="⭐" Command="{Binding StarSong}" Margin="3" HeightRequest="40" WidthRequest="40" />
+                                            <Button Grid.Column="2" Text="Un-⭐" Command="{Binding UnStarSong}" Margin="3" HeightRequest="40" WidthRequest="40" />
                                             <Button Grid.Column="3" Text="➕" Command="{Binding EnqueueSong}" Margin="3" HeightRequest="40" WidthRequest="40" />
                                         </Grid>
                                     </DataTemplate>

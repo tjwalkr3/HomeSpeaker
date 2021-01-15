@@ -42,6 +42,18 @@ namespace HomeSpeaker.Mobile.ViewModels
             var client = DependencyService.Get<HomeSpeakerClient>();
             client.EnqueueSong(new Server.gRPC.PlaySongRequest { SongId = SongId });
         });
+
+        private Command starSong;
+        public Command StarSong => starSong ??= new Command(async () =>
+        {
+            await App.Database.SaveStarredSongAsync(new Models.StarredSong { Path = Path });
+        });
+
+        private Command unStarSong;
+        public Command UnStarSong => unStarSong ??= new Command(async () =>
+        {
+            await App.Database.DeleteStarredSong(new Models.StarredSong { Path = Path });
+        });
     }
 
     public class SongGroup : List<SongViewModel>, INotifyPropertyChanged
@@ -82,6 +94,26 @@ namespace HomeSpeaker.Mobile.ViewModels
             {
                 client.EnqueueSong(new Server.gRPC.PlaySongRequest { SongId = s.SongId });
             }
+        });
+
+        private Command starFolder;
+        public Command StarFolder => starFolder ??= new Command(async () =>
+        {
+            foreach(var s in this)
+            {
+                await App.Database.SaveStarredSongAsync(new Models.StarredSong { Path = s.Path });
+            }
+            this.Clear();
+        });
+
+        private Command unStarFolder;
+        public Command UnStarFolder => unStarFolder ??= new Command(async () =>
+        {
+            foreach (var s in this)
+            {
+                await App.Database.DeleteStarredSong(s.Path);
+            }
+            this.Clear();
         });
 
         #region INotifyPropertyChanged Implementation

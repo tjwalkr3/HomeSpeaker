@@ -9,9 +9,9 @@ using static HomeSpeaker.Server.gRPC.HomeSpeaker;
 
 namespace HomeSpeaker.Mobile.ViewModels
 {
-    public class FoldersViewModel : BaseViewModel
+    public class StarredViewModel : BaseViewModel
     {
-        public FoldersViewModel()
+        public StarredViewModel()
         {
             Songs = new ObservableCollection<SongGroup>();
             this.client = DependencyService.Get<HomeSpeakerClient>();
@@ -42,7 +42,7 @@ namespace HomeSpeaker.Mobile.ViewModels
             var starredSongs = (await App.Database.GetStarredSongsAsync()).Select(s => s.Path).ToList();
             await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
             {
-                foreach (var s in reply.Songs.Where(s => starredSongs.Contains(s.Path) == false))
+                foreach (var s in reply.Songs.Where(s => starredSongs.Contains(s.Path)))
                 {
                     var song = s.ToSongViewModel();
                     if (groups.ContainsKey(song.Folder) is false)

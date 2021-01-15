@@ -8,16 +8,18 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.14.0" />
-    <PackageReference Include="Grpc" Version="2.34.0" />
-    <PackageReference Include="Grpc.Core" Version="2.34.0" />
-    <PackageReference Include="Grpc.Core.Xamarin" Version="2.34.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.34.0">
+    <PackageReference Include="Grpc" Version="2.34.1" />
+    <PackageReference Include="Grpc.Core" Version="2.34.1" />
+    <PackageReference Include="Grpc.Core.Xamarin" Version="2.34.1" />
+    <PackageReference Include="Grpc.Tools" Version="2.34.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
-    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1821" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
+    <PackageReference Include="Xamarin.CommunityToolkit" Version="1.0.1" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.1874" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.0" />
   </ItemGroup>
 
@@ -28,6 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\StarredPage.xaml.cs">
+      <DependentUpon>StarredPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\FoldersPage.xaml.cs">
       <DependentUpon>FoldersPage.xaml</DependentUpon>
     </Compile>

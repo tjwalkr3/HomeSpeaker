@@ -82,6 +82,9 @@
     <FlyoutItem Title="Folders" Icon="icon_about.png">
         <ShellContent Route="FoldersPage" ContentTemplate="{DataTemplate local:FoldersPage}" />
     </FlyoutItem>
+    <FlyoutItem Title="Starred" Icon="icon_about.png">
+        <ShellContent Route="StarredPage" ContentTemplate="{DataTemplate local:StarredPage}" />
+    </FlyoutItem>
     <FlyoutItem Title="Status" Icon="icon_feed.png">
         <ShellContent Route="StatusPage" ContentTemplate="{DataTemplate local:StatusPage}" />
     </FlyoutItem>
