@@ -82,7 +82,7 @@ namespace HomeSpeaker.Mobile.ViewModels
             RefreshStatusCommand.Execute(this);
         });
 
-        private HomeSpeakerClient client;
+        private readonly HomeSpeakerClient client;
 
         private Command refreshStatusCommand;
         public Command RefreshStatusCommand => refreshStatusCommand ??= new Command(async () =>
@@ -91,7 +91,7 @@ namespace HomeSpeaker.Mobile.ViewModels
             try
             {
                 NowPlayingQueue.Clear();
-                var getQueueReply = client.GetPlayQueue(new Server.gRPC.GetSongsRequest { });
+                var getQueueReply = client.GetPlayQueue(new Server.gRPC.GetSongsRequest());
                 await foreach (var reply in getQueueReply.ResponseStream.ReadAllAsync())
                 {
                     foreach(var s in from songMessage in reply.Songs
@@ -101,7 +101,7 @@ namespace HomeSpeaker.Mobile.ViewModels
                     }
                 }
 
-                var statusReply = client.GetPlayerStatus(new Server.gRPC.GetStatusRequest { });
+                var statusReply = client.GetPlayerStatus(new Server.gRPC.GetStatusRequest());
                 NowPlayingTitle = statusReply.CurrentSong.Name;
                 Elapsed = statusReply.Elapsed.ToTimeSpan();
                 Remaining = statusReply.Remaining.ToTimeSpan();
@@ -109,7 +109,7 @@ namespace HomeSpeaker.Mobile.ViewModels
             }
             catch(Exception ex)
             {
-
+                Debug.WriteLine(ex);
             }
             finally
             {

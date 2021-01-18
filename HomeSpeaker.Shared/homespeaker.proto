@@ -7,22 +7,6 @@ option csharp_namespace = "HomeSpeaker.Server.gRPC";
 
 package homespeaker;
 
-// The greeting service definition.
-service Greeter2 {
-  // Sends a greeting
-  rpc SayHello (HelloRequest2) returns (HelloReply2);
-}
-
-// The request message containing the user's name.
-message HelloRequest2 {
-  string name = 1;
-}
-
-// The response message containing the greetings.
-message HelloReply2 {
-  string message = 1;
-}
-
 service HomeSpeaker {
 	rpc GetSongs(GetSongsRequest) returns (stream GetSongsReply);
 	rpc PlaySong(PlaySongRequest) returns (PlaySongReply);
@@ -31,7 +15,11 @@ service HomeSpeaker {
 	rpc GetPlayerStatus(GetStatusRequest) returns (GetStatusReply);
 	rpc GetPlayQueue(GetSongsRequest) returns (stream GetSongsReply);
 	rpc PlayerControl(PlayerControlRequest) returns (PlayerControlReply);
+	rpc ShuffleQueue(ShuffleQueueRequest) returns (ShuffleQueueReply);
 }
+
+message ShuffleQueueRequest{}
+message ShuffleQueueReply{}
 
 message PlayerControlRequest {
 	bool Stop=1;

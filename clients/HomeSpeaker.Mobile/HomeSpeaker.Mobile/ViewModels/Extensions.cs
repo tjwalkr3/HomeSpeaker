@@ -6,7 +6,6 @@ namespace HomeSpeaker.Mobile.ViewModels
 {
     public static class Extensions
     {
-
         public static SongViewModel ToSongViewModel(this Server.gRPC.SongMessage song)
         {
             return new SongViewModel

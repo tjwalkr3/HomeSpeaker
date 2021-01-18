@@ -64,6 +64,11 @@ namespace HomeSpeaker.Server
 
         public void SetVolume(int level) => throw new NotImplementedException();
 
+        public void ShuffleQueue()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
 
         public PlayerStatus Status => throw new NotImplementedException();

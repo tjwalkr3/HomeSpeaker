@@ -18,5 +18,6 @@ namespace HomeSpeaker.Server
         void SkipToNext();
         void Stop();
         void SetVolume(int level0to100);
+        void ShuffleQueue();
     }
 }

@@ -196,6 +196,16 @@ namespace HomeSpeaker.Server
             Process.Start("amixer", $"--card 0 sset Headphone,0 {newLevel}%");
         }
 
+        public void ShuffleQueue()
+        {
+            var oldQueue = songQueue.ToList();
+            songQueue.Clear();
+            foreach(var s in oldQueue.OrderBy(i => Guid.NewGuid()))
+            {
+                songQueue.Enqueue(s);
+            }
+        }
+
         public bool StillPlaying
         {
             get

@@ -137,7 +137,13 @@ namespace HomeSpeaker.Server
             {
                 musicPlayer.SetVolume(request.VolumeLevel);
             }
-            return Task.FromResult(new PlayerControlReply { });
+            return Task.FromResult(new PlayerControlReply());
+        }
+
+        public override Task<ShuffleQueueReply> ShuffleQueue(ShuffleQueueRequest request, ServerCallContext context)
+        {
+            musicPlayer.ShuffleQueue();
+            return Task.FromResult(new ShuffleQueueReply());
         }
     }
 }
