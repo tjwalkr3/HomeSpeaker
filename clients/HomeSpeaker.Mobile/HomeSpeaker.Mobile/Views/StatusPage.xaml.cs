@@ -19,14 +19,6 @@ namespace HomeSpeaker.Mobile.Views
         public StatusPage()
         {
             InitializeComponent();
-
-            BindingContext = _viewModel = new StatusViewModel();
-        }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            _viewModel.OnAppearing();
         }
     }
 }

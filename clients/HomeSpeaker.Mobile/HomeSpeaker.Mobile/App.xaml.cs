@@ -19,7 +19,7 @@ namespace HomeSpeaker.Mobile
             {
                 if (database == null)
                 {
-                    database = new Database(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "starredsongs.db3"));
+                    database = new Database(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "homespeaker_starredsongs.db3"));
                 }
                 return database;
             }

@@ -1,5 +1,6 @@
 ﻿using HomeSpeaker.Mobile.Models;
 using HomeSpeaker.Mobile.Views;
+using HomeSpeaker.Server.gRPC;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -60,25 +61,43 @@ namespace HomeSpeaker.Mobile.ViewModels
         private Command stop;
         public Command Stop => stop ??= new Command(() =>
         {
-            client.PlayerControl(new Server.gRPC.PlayerControlRequest { Stop = true });
+            client.PlayerControl(new PlayerControlRequest { Stop = true });
             RefreshStatusCommand.Execute(this);
         });
         private Command play;
         public Command Play => play ??= new Command(() =>
         {
-            client.PlayerControl(new Server.gRPC.PlayerControlRequest { Play = true });
+            client.PlayerControl(new PlayerControlRequest { Play = true });
             RefreshStatusCommand.Execute(this);
         });
         private Command forward;
         public Command Forward => forward ??= new Command(() =>
         {
-            client.PlayerControl(new Server.gRPC.PlayerControlRequest { SkipToNext = true });
+            client.PlayerControl(new PlayerControlRequest { SkipToNext = true });
             RefreshStatusCommand.Execute(this);
         });
         private Command clear;
         public Command Clear => clear ??= new Command(() =>
         {
-            client.PlayerControl(new Server.gRPC.PlayerControlRequest { ClearQueue = true });
+            client.PlayerControl(new PlayerControlRequest { ClearQueue = true });
+            RefreshStatusCommand.Execute(this);
+        });
+        private string exception;
+        public string Exception
+        {
+            get => exception;
+            set { SetProperty(ref exception, value); }
+        }
+        private int queueLength;
+        public int QueueLength
+        {
+            get => queueLength;
+            set { SetProperty(ref queueLength, value); }
+        }
+        private Command shuffle;
+        public Command Shuffle => shuffle ??= new Command(() =>
+        {
+            client.ShuffleQueue(new ShuffleQueueRequest());
             RefreshStatusCommand.Execute(this);
         });
 
@@ -100,16 +119,19 @@ namespace HomeSpeaker.Mobile.ViewModels
                         NowPlayingQueue.Add(s);
                     }
                 }
+                QueueLength = NowPlayingQueue.Count;
+                OnPropertyChanged(nameof(NowPlayingQueue));
 
                 var statusReply = client.GetPlayerStatus(new Server.gRPC.GetStatusRequest());
                 NowPlayingTitle = statusReply.CurrentSong.Name;
                 Elapsed = statusReply.Elapsed.ToTimeSpan();
                 Remaining = statusReply.Remaining.ToTimeSpan();
                 PercentComplete = statusReply.PercentComplete;
+                Exception = null;
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex);
+                Exception = ex.ToString();
             }
             finally
             {
