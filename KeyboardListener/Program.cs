@@ -11,6 +11,10 @@ namespace KeyboardListener
 
             while (true)
             {
+                var k = Console.Read();
+                log($"Pressed: {k}");
+                continue;
+
                 var key = Console.ReadKey();
                 if (key.Modifiers == ConsoleModifiers.Control && key.Key == ConsoleKey.C)
                 {
@@ -33,7 +37,7 @@ namespace KeyboardListener
         {
             var logMessage = $"{DateTime.Now:yyyy-MM-dd at hh:mm:ss} | {message}";
             Console.WriteLine(logMessage);
-            File.AppendAllText("keylog.txt", logMessage);
+            File.AppendAllText("keylog.txt", logMessage+"\n");
         }
     }
 }
