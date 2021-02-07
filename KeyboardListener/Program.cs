@@ -14,17 +14,17 @@ namespace KeyboardListener
                 var key = Console.ReadKey();
                 if (key.Modifiers == ConsoleModifiers.Control && key.Key == ConsoleKey.C)
                 {
-                    Console.WriteLine("Ctrl+C pressed.  Closing.");
+                    log("Ctrl+C pressed.  Closing.");
                     break;
                 }
 
                 switch(key.Key)
                 {
                     case ConsoleKey.NumPad0:
-                        Console.WriteLine("NumPad0");
+                        log("NumPad0");
                         break;
                     default:
-                        Console.WriteLine($"Key {key.Key} modifiers {key.Modifiers}");
+                        log($"Key {key.Key} modifiers {key.Modifiers}");
                         break;
                 }
             }
