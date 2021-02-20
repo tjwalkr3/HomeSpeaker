@@ -22,7 +22,10 @@ namespace HomeSpeaker.Mobile.ViewModels
             set
             {
                 path = value;
-                Folder = System.IO.Path.GetDirectoryName(path);
+                if(path.Contains('\\'))
+                    Folder = System.IO.Path.GetDirectoryName(path.Replace('\\', '/'));
+                else
+                    Folder = System.IO.Path.GetDirectoryName(path);
             }
         }
         public string Album { get; set; }

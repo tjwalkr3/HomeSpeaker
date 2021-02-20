@@ -16,40 +16,80 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ScrollView>
-        <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
-            <Label Text="{Binding Songs.Count, StringFormat='Found {0:n0} folders'}" HorizontalTextAlignment="End" TextColor="DarkGray" />
-            <Label Text="{Binding Status}" IsVisible="{Binding StatusIsVisible}" />
+    <StackLayout Padding="10,0,10,0"
+                 VerticalOptions="Center">
+        <Label Text="{Binding Songs.Count, StringFormat='Found {0:n0} folders'}"
+               HorizontalTextAlignment="End"
+               TextColor="DarkGray" />
+        <Label Text="{Binding Status}"
+               IsVisible="{Binding StatusIsVisible}" />
 
-            <CollectionView ItemsSource="{Binding Songs}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <xct:Expander IsExpanded="{Binding IsExpanded}">
-                            <xct:Expander.Header>
-                                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*,*" BackgroundColor="Beige" Margin="0,5">
-                                    <Label Text="{Binding FolderName}" FontSize="Medium" Grid.ColumnSpan="2" TextColor="Black" />
-                                    <Label Text="{Binding FolderPath}" FontSize="Small" Grid.Row="1" Grid.ColumnSpan="2" TextColor="DarkGray" />
-                                    <Button Text="▶ Folder" Grid.Row="2" HeightRequest="40" Command="{Binding PlayFolder}" />
-                                    <Button Text="⭐ Folder" Grid.Row="2" Grid.Column="1" HeightRequest="40" Command="{Binding StarFolder}" />
-                                    <Button Text="➕ Folder" Grid.Row="2" Grid.Column="2" HeightRequest="40" Command="{Binding EnqueueFolder}" />
-                                </Grid>
-                            </xct:Expander.Header>
-                            <CollectionView ItemsSource="{Binding}">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid ColumnDefinitions="*,Auto,Auto,Auto">
-                                            <Label Text="{Binding Name}" VerticalOptions="CenterAndExpand" TextColor="Black" />
-                                            <Button Grid.Column="1" Text="▶" Command="{Binding PlaySong}" Margin="3" HeightRequest="40" WidthRequest="40" />
-                                            <Button Grid.Column="2" Text="⭐" Command="{Binding StarSong}" Margin="3" HeightRequest="40" WidthRequest="40" />
-                                            <Button Grid.Column="3" Text="➕" Command="{Binding EnqueueSong}" Margin="3" HeightRequest="40" WidthRequest="40" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                        </xct:Expander>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </StackLayout>
-    </ScrollView>
+        <CollectionView ItemsSource="{Binding Songs}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <xct:Expander IsExpanded="{Binding IsExpanded}">
+                        <xct:Expander.Header>
+                            <Grid RowDefinitions="Auto,Auto,Auto"
+                                  ColumnDefinitions="*,*,*"
+                                  BackgroundColor="Beige"
+                                  Margin="0,5">
+                                <Label Text="{Binding FolderName}"
+                                       FontSize="Medium"
+                                       Grid.ColumnSpan="2"
+                                       TextColor="Black" />
+                                <Label Text="{Binding FolderPath}"
+                                       FontSize="Small"
+                                       Grid.Row="1"
+                                       Grid.ColumnSpan="2"
+                                       TextColor="DarkGray" />
+                                <Button Text="▶ Folder"
+                                        Grid.Row="2"
+                                        HeightRequest="40"
+                                        Command="{Binding PlayFolder}" />
+                                <Button Text="⭐ Folder"
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        HeightRequest="40"
+                                        Command="{Binding StarFolder}" />
+                                <Button Text="➕ Folder"
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        HeightRequest="40"
+                                        Command="{Binding EnqueueFolder}" />
+                            </Grid>
+                        </xct:Expander.Header>
+                        <CollectionView ItemsSource="{Binding}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                                        <Label Text="{Binding Name}"
+                                               VerticalOptions="CenterAndExpand"
+                                               TextColor="Black" />
+                                        <Button Grid.Column="1"
+                                                Text="▶"
+                                                Command="{Binding PlaySong}"
+                                                Margin="3"
+                                                HeightRequest="40"
+                                                WidthRequest="40" />
+                                        <Button Grid.Column="2"
+                                                Text="⭐"
+                                                Command="{Binding StarSong}"
+                                                Margin="3"
+                                                HeightRequest="40"
+                                                WidthRequest="40" />
+                                        <Button Grid.Column="3"
+                                                Text="➕"
+                                                Command="{Binding EnqueueSong}"
+                                                Margin="3"
+                                                HeightRequest="40"
+                                                WidthRequest="40" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </xct:Expander>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
 </ContentPage>
