@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MvvmHelpers;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace HomeSpeaker.Mobile.ViewModels
         private readonly HomeSpeakerClient client;
         public Command LoginCommand { get; }
         public ObservableCollection<SongGroup> Songs { get; private set; }
+        public ObservableRangeCollection<SongViewModel> Songs2 { get; private set; } = new ();
+        public ObservableRangeCollection<Grouping<SongGroup, SongViewModel>> Songs2Groups { get; private set; } = new ();
 
         private string status;
         public string Status
@@ -48,7 +51,16 @@ namespace HomeSpeaker.Mobile.ViewModels
                     if (groups.ContainsKey(song.Folder) is false)
                         groups[song.Folder] = new List<SongViewModel>();
                     groups[song.Folder].Add(song);
+
+                    Songs2.Add(song);
                 }
+            }
+
+            foreach(var folder in Songs2.Select(s=>s.Folder).Distinct())
+            {
+                var songsInFolder = Songs2.Where(s => s.Folder == folder).ToList();
+                var key = new SongGroup(folder, songsInFolder);
+                Songs2Groups.Add(new Grouping<SongGroup, SongViewModel>(key, songsInFolder));
             }
 
             foreach (var group in groups.OrderBy(g => g.Key))

@@ -17,36 +17,61 @@
       x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
       https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
     -->
-    <RefreshView x:DataType="local:StatusViewModel" Command="{Binding RefreshStatusCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <ScrollView>
-            <StackLayout Margin="25">
-                <Label Text="Now Playing:" TextColor="DarkGray" />
-                <Label Text="{Binding NowPlayingTitle}" FontSize="Medium" TextColor="Black" />
-                <Label Text="{Binding Elapsed, StringFormat='Elapsed: {0}'}" TextColor="DarkGray" />
-                <Label Text="{Binding Remaining, StringFormat='Remaining: {0}'}" TextColor="DarkGray" />
-                <ProgressBar Progress="{Binding PercentComplete}" />
-                <Grid ColumnDefinitions="*,*,*,*, *">
-                    <Button Text="⏹ Stop" Command="{Binding Stop}" HeightRequest="80" />
-                    <Button Text="▶ Play" Command="{Binding Play}" Grid.Column="1"/>
-                    <Button Text="⏩ Skip" Command="{Binding Forward}" Grid.Column="2" />
-                    <Button Text="❌ Clear" Command="{Binding Clear}" Grid.Column="3" />
-                    <Button Text="🔀 Rand" Command="{Binding Shuffle}" Grid.Column="4" />
-                </Grid>
-                <Label Text="{Binding Exception}" TextColor="Black" />
-                <Label Text="{Binding QueueLength, StringFormat='Queue ({0} items)'}" TextColor="Black" FontSize="Medium" />
-                <ListView ItemsSource="{Binding NowPlayingQueue}" BackgroundColor="AliceBlue">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <StackLayout Margin="5">
-                                    <Label Text="{Binding Name}" Grid.Row="0" TextColor="Black" />
-                                    <Label Text="{Binding Folder}" Grid.Row="1" FontSize="Micro" TextColor="DarkGray" Margin="5,-10,0,0" />
-                                </StackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackLayout>
-        </ScrollView>
+    <RefreshView x:DataType="local:StatusViewModel"
+                 Command="{Binding RefreshStatusCommand}"
+                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <StackLayout Margin="5">
+            <Label Text="Now Playing:"
+                   TextColor="DarkGray" />
+            <Label Text="{Binding NowPlayingTitle}"
+                   FontSize="Medium"
+                   TextColor="Black" />
+            <Label Text="{Binding Elapsed, StringFormat='Elapsed: {0}'}"
+                   TextColor="DarkGray" />
+            <Label Text="{Binding Remaining, StringFormat='Remaining: {0}'}"
+                   TextColor="DarkGray" />
+            <ProgressBar Progress="{Binding PercentComplete}" />
+            <Grid ColumnDefinitions="*,*,*,*, *">
+                <Button Text="⏹  Stop"
+                        Command="{Binding Stop}"
+                        HeightRequest="110" />
+                <Button Text=" ▶  Play"
+                        Command="{Binding Play}"
+                        Grid.Column="1" />
+                <Button Text="⏩  Skip"
+                        Command="{Binding Forward}"
+                        Grid.Column="2" />
+                <Button Text="❌  Clear"
+                        Command="{Binding Clear}"
+                        Grid.Column="3" />
+                <Button Text="🔀  Rand"
+                        Command="{Binding Shuffle}"
+                        Grid.Column="4" />
+            </Grid>
+            <Label Text="{Binding Exception}"
+                   TextColor="Black" />
+            <Label Text="{Binding QueueLength, StringFormat='Queue ({0} items)'}"
+                   TextColor="Black"
+                   FontSize="Medium" />
+            <ListView ItemsSource="{Binding NowPlayingQueue}"
+                      BackgroundColor="Transparent">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Margin="5">
+                                <Label Text="{Binding Name}"
+                                       Grid.Row="0"
+                                       TextColor="Black" />
+                                <Label Text="{Binding Folder}"
+                                       Grid.Row="1"
+                                       FontSize="Micro"
+                                       TextColor="DarkGray"
+                                       Margin="5,-10,0,0" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
     </RefreshView>
 </ContentPage>

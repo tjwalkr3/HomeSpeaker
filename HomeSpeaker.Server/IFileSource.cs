@@ -26,8 +26,9 @@ namespace HomeSpeaker.Server
         public IEnumerable<FileInfo> GetAllMp3s()
         {
             var musicFolder = rootFolder.Replace("~", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-            return from f in Directory.GetFiles(musicFolder, "*.mp3", SearchOption.AllDirectories)
-                   select new FileInfo(f);
+            var files = from f in Directory.GetFiles(musicFolder, "*.mp3", SearchOption.AllDirectories)
+                        select new FileInfo(f);
+            return files;
         }
     }
 }
