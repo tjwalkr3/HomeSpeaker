@@ -13,7 +13,7 @@ COPY ["HomeSpeaker.Shared/HomeSpeaker.Shared.csproj", "HomeSpeaker.Shared/"]
 RUN dotnet restore "HomeSpeaker.Server/HomeSpeaker.Server.csproj"
 COPY . .
 WORKDIR "/src/HomeSpeaker.Server"
-RUN dotnet publish "HomeSpeaker.Server.csproj" -c Release -r linux-arm64 -o /app/publish
+RUN dotnet publish "HomeSpeaker.Server.csproj" -c Release -r linux-arm -o /app/publish
 
 FROM base AS final
 WORKDIR /app
