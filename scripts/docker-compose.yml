@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   homespeaker.client.web:
-    image: 192.168.1.119:5555/homespeakerwebclient:arm32v7
+    image: 192.168.1.133:5555/homespeakerwebclient:arm32v7
     ports:
      - 80:80
     networks:
@@ -18,7 +18,7 @@ services:
     - HomeSpeaker.Server=http://homespeaker.server
 
   homespeaker.server:
-    image: 192.168.1.119:5555/homespeakerserver:arm32v7
+    image: 192.168.1.133:5555/homespeakerserver:arm32v7
     ports:
      - 8080:80
     networks:
