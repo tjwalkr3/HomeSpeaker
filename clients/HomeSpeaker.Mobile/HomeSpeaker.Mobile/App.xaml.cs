@@ -33,7 +33,7 @@ namespace HomeSpeaker.Mobile
 
             InitializeComponent();
 
-            var endpointAddress = "192.168.1.20:8080";
+            var endpointAddress = "192.168.1.133:8080";
             if(Debugger.IsAttached || isNotAvailable(endpointAddress))
             {
                 //endpointAddress = "192.168.1.140:5000";
