@@ -13,6 +13,7 @@ namespace HomeSpeaker.Mobile.ViewModels
     {
         public FoldersViewModel()
         {
+            Title = "Folders";
             Songs = new ObservableCollection<SongGroup>();
             this.client = DependencyService.Get<HomeSpeakerClient>();
             init();
