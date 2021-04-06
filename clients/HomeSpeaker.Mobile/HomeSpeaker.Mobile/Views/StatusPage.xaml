@@ -5,6 +5,8 @@
              Title="{Binding Title}"
              xmlns:local="clr-namespace:HomeSpeaker.Mobile.ViewModels"
              xmlns:model="clr-namespace:HomeSpeaker.Mobile.Models"
+             xmlns:vm="clr-namespace:HomeSpeaker.Mobile.ViewModels"             
+             x:DataType="vm:StatusViewModel"
              x:Name="BrowseItemsPage">
 
     <ContentPage.BindingContext>
