@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
              x:Class="HomeSpeaker.Mobile.Views.StarredPage"
-             xmlns:vm="clr-namespace:HomeSpeaker.Mobile.ViewModels"
+             xmlns:vm="clr-namespace:HomeSpeaker.Mobile.ViewModels"             
+             x:DataType="vm:StarredViewModel"
              Title="{Binding Title}">
 
     <ContentPage.BindingContext>
@@ -23,7 +24,7 @@
 
             <CollectionView ItemsSource="{Binding Songs}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="vm:SongGroup">
                         <xct:Expander IsExpanded="{Binding IsExpanded}">
                             <xct:Expander.Header>
                                 <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*,*" BackgroundColor="Beige" Margin="0,5">
@@ -36,7 +37,7 @@
                             </xct:Expander.Header>
                             <CollectionView ItemsSource="{Binding}">
                                 <CollectionView.ItemTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate x:DataType="vm:SongViewModel">
                                         <Grid ColumnDefinitions="*,Auto,Auto,Auto">
                                             <Label Text="{Binding Name}" VerticalOptions="CenterAndExpand" TextColor="Black" />
                                             <Button Grid.Column="1" Text="▶" Command="{Binding PlaySong}" Margin="3" HeightRequest="40" WidthRequest="40" />

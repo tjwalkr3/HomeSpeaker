@@ -4,6 +4,7 @@
              x:Class="HomeSpeaker.Mobile.Views.FoldersPage"
              xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
              xmlns:vm="clr-namespace:HomeSpeaker.Mobile.ViewModels"
+             x:DataType="vm:FoldersViewModel"
              Title="{Binding Title}">
 
     <ContentPage.BindingContext>
@@ -27,7 +28,7 @@
         <CollectionView ItemsSource="{Binding Songs}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <xct:Expander IsExpanded="{Binding IsExpanded}">
+                    <xct:Expander x:DataType="vm:SongGroup" IsExpanded="{Binding IsExpanded}">
                         <xct:Expander.Header>
                             <Grid RowDefinitions="Auto,Auto,Auto"
                                   ColumnDefinitions="*,*,*"
@@ -60,7 +61,7 @@
                         </xct:Expander.Header>
                         <CollectionView ItemsSource="{Binding}">
                             <CollectionView.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="vm:SongViewModel">
                                     <Grid ColumnDefinitions="*,Auto,Auto,Auto">
                                         <Label Text="{Binding Name}"
                                                VerticalOptions="CenterAndExpand"
