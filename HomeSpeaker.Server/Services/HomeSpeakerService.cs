@@ -50,6 +50,12 @@ namespace HomeSpeaker.Server
             return Task.FromResult(reply);
         }
 
+        public override Task<PlaySongReply> PlayStream(PlayStreamRequest request, ServerCallContext context)
+        {
+            musicPlayer.PlayStream(request.StreamUrl);
+            return Task.FromResult(new PlaySongReply { Ok = true });
+        }
+
         public override Task<Empty> ResetLibrary(Empty request, ServerCallContext context)
         {
             library.ResetLibrary();

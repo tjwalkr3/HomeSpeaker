@@ -31,6 +31,49 @@ namespace HomeSpeaker.Server
 
         private bool startedPlaying = false;
 
+        public void PlayStream(string streamPath)
+        {
+            logger.LogInformation($"Asked to play stream: {streamPath}");
+
+            //make a Uri first...to make sure the argument is a valid URL.
+            //...maybe that helps a bit with unsafe input??
+            var url = new Uri(streamPath).ToString();
+            logger.LogInformation($"After converting to a Uri: {streamPath}");
+
+            stopPlaying();
+            status = new PlayerStatus
+            {
+                CurrentSong = new Song
+                {
+                    Album = url,
+                    Artist = url,
+                    Name = url,
+                    Path = url                    
+                }
+            };
+            playerProcess = new Process();
+            playerProcess.StartInfo.FileName = "cvlc";
+            playerProcess.StartInfo.Arguments = $"\"{streamPath}\"";
+            playerProcess.StartInfo.UseShellExecute = false;
+            playerProcess.StartInfo.RedirectStandardOutput = true;
+            playerProcess.StartInfo.RedirectStandardError = true;
+            playerProcess.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
+            {
+                logger.LogInformation($"OutputDataReceived: {e.Data}");
+            });
+            playerProcess.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
+            {
+                logger.LogInformation($"ErrorDataReceived: {e.Data}");
+            });
+            logger.LogInformation($"Starting vlc {streamPath}");
+            playerProcess.EnableRaisingEvents = true;
+            playerProcess.Start();
+            playerProcess.Exited += PlayerProcess_Exited;
+
+            playerProcess.BeginOutputReadLine();
+            playerProcess.BeginErrorReadLine();
+        }
+
         public void PlaySong(string filePath)
         {
             startedPlaying = true;
@@ -83,8 +126,8 @@ namespace HomeSpeaker.Server
             if(playerProcess != null && playerProcess.HasExited is false)
                 playerProcess.Exited -= PlayerProcess_Exited;//stop listening to when the process ends.
 
-            foreach (var existingVlc in Process.GetProcessesByName("play"))
-                existingVlc.Kill();
+            foreach (var proc in Process.GetProcessesByName("play").Union(Process.GetProcessesByName("vlc")))
+                proc.Kill();
         }
 
         private void PlayerProcess_Exited(object sender, EventArgs e)
