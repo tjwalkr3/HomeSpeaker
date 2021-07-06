@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
              x:Class="HomeSpeaker.Mobile.Views.StarredPage"
-             xmlns:vm="clr-namespace:HomeSpeaker.Mobile.ViewModels"
+             xmlns:vm="clr-namespace:HomeSpeaker.Mobile.ViewModels"             
+             x:DataType="vm:StarredViewModel"
              Title="{Binding Title}">
 
     <ContentPage.BindingContext>
@@ -12,95 +13,18 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <!--<Color x:Key="Accent">#96d1ff</Color>-->
+            <Color x:Key="Accent">#96d1ff</Color>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ListView BackgroundColor="Transparent"
-              ItemsSource="{Binding Songs2Groups}"
-              HasUnevenRows="True"
-              SeparatorVisibility="Default"
-              RefreshCommand="{Binding Refresh}"
-              IsGroupingEnabled="True"
-              Margin="5,0"
-              IsPullToRefreshEnabled="True">
-        <ListView.GroupHeaderTemplate>
-            <DataTemplate>
-                <ViewCell>
-                    <!--<Label Text="{Binding Key}"
-                           FontSize="16"
-                           TextColor="Black"
-                           FontAttributes="Bold"
-                           VerticalOptions="Center"/>-->
-                    <Grid RowDefinitions="Auto,Auto,Auto"
-                          ColumnDefinitions="*,*,*"
-                          BackgroundColor="Beige"
-                          Margin="0,2">
-                        <Label Text="{Binding Key.FolderName, FallbackValue='Fallback'}"
-                               FontSize="Medium"
-                               Grid.ColumnSpan="3"
-                               TextColor="Black" />
-                        <Label Text="{Binding Key.FolderPath}"
-                               FontSize="Small"
-                               Grid.Row="1"
-                               Grid.ColumnSpan="3"
-                               TextColor="DarkGray" />
-                        <Button Text="▶ Folder"
-                                Grid.Row="2"
-                                HeightRequest="40"
-                                Command="{Binding Key.PlayFolder}" />
-                        <Button Text="⭐ Folder"
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                HeightRequest="40"
-                                Command="{Binding Key.StarFolder}" />
-                        <Button Text="➕ Folder"
-                                Grid.Row="2"
-                                Grid.Column="2"
-                                HeightRequest="40"
-                                Command="{Binding Key.EnqueueFolder}" />
-                    </Grid>
-                </ViewCell>
-            </DataTemplate>
-        </ListView.GroupHeaderTemplate>
-        <ListView.ItemTemplate>
-            <DataTemplate>
-                <ViewCell>
-                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
-                        <Label Text="{Binding Name, TargetNullValue='Null', FallbackValue='Fallback'}"
-                               VerticalOptions="CenterAndExpand"
-                               TextColor="Black" />
-                        <Button Grid.Column="1"
-                                Text="▶"
-                                Command="{Binding PlaySong}"
-                                Margin="3"
-                                HeightRequest="40"
-                                WidthRequest="40" />
-                        <Button Grid.Column="2"
-                                Text="Un-⭐"
-                                Command="{Binding UnStarSong}"
-                                Margin="3"
-                                HeightRequest="40"
-                                WidthRequest="80" />
-                        <Button Grid.Column="3"
-                                Text="➕"
-                                Command="{Binding EnqueueSong}"
-                                Margin="3"
-                                HeightRequest="40"
-                                WidthRequest="40" />
-                    </Grid>
-                </ViewCell>
-            </DataTemplate>
-        </ListView.ItemTemplate>
-    </ListView>
-    <!--<ScrollView>
+    <ScrollView>
         <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
             <Label Text="{Binding Songs.Count, StringFormat='Found {0:n0} folders'}" HorizontalTextAlignment="End" TextColor="DarkGray" />
             <Label Text="{Binding Status}" IsVisible="{Binding StatusIsVisible}" />
 
             <CollectionView ItemsSource="{Binding Songs}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="vm:SongGroup">
                         <xct:Expander IsExpanded="{Binding IsExpanded}">
                             <xct:Expander.Header>
                                 <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*,*" BackgroundColor="Beige" Margin="0,5">
@@ -113,7 +37,7 @@
                             </xct:Expander.Header>
                             <CollectionView ItemsSource="{Binding}">
                                 <CollectionView.ItemTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate x:DataType="vm:SongViewModel">
                                         <Grid ColumnDefinitions="*,Auto,Auto,Auto">
                                             <Label Text="{Binding Name}" VerticalOptions="CenterAndExpand" TextColor="Black" />
                                             <Button Grid.Column="1" Text="▶" Command="{Binding PlaySong}" Margin="3" HeightRequest="40" WidthRequest="40" />
@@ -128,5 +52,5 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </StackLayout>
-    </ScrollView>-->
+    </ScrollView>
 </ContentPage>

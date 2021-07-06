@@ -69,6 +69,11 @@ namespace HomeSpeaker.Server
             throw new NotImplementedException();
         }
 
+        public void PlayStream(string streamUrl)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
 
         public PlayerStatus Status => throw new NotImplementedException();

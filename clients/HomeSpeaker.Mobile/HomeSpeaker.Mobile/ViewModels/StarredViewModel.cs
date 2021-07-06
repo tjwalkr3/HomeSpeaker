@@ -16,6 +16,7 @@ namespace HomeSpeaker.Mobile.ViewModels
         {
             Songs = new ObservableCollection<SongGroup>();
             this.client = DependencyService.Get<HomeSpeakerClient>();
+            Title = "Starred";
             init();
         }
 
