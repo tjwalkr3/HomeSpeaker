@@ -34,5 +34,20 @@ services:
     - ALSA_CARD=Headphones
 
 
+
+  grocy:
+    image: ghcr.io/linuxserver/grocy
+    container_name: grocy
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Denver
+    volumes:
+      - /home/pi/grocy:/config
+    ports:
+      - 4321:80
+      - 4322:443
+    restart: unless-stopped
+
 networks:
   homenet:
