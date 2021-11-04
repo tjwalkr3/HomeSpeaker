@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using static HomeSpeaker.Server.gRPC.HomeSpeaker;
@@ -34,7 +35,7 @@ namespace HomeSpeaker.Mobile
             InitializeComponent();
 
             var endpointAddress = "192.168.1.133:8080";
-            if(Debugger.IsAttached || isNotAvailable(endpointAddress))
+            if(isNotAvailable(endpointAddress) || Debugger.IsAttached)
             {
                 //endpointAddress = "192.168.1.140:5000";
                 //endpointAddress = "144.17.10.32:5000";
@@ -43,6 +44,9 @@ namespace HomeSpeaker.Mobile
             DependencyService.Register<MockDataStore>();
             DependencyService.RegisterSingleton(new HomeSpeakerClient(new Channel(endpointAddress, ChannelCredentials.Insecure)));
             MainPage = new AppShell();
+
+            var lastPage = Preferences.Get("lastPage", "//StreamPage");
+            Shell.Current.GoToAsync(lastPage);
         }
 
         private bool isNotAvailable(string endpointAddress)
@@ -50,7 +54,7 @@ namespace HomeSpeaker.Mobile
             try
             {
                 var parts = endpointAddress.Split(':');
-                using var tcpClient = new TcpClient(parts[0], int.Parse(parts[1]));                
+                using var tcpClient = new TcpClient(parts[0], int.Parse(parts[1]));
                 return true;
             }
             catch

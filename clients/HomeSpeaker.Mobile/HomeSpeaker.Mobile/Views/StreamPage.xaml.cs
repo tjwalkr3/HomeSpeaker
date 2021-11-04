@@ -15,8 +15,11 @@ namespace HomeSpeaker.Mobile.Views
     {
         public StreamPage()
         {
-            InitializeComponent();            
+            InitializeComponent();
             BindingContext = new StreamViewModel();
+            NewProp = true;
         }
+
+        public bool NewProp { get; private set; }
     }
 }
