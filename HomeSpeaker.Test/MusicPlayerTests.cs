@@ -17,8 +17,8 @@ namespace HomeSpeaker.Test
             var playerOutput = "In:1.11% 00:00:03.81 [00:05:39.80] Out:168k  [ =====|===== ] Hd:3.2 Clip:0";
             var parseResult = LinuxSoxMusicPlayer.TryParsePlayerOutput(playerOutput, out var status);
             parseResult.Should().BeTrue();
-            status.Elapsed.Should().BeCloseTo(new TimeSpan(0, 0, 0, 3), 810);
-            status.Remaining.Should().BeCloseTo(new TimeSpan(0, 0, 5, 39), 800);
+            status.Elapsed.Should().BeCloseTo(TimeSpan.FromSeconds( 3), TimeSpan.FromMilliseconds( 810));
+            status.Remaining.Should().BeCloseTo(new TimeSpan(0, 0, 5, 39), TimeSpan.FromMilliseconds( 800));
             status.PercentComplete.Should().Be(.0111M);
             status.StillPlaying.Should().BeTrue();
         }

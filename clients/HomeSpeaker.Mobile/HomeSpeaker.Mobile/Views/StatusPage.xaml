@@ -5,7 +5,7 @@
              Title="{Binding Title}"
              xmlns:local="clr-namespace:HomeSpeaker.Mobile.ViewModels"
              xmlns:model="clr-namespace:HomeSpeaker.Mobile.Models"
-             xmlns:vm="clr-namespace:HomeSpeaker.Mobile.ViewModels"             
+             xmlns:vm="clr-namespace:HomeSpeaker.Mobile.ViewModels"
              x:DataType="vm:StatusViewModel"
              x:Name="BrowseItemsPage">
 
@@ -46,7 +46,7 @@
                 <Button Text="❌  Clear"
                         Command="{Binding Clear}"
                         Grid.Column="3" />
-                <Button Text="🔀  Rand"
+                <Button Text="🔀  Shuf"
                         Command="{Binding Shuffle}"
                         Grid.Column="4" />
             </Grid>
@@ -55,11 +55,10 @@
             <Label Text="{Binding QueueLength, StringFormat='Queue ({0} items)'}"
                    TextColor="Black"
                    FontSize="Medium" />
-            <ListView ItemsSource="{Binding NowPlayingQueue}"
-                      BackgroundColor="Transparent">
-                <ListView.ItemTemplate>
+            <CollectionView ItemsSource="{Binding NowPlayingQueue}"
+                      BackgroundColor="White">
+                <CollectionView.ItemTemplate x:DataType="local:SongViewModel">
                     <DataTemplate>
-                        <ViewCell>
                             <StackLayout Margin="5">
                                 <Label Text="{Binding Name}"
                                        Grid.Row="0"
@@ -69,11 +68,11 @@
                                        FontSize="Micro"
                                        TextColor="DarkGray"
                                        Margin="5,-10,0,0" />
+                                <Label Text="This is static text" />
                             </StackLayout>
-                        </ViewCell>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </StackLayout>
     </RefreshView>
 </ContentPage>

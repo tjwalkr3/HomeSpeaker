@@ -37,7 +37,7 @@ namespace HomeSpeaker.Mobile
             var endpointAddress = "192.168.1.133:8080";
             if(isNotAvailable(endpointAddress) || Debugger.IsAttached)
             {
-                //endpointAddress = "192.168.1.140:5000";
+                endpointAddress = "192.168.1.100:5000";
                 //endpointAddress = "144.17.10.32:5000";
             }
 
@@ -55,11 +55,11 @@ namespace HomeSpeaker.Mobile
             {
                 var parts = endpointAddress.Split(':');
                 using var tcpClient = new TcpClient(parts[0], int.Parse(parts[1]));
-                return true;
+                return false;
             }
             catch
             {
-                return false;
+                return true;
             }
         }
 
