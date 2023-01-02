@@ -12,9 +12,10 @@ services:
     restart: unless-stopped
     volumes:
     - "/home/piuser/music:/music"
+    - "/home/piuser/.aspnet/https:/certs"
     environment:
     - MediaFolder=/music
     - ALSA_CARD=Headphones
     - ASPNETCORE_URLS=https://+:443;http://+:80
     - ASPNETCORE_Kestrel__Certificates__Default__Password=ThisIsMyCertificatePassword23
-    - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    - ASPNETCORE_Kestrel__Certificates__Default__Path=/certs/aspnetapp.pfx
