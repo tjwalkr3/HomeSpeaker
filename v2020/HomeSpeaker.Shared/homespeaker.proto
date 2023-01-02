@@ -3,7 +3,7 @@
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
 
-option csharp_namespace = "HomeSpeaker.Shared";
+option csharp_namespace = "HomeSpeaker.Server.gRPC";
 
 package homespeaker;
 

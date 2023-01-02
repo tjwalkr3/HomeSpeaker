@@ -1,22 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Runtime.InteropServices;
-using Grpc.Net.Client;
+using System;
 using static HomeSpeaker.Server.gRPC.HomeSpeaker;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.AspNetCore.Http;
 
 namespace HomeSpeaker.Web
 {
@@ -57,12 +46,7 @@ namespace HomeSpeaker.Web
             }
 
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider("/apk"),
-                RequestPath= new PathString("/apk"),
-                ServeUnknownFileTypes= true
-            });
+
 
             app.UseRouting();
 

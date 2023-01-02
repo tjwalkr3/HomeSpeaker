@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "HomeSpeaker.Shared": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:54347;http://localhost:54348"
+    }
+  }
+}
