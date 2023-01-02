@@ -4,9 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Console;
@@ -40,9 +38,14 @@ namespace HomeSpeaker.Client.Console
                     try
                     {
                         _logger.LogInformation("gRPC Console Client!");
-                        var client2 = new HomeSpeaker.Server.gRPC.HomeSpeaker.HomeSpeakerClient(GrpcChannel.ForAddress(config["HomeSpeaker.Server"]));
+                        var httpHandler = new HttpClientHandler();
+                        // Return `true` to allow certificates that are untrusted/invalid
+                        httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-                        if(config["SongID"] != null)
+                        var channel = GrpcChannel.ForAddress(config["HomeSpeaker.Server"], new GrpcChannelOptions { HttpHandler = httpHandler });
+                        var client2 = new HomeSpeaker.Server.gRPC.HomeSpeaker.HomeSpeakerClient(channel);
+
+                        if (config["SongID"] != null)
                         {
                             var songId = int.Parse(config["SongID"]);
                             client2.PlaySong(new Server.gRPC.PlaySongRequest { SongId = songId });
@@ -51,9 +54,9 @@ namespace HomeSpeaker.Client.Console
 
                         _logger.LogInformation("Asking server for songs...");
                         var songsResponse = client2.GetSongs(new Server.gRPC.GetSongsRequest { });
-                        await foreach(var reply in songsResponse.ResponseStream.ReadAllAsync())
+                        await foreach (var reply in songsResponse.ResponseStream.ReadAllAsync())
                         {
-                            foreach(var song in reply.Songs)
+                            foreach (var song in reply.Songs)
                             {
                                 WriteLine($"{song.SongId,4}: {song.Name}");
                             }

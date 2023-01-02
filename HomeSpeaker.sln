@@ -6,7 +6,6 @@ MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{034A99B3-490D-4EBA-AEEA-7F1E7F1E0ACA}"
 	ProjectSection(SolutionItems) = preProject
 		scripts\default.conf = scripts\default.conf
-		scripts\docker-compose.yml = scripts\docker-compose.yml
 		scripts\localdeploy.ps1 = scripts\localdeploy.ps1
 		scripts\restart.ps1 = scripts\restart.ps1
 	EndProjectSection
@@ -16,6 +15,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.Shared", "HomeSpeaker.Shared\HomeSpeaker.Shared.csproj", "{09073304-AFBF-4134-83F7-E67A37257266}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{5B637130-F7B3-4281-9736-7B1D098DF3AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.Client.Console", "v2020\HomeSpeaker.Client.Console\HomeSpeaker.Client.Console.csproj", "{110DA873-9092-4979-A3F6-F3F1CA8C78C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +36,10 @@ Global
 		{5B637130-F7B3-4281-9736-7B1D098DF3AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B637130-F7B3-4281-9736-7B1D098DF3AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B637130-F7B3-4281-9736-7B1D098DF3AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{110DA873-9092-4979-A3F6-F3F1CA8C78C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{110DA873-9092-4979-A3F6-F3F1CA8C78C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{110DA873-9092-4979-A3F6-F3F1CA8C78C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{110DA873-9092-4979-A3F6-F3F1CA8C78C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
