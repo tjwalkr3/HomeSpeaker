@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  homespeaker.server2:
+    image: ${DOCKER_REGISTRY-}homespeakerserver2
+    build:
+      context: .
+      dockerfile: HomeSpeaker.Server2/Dockerfile
+    ports:
+    - 80:80
+    - 443:443
+    restart: unless-stopped
+    volumes:
+    - "/home/piuser/music:/music"
+    entrypoint:
+    - MediaFolder=/music
+    - ALSA_CARD=Headphones

@@ -11,9 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{034A
 		scripts\restart.ps1 = scripts\restart.ps1
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeSpeaker.Server2", "HomeSpeaker.Server2\HomeSpeaker.Server2.csproj", "{780896E7-A682-4743-9DCC-702553FCD574}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.Server2", "HomeSpeaker.Server2\HomeSpeaker.Server2.csproj", "{780896E7-A682-4743-9DCC-702553FCD574}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.Shared", "HomeSpeaker.Shared\HomeSpeaker.Shared.csproj", "{09073304-AFBF-4134-83F7-E67A37257266}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{5B637130-F7B3-4281-9736-7B1D098DF3AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{09073304-AFBF-4134-83F7-E67A37257266}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09073304-AFBF-4134-83F7-E67A37257266}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09073304-AFBF-4134-83F7-E67A37257266}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B637130-F7B3-4281-9736-7B1D098DF3AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B637130-F7B3-4281-9736-7B1D098DF3AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B637130-F7B3-4281-9736-7B1D098DF3AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B637130-F7B3-4281-9736-7B1D098DF3AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
