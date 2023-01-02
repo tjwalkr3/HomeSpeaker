@@ -18,6 +18,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.Client.Console", "v2020\HomeSpeaker.Client.Console\HomeSpeaker.Client.Console.csproj", "{110DA873-9092-4979-A3F6-F3F1CA8C78C2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.Maui", "HomeSpeaker.Maui\HomeSpeaker.Maui.csproj", "{8E96867C-E0B1-4C46-BA81-738C89AA5335}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,12 @@ Global
 		{110DA873-9092-4979-A3F6-F3F1CA8C78C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{110DA873-9092-4979-A3F6-F3F1CA8C78C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{110DA873-9092-4979-A3F6-F3F1CA8C78C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E96867C-E0B1-4C46-BA81-738C89AA5335}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E96867C-E0B1-4C46-BA81-738C89AA5335}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E96867C-E0B1-4C46-BA81-738C89AA5335}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{8E96867C-E0B1-4C46-BA81-738C89AA5335}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E96867C-E0B1-4C46-BA81-738C89AA5335}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E96867C-E0B1-4C46-BA81-738C89AA5335}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
