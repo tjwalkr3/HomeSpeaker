@@ -10,6 +10,8 @@ services:
     - 80:80
     - 443:443
     restart: unless-stopped
+    devices:
+    - /dev/snd:/dev/snd
     volumes:
     - "/home/piuser/music:/music"
     - "/home/piuser/.aspnet/https:/certs"
