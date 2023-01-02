@@ -12,6 +12,6 @@ services:
     restart: unless-stopped
     volumes:
     - "/home/piuser/music:/music"
-    entrypoint:
+    environment:
     - MediaFolder=/music
     - ALSA_CARD=Headphones
