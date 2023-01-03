@@ -2,7 +2,24 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:HomeSpeaker.Maui.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:shared="clr-namespace:HomeSpeaker.Shared;assembly=HomeSpeaker.Shared"
              x:Class="HomeSpeaker.Maui.Views.MainPage"
-             x:DataType="vm:MainViewModel">
-
+             >
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding ViewModelLoadingCommand}" />
+    </ContentPage.Behaviors>
+    <Grid RowDefinitions="Auto,Auto,*">
+        <Button Text="Get Songs" Command="{Binding ViewModelLoadingCommand}" Grid.Row="0" />
+        <Label Text="{Binding Songs.Count, StringFormat='Song List ({0:n0} songs)'}" Grid.Row="1" />
+        <CollectionView ItemsSource="{Binding Songs}" VerticalScrollBarVisibility="Always" Grid.Row="2">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding Name}" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 </ContentPage>
