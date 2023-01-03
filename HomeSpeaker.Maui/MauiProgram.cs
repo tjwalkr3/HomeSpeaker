@@ -21,17 +21,19 @@ public static class MauiProgram
 		builder.Services.AddTransient<SampleDataService>();
 		builder.Services.AddTransient<ListDetailDetailViewModel>();
 		builder.Services.AddTransient<ListDetailDetailPage>();
+		AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 		builder.Services.AddScoped(services =>
 		{
-			var baseUri = new Uri(builder.Configuration["ServerAddress"] ?? "https://192.168.1.110");
+			var baseUri = new Uri(builder.Configuration["ServerAddress"] ?? "http://192.168.1.110");
 			var httpHandler = new HttpClientHandler();
 			// Return `true` to allow certificates that are untrusted/invalid
 			httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-			var channel = GrpcChannel.ForAddress(baseUri, new GrpcChannelOptions { HttpHandler = httpHandler });
+			//var channel = GrpcChannel.ForAddress(baseUri, new GrpcChannelOptions { HttpHandler = httpHandler });
+			var channel = GrpcChannel.ForAddress(baseUri);
 			return new HomeSpeakerClient(channel);
 		});
-
+		builder.Services.AddSingleton(_ => new Database(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "homespeaker_starredsongs.db3")));
 
 		builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddSingleton<MainPage>();
@@ -44,6 +46,9 @@ public static class MauiProgram
 
 		builder.Services.AddSingleton<BlankViewModel>();
 		builder.Services.AddSingleton<BlankPage>();
+
+		builder.Services.AddSingleton<StarredViewModel>();
+		builder.Services.AddSingleton<StarredPage>();
 
 		return builder.Build();
 	}

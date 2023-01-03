@@ -1,5 +1,4 @@
-﻿using Grpc.Core;
-using HomeSpeaker.Shared;
+﻿using HomeSpeaker.Shared;
 using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.Maui.ViewModels;
@@ -16,6 +15,9 @@ public partial class MainViewModel : BaseViewModel
     [RelayCommand]
     public async Task ViewModelLoading()
     {
+        if (songs.Count > 0)
+            return;
+
         try
         {
             var getSongsReply = client.GetSongs(new GetSongsRequest { });
@@ -25,6 +27,8 @@ public partial class MainViewModel : BaseViewModel
                 foreach (var song in newSongs)
                 {
                     songs.Add(song);
+                    if (songs.Count > 100)
+                        break;
                 }
             }
         }

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HomeSpeaker.Client\HomeSpeaker.Client.csproj" />
+    <ProjectReference Include="..\..\HomeSpeaker.Shared\HomeSpeaker.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -11,15 +11,16 @@
             EventName="Appearing"
             Command="{Binding ViewModelLoadingCommand}" />
     </ContentPage.Behaviors>
-    <Grid RowDefinitions="Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
         <Button Text="Get Songs" Command="{Binding ViewModelLoadingCommand}" Grid.Row="0" />
         <Label Text="{Binding Songs.Count, StringFormat='Song List ({0:n0} songs)'}" Grid.Row="1" />
-        <CollectionView ItemsSource="{Binding Songs}" VerticalScrollBarVisibility="Always" Grid.Row="2">
-            <CollectionView.ItemTemplate>
+        <ListView Grid.Row="2" ItemsSource="{Binding Songs}">
+            <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Label Text="{Binding Name}" />
+                    <TextCell Text="{Binding Name}" Detail="{Binding Path}" />
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Label Text="{Binding ErrorMessage}" Grid.Row="3"/>
     </Grid>
 </ContentPage>

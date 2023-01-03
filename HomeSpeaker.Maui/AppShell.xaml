@@ -3,15 +3,42 @@
     x:Class="HomeSpeaker.Maui.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:views="clr-namespace:HomeSpeaker.Maui.Views"
-    xmlns:local="clr-namespace:HomeSpeaker.Maui">
+    xmlns:views="clr-namespace:HomeSpeaker.Maui.Views">
 
+    <ShellContent Title="Starred" Icon="star.png" ContentTemplate="{DataTemplate views:StarredPage}">
+    </ShellContent>
+    <ShellContent Title="Songs" Icon="star.png" ContentTemplate="{DataTemplate views:FoldersPage}">
+    </ShellContent>
+    <ShellContent Title="Streams" Icon="star.png" ContentTemplate="{DataTemplate views:StreamPage}">
+    </ShellContent>
     <ShellContent
         Shell.NavBarIsVisible="true"
         Title="Main"
         Icon="iconblank.png"
         ContentTemplate="{DataTemplate views:MainPage}"
-        Route="MainPage" />
+        Route="MainPage">
+        <!--<TabBar>
+            <Tab Title="Starred" Icon="star.png">
+                <ShellContent Route="StarredPage"
+                      ContentTemplate="{DataTemplate views:StarredPage}" />
+            </Tab>
+            <Tab Title="Folders"
+                Icon="folder_open.png">
+                <ShellContent Route="FoldersPage"
+                      ContentTemplate="{DataTemplate views:FoldersPage}" />
+            </Tab>
+            <Tab Title="Status"
+                Icon="icon_feed.png">
+                <ShellContent Route="StatusPage"
+                      ContentTemplate="{DataTemplate views:StatusPage}" />
+            </Tab>
+            <Tab Title="Streams"
+                Icon="wifi.png">
+                <ShellContent Route="StreamPage"
+                      ContentTemplate="{DataTemplate views:StreamPage}" />
+            </Tab>
+        </TabBar>-->
+    </ShellContent>
     <ShellContent
         Shell.NavBarIsVisible="true"
         Title="ListDetail"

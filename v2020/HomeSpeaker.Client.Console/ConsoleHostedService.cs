@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
+using HomeSpeaker.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using static HomeSpeaker.Shared.HomeSpeaker;
 using static System.Console;
 
 namespace HomeSpeaker.Client.Console
@@ -43,17 +45,17 @@ namespace HomeSpeaker.Client.Console
                         httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
                         var channel = GrpcChannel.ForAddress(config["HomeSpeaker.Server"], new GrpcChannelOptions { HttpHandler = httpHandler });
-                        var client2 = new HomeSpeaker.Server.gRPC.HomeSpeaker.HomeSpeakerClient(channel);
+                        var client2 = new HomeSpeakerClient(channel);
 
                         if (config["SongID"] != null)
                         {
                             var songId = int.Parse(config["SongID"]);
-                            client2.PlaySong(new Server.gRPC.PlaySongRequest { SongId = songId });
+                            client2.PlaySong(new PlaySongRequest { SongId = songId });
                             return;
                         }
 
                         _logger.LogInformation("Asking server for songs...");
-                        var songsResponse = client2.GetSongs(new Server.gRPC.GetSongsRequest { });
+                        var songsResponse = client2.GetSongs(new GetSongsRequest { });
                         await foreach (var reply in songsResponse.ResponseStream.ReadAllAsync())
                         {
                             foreach (var song in reply.Songs)
@@ -65,7 +67,7 @@ namespace HomeSpeaker.Client.Console
 
                         WriteLine("What song id would you like to play?");
                         var songToPlay = int.Parse(ReadLine());
-                        client2.PlaySong(new Server.gRPC.PlaySongRequest { SongId = songToPlay });
+                        client2.PlaySong(new PlaySongRequest { SongId = songToPlay });
                     }
                     catch (Exception ex)
                     {
