@@ -33,7 +33,11 @@ public static class MauiProgram
 			var channel = GrpcChannel.ForAddress(baseUri);
 			return new HomeSpeakerClient(channel);
 		});
-		builder.Services.AddSingleton(_ => new Database(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "homespeaker_starredsongs.db3")));
+		builder.Services.AddSingleton(_ =>
+		{
+			var path = Path.Combine(FileSystem.Current.AppDataDirectory, "homespeaker_starredsongs.db3");
+			return new Database(path);
+		});
 
 		builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddSingleton<MainPage>();

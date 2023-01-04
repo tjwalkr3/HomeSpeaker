@@ -72,8 +72,10 @@ public partial class StarredViewModel : BaseViewModel
 
         // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
         //await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
-        Title = $"Starred ({Songs.Count:n0} folders)";
+        updateTitle();
     }
+
+    private void updateTitle() => Title = $"Starred ({Songs.Count:n0} folders)";
 
     [RelayCommand]
     public void PlayFolder(SongGroup songs)
@@ -102,5 +104,6 @@ public partial class StarredViewModel : BaseViewModel
             await database.DeleteStarredSong(new StarredSong { Path = s.Path });
         }
         Songs.Remove(songs);
+        updateTitle();
     }
 }

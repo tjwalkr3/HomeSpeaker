@@ -9,34 +9,39 @@
         <xct:EventToCommandBehavior EventName="Appearing"
                                     Command="{Binding LoadingCommand}" />
     </ContentPage.Behaviors>
-    <RefreshView IsRefreshing="{Binding IsRefreshing}"
-                 Command="{Binding RefreshingCommand}">
-        <CollectionView Grid.Row="2"
-                        ItemsSource="{Binding Songs}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="vm:SongGroup">
-                    <Frame>
-                        <VerticalStackLayout>
-                            <Label Text="{Binding FolderName}"
-                                   Margin="0,2,0,4"/>
-                            <HorizontalStackLayout Padding="5">
-                                <Button Text="▶ Folder"
-                                        HeightRequest="30"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FoldersViewModel}}, Path=PlayFolderCommand}"
-                                        CommandParameter="{Binding .}" />
-                                <Button Text="⭐ Folder"
-                                        HeightRequest="30"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FoldersViewModel}}, Path=StarFolderCommand}"
-                                        CommandParameter="{Binding .}" />
-                                <Button Text="➕ Folder"
-                                        HeightRequest="30"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FoldersViewModel}}, Path=EnqueueFolderCommand}"
-                                        CommandParameter="{Binding .}" />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </RefreshView>
+    <CollectionView ItemsSource="{Binding Songs}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="vm:SongGroup">
+                <Border Margin="0,2">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="5" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Margin="5,0,0,10">
+                        <Label Text="{Binding FolderName}"
+                               FontSize="Medium"
+                               Margin="0,2,0,0" />
+                        <Label Text="{Binding FolderPath}"
+                               TextColor="Gray"
+                               Margin="10,0,0,4" />
+                        <Grid ColumnDefinitions="*,*,*">
+                            <Button Text="▶ Play"
+                                    Margin="5,0"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FoldersViewModel}}, Path=PlayFolderCommand}"
+                                    CommandParameter="{Binding .}" />
+                            <Button Text="⭐ Move to Starred"
+                                    Margin="5,0"
+                                    Grid.Column="1"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FoldersViewModel}}, Path=StarFolderCommand}"
+                                    CommandParameter="{Binding .}" />
+                            <Button Text="➕ Add to Queue"
+                                    Margin="5,0"
+                                    Grid.Column="2"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FoldersViewModel}}, Path=EnqueueFolderCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
 </ContentPage>

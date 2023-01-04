@@ -61,7 +61,7 @@ public partial class FoldersViewModel : BaseViewModel
 
             Status = null;
 
-            Title = $"Folders ({Songs.Count:n0} songs)";
+            Title = $"Folders ({Songs.Count:n0})";
 
             // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
             //await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
