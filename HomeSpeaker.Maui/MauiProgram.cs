@@ -56,6 +56,9 @@ public static class MauiProgram
 		builder.Services.AddSingleton<StatusViewModel>();
 		builder.Services.AddSingleton<StatusPage>();
 
+		builder.Services.AddSingleton<StreamViewModel>();
+		builder.Services.AddSingleton<StreamPage>();
+
 		return builder.Build();
 	}
 }
