@@ -4,7 +4,7 @@ using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.Maui.ViewModels;
 
-public class StarredViewModel : BaseViewModel
+public partial class StarredViewModel : BaseViewModel
 {
     public StarredViewModel(Database database, HomeSpeakerClient client)
     {
@@ -12,14 +12,13 @@ public class StarredViewModel : BaseViewModel
         this.client = client;
         this.database = database;
         Title = "Starred";
-        init();
     }
 
     private readonly HomeSpeakerClient client;
     private readonly Database database;
 
-    public string Title { get; }
-    public Command LoginCommand { get; }
+    [ObservableProperty]
+    private string title;
     public ObservableCollection<SongGroup> Songs { get; private set; }
     public ObservableRangeCollection<SongViewModel> Songs2 { get; private set; } = new();
     public ObservableRangeCollection<Grouping<SongGroup, SongViewModel>> Songs2Groups { get; private set; } = new();
@@ -36,9 +35,11 @@ public class StarredViewModel : BaseViewModel
     }
     public bool StatusIsVisible => String.IsNullOrWhiteSpace(Status) is false;
 
-    private async void init()
+    [RelayCommand]
+    private async Task ViewModelLoading()
     {
         Status = "getting song info...";
+        Songs.Clear();
         var groups = new Dictionary<string, List<SongViewModel>>();
         var getSongsReply = client.GetSongs(new GetSongsRequest { });
         var starredSongs = (await database.GetStarredSongsAsync()).Select(s => s.Path).ToList();
@@ -58,19 +59,48 @@ public class StarredViewModel : BaseViewModel
         foreach (var folder in Songs2.Select(s => s.Folder).Distinct())
         {
             var songsInFolder = Songs2.Where(s => s.Folder == folder).ToList();
-            var key = new SongGroup(folder, songsInFolder, database);
+            var key = new SongGroup(folder, songsInFolder);
             Songs2Groups.Add(new Grouping<SongGroup, SongViewModel>(key, songsInFolder));
         }
 
         foreach (var group in groups.OrderBy(g => g.Key))
         {
-            Songs.Add(new SongGroup(group.Key, group.Value.OrderBy(s => s.Path).ToList(), database));
+            Songs.Add(new SongGroup(group.Key, group.Value.OrderBy(s => s.Path).ToList()));
         }
 
         Status = null;
 
         // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
         //await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
+        Title = $"Starred ({Songs.Count:n0} folders)";
+    }
 
+    [RelayCommand]
+    public void PlayFolder(SongGroup songs)
+    {
+        client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
+        foreach (var s in songs)
+        {
+            client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
+        }
+    }
+
+    [RelayCommand]
+    public void EnqueueFolder(SongGroup songs)
+    {
+        foreach (var s in songs)
+        {
+            client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
+        }
+    }
+
+    [RelayCommand]
+    public async Task UnStarFolder(SongGroup songs)
+    {
+        foreach (var s in songs)
+        {
+            await database.DeleteStarredSong(new StarredSong { Path = s.Path });
+        }
+        Songs.Remove(songs);
     }
 }

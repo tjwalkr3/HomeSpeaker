@@ -50,6 +50,12 @@ public static class MauiProgram
 		builder.Services.AddSingleton<StarredViewModel>();
 		builder.Services.AddSingleton<StarredPage>();
 
+		builder.Services.AddSingleton<FoldersViewModel>();
+		builder.Services.AddSingleton<FoldersPage>();
+
+		builder.Services.AddSingleton<StatusViewModel>();
+		builder.Services.AddSingleton<StatusPage>();
+
 		return builder.Build();
 	}
 }

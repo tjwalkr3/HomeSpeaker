@@ -2,40 +2,42 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:vm="clr-namespace:HomeSpeaker.Maui.ViewModels"
              x:Class="HomeSpeaker.Maui.Views.StarredPage"
-             Title="StarredPage">
-    <VerticalStackLayout>
-        <Label Text="{Binding Songs.Count, StringFormat='Found {0:n0} folders'}" HorizontalTextAlignment="End" TextColor="DarkGray" />
-        <Label Text="{Binding Status}" IsVisible="{Binding StatusIsVisible}" />
-
-        <CollectionView ItemsSource="{Binding Songs}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <xct:Expander IsExpanded="{Binding IsExpanded}">
-                        <xct:Expander.Header>
-                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*,*" BackgroundColor="Beige" Margin="0,5">
-                                <Label Text="{Binding FolderName}" FontSize="Medium" Grid.ColumnSpan="2" TextColor="Black" />
-                                <Label Text="{Binding FolderPath}" FontSize="Small" Grid.Row="1" Grid.ColumnSpan="2" TextColor="DarkGray" />
-                                <Button Text="▶ Folder" Grid.Row="2" HeightRequest="40" Command="{Binding PlayFolder}" />
-                                <Button Text="Un-⭐ Folder" Grid.Row="2" Grid.Column="1" HeightRequest="40" Command="{Binding UnStarFolder}" />
-                                <Button Text="➕ Folder" Grid.Row="2" Grid.Column="2" HeightRequest="40" Command="{Binding EnqueueFolder}" />
-                            </Grid>
-                        </xct:Expander.Header>
-                        <CollectionView ItemsSource="{Binding}">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
-                                        <Label Text="{Binding Name}" VerticalOptions="CenterAndExpand" TextColor="Black" />
-                                        <Button Grid.Column="1" Text="▶" Command="{Binding PlaySong}" Margin="3" HeightRequest="40" WidthRequest="40" />
-                                        <Button Grid.Column="2" Text="Un-⭐" Command="{Binding UnStarSong}" Margin="3" HeightRequest="40" WidthRequest="40" />
-                                        <Button Grid.Column="3" Text="➕" Command="{Binding EnqueueSong}" Margin="3" HeightRequest="40" WidthRequest="40" />
-                                    </Grid>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-                    </xct:Expander>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </VerticalStackLayout>
+             Title="{Binding Title}">
+    <ContentPage.Behaviors>
+        <xct:EventToCommandBehavior EventName="Appearing"
+                                    Command="{Binding ViewModelLoadingCommand}" />
+    </ContentPage.Behaviors>
+    <CollectionView Grid.Row="2"
+                    ItemsSource="{Binding Songs}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="vm:SongGroup">
+                <Frame>
+                    <StackLayout>
+                        <Label Text="{Binding FolderName}" />
+                        <HorizontalStackLayout>
+                            <Button Text="▶ Folder"
+                                    Grid.Row="2"
+                                    HeightRequest="40"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:StarredViewModel}}, Path=PlayFolderCommand}"
+                                    CommandParameter="{Binding .}" />
+                            <Button Text="Un-⭐ Folder"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    HeightRequest="40"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:StarredViewModel}}, Path=UnStarFolderCommand}"
+                                    CommandParameter="{Binding .}" />
+                            <Button Text="➕ Folder"
+                                    Grid.Row="2"
+                                    Grid.Column="2"
+                                    HeightRequest="40"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:StarredViewModel}}, Path=EnqueueFolderCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </HorizontalStackLayout>
+                    </StackLayout>
+                </Frame>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
 </ContentPage>

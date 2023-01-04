@@ -1,5 +1,5 @@
 ﻿namespace HomeSpeaker.Maui.ViewModels;
 
-public partial class BaseViewModel : ObservableObject
+public class BaseViewModel : ObservableObject
 {
 }

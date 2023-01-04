@@ -1,17 +1,15 @@
-﻿using Grpc.Core;
-using HomeSpeaker.Shared;
+﻿using HomeSpeaker.Shared;
 using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.Maui.ViewModels;
 
-public class FoldersViewModel : BaseViewModel
+public partial class FoldersViewModel : BaseViewModel
 {
     public FoldersViewModel(Database database, HomeSpeakerClient client)
     {
         Title = "Folders";
         Songs = new ObservableCollection<SongGroup>();
         this.client = client;
-        init();
         this.database = database;
     }
 
@@ -19,7 +17,8 @@ public class FoldersViewModel : BaseViewModel
     private readonly Database database;
 
     public Command LoginCommand { get; }
-    public string Title { get; }
+    [ObservableProperty]
+    private string title;
     public ObservableCollection<SongGroup> Songs { get; private set; }
 
     private string status;
@@ -34,59 +33,89 @@ public class FoldersViewModel : BaseViewModel
     }
     public bool StatusIsVisible => string.IsNullOrWhiteSpace(Status) is false;
 
-    private async void init()
+    [RelayCommand]
+    public async Task Loading()
     {
-        Status = "getting song info...";
-        var groups = new Dictionary<string, List<SongViewModel>>();
-        var getSongsReply = client.GetSongs(new GetSongsRequest { });
-        var starredSongs = (await database.GetStarredSongsAsync()).Select(s => s.Path).ToList();
-        await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
+        try
         {
-            foreach (var s in reply.Songs.Where(s => starredSongs.Contains(s.Path) == false))
+            Status = "getting song info...";
+            Songs.Clear();
+            var groups = new Dictionary<string, List<SongViewModel>>();
+            var getSongsReply = client.GetSongs(new GetSongsRequest { });
+            var starredSongs = (await database.GetStarredSongsAsync()).Select(s => s.Path).ToList();
+            await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
             {
-                var song = s.ToSongViewModel(database, client);
-                if (groups.ContainsKey(song.Folder) is false)
-                    groups[song.Folder] = new List<SongViewModel>();
-                groups[song.Folder].Add(song);
+                foreach (var s in reply.Songs.Where(s => starredSongs.Contains(s.Path) == false))
+                {
+                    var song = s.ToSongViewModel(database, client);
+                    if (groups.ContainsKey(song.Folder) is false)
+                        groups[song.Folder] = new List<SongViewModel>();
+                    groups[song.Folder].Add(song);
+                }
             }
-        }
 
-        foreach (var group in groups.OrderBy(g => g.Key))
+            foreach (var group in groups.OrderBy(g => g.Key))
+            {
+                Songs.Add(new SongGroup(group.Key, group.Value.OrderBy(s => s.Path).ToList()));
+            }
+
+            Status = null;
+
+            Title = $"Folders ({Songs.Count:n0} songs)";
+
+            // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
+            //await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
+        }
+        catch (Exception ex)
         {
-            Songs.Add(new SongGroup(group.Key, group.Value.OrderBy(s => s.Path).ToList(), database));
+            Status = ex.ToString();
         }
-
-        Status = null;
-
-        // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
-        //await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
-
     }
-}
 
-public static class ViewModelExtensions
-{
-    public static SongViewModel ToSongViewModel(this SongMessage song, Database database, HomeSpeakerClient client)
+    [RelayCommand]
+    public void PlayFolder(SongGroup songs)
     {
-        return new SongViewModel(database, client)
+        client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
+        foreach (var s in songs)
         {
-            SongId = song?.SongId ?? -1,
-            Name = song?.Name ?? "[ Null Song Response ??? ]",
-            Album = song?.Album,
-            Artist = song?.Artist,
-            Path = song?.Path
-        };
-    }
-    public async static IAsyncEnumerable<T> ReadAllAsync<T>(this IAsyncStreamReader<T> streamReader, CancellationToken cancellationToken = default)
-    {
-        if (streamReader == null)
-        {
-            throw new System.ArgumentNullException(nameof(streamReader));
+            client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
         }
+    }
 
-        while (await streamReader.MoveNext(cancellationToken))
+    [RelayCommand]
+    public void EnqueueFolder(SongGroup songs)
+    {
+        foreach (var s in songs)
         {
-            yield return streamReader.Current;
+            client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
+        }
+    }
+
+    [RelayCommand]
+    public async Task StarFolder(SongGroup songs)
+    {
+        foreach (var s in songs)
+        {
+            await database.SaveStarredSongAsync(new StarredSong { Path = s.Path });
+        }
+        Songs.Remove(songs);
+    }
+
+    [ObservableProperty]
+    bool isRefreshing;
+
+    [RelayCommand]
+    private async Task OnRefreshing()
+    {
+        IsRefreshing = true;
+
+        try
+        {
+            await Loading();
+        }
+        finally
+        {
+            IsRefreshing = false;
         }
     }
 }

@@ -3,7 +3,6 @@ using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.Maui.ViewModels;
 
-//This 'partial' is bogus...the compiler says there's another implementation of StatusViewModel...but there is none. :-(
 public partial class StatusViewModel : BaseViewModel
 {
     public StatusViewModel(Database database, HomeSpeakerClient client)

@@ -1,12 +1,65 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="HomeSpeaker.Maui.Views.StatusPage"
-             Title="StatusPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Status Page"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="{Binding Title}">
+    <ContentPage.Behaviors>
+        <xct:EventToCommandBehavior EventName="Appearing"
+                                    Command="{Binding RefreshStatusCommand}" />
+    </ContentPage.Behaviors>
+    <RefreshView Command="{Binding RefreshStatusCommand}"
+                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <Grid RowDefinitions="Auto,*,Auto" Margin="5">
+            <VerticalStackLayout>
+                <Label Text="Now Playing:"
+                       TextColor="DarkGray" />
+                <Label Text="{Binding NowPlayingTitle}"
+                       FontSize="Medium" />
+                <Label Text="{Binding Elapsed, StringFormat='Elapsed: {0}'}"
+                       TextColor="DarkGray" />
+                <Label Text="{Binding Remaining, StringFormat='Remaining: {0}'}"
+                       TextColor="DarkGray" />
+                <ProgressBar Progress="{Binding PercentComplete}" Margin="0,4"/>
+                <Grid ColumnDefinitions="*,*,*,*, *">
+                    <Button Text="⏹  Stop"
+                            Command="{Binding Stop}"
+                            HeightRequest="110" />
+                    <Button Text=" ▶  Play"
+                            Command="{Binding Play}"
+                            Grid.Column="1" />
+                    <Button Text="⏩  Skip"
+                            Command="{Binding Forward}"
+                            Grid.Column="2" />
+                    <Button Text="❌  Clear"
+                            Command="{Binding Clear}"
+                            Grid.Column="3" />
+                    <Button Text="🔀  Shuf"
+                            Command="{Binding Shuffle}"
+                            Grid.Column="4" />
+                </Grid>
+                <Label Text="{Binding Exception}"
+                       TextColor="Black" />
+                <Label Text="{Binding QueueLength, StringFormat='Queue ({0} items)'}"
+                       TextColor="Black"
+                       FontSize="Medium" />
+            </VerticalStackLayout>
+            <CollectionView ItemsSource="{Binding NowPlayingQueue}"
+                            Grid.Row="1">
+                <CollectionView.ItemTemplate x:DataType="local:SongViewModel">
+                    <DataTemplate>
+                        <StackLayout Margin="5">
+                            <Label Text="{Binding Name}"
+                                   Grid.Row="0" />
+                            <Label Text="{Binding Folder}"
+                                   Grid.Row="1"
+                                   FontSize="Micro"
+                                   TextColor="DarkGray"
+                                   Margin="10,-5,0,0" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </RefreshView>
 </ContentPage>

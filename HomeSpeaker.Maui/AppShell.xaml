@@ -5,56 +5,40 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:HomeSpeaker.Maui.Views">
 
-    <ShellContent Title="Starred" Icon="star.png" ContentTemplate="{DataTemplate views:StarredPage}">
-    </ShellContent>
-    <ShellContent Title="Songs" Icon="star.png" ContentTemplate="{DataTemplate views:FoldersPage}">
-    </ShellContent>
-    <ShellContent Title="Streams" Icon="star.png" ContentTemplate="{DataTemplate views:StreamPage}">
-    </ShellContent>
-    <ShellContent
-        Shell.NavBarIsVisible="true"
-        Title="Main"
-        Icon="iconblank.png"
-        ContentTemplate="{DataTemplate views:MainPage}"
-        Route="MainPage">
-        <!--<TabBar>
-            <Tab Title="Starred" Icon="star.png">
-                <ShellContent Route="StarredPage"
-                      ContentTemplate="{DataTemplate views:StarredPage}" />
-            </Tab>
-            <Tab Title="Folders"
-                Icon="folder_open.png">
-                <ShellContent Route="FoldersPage"
-                      ContentTemplate="{DataTemplate views:FoldersPage}" />
-            </Tab>
-            <Tab Title="Status"
-                Icon="icon_feed.png">
-                <ShellContent Route="StatusPage"
-                      ContentTemplate="{DataTemplate views:StatusPage}" />
-            </Tab>
-            <Tab Title="Streams"
-                Icon="wifi.png">
-                <ShellContent Route="StreamPage"
-                      ContentTemplate="{DataTemplate views:StreamPage}" />
-            </Tab>
-        </TabBar>-->
-    </ShellContent>
-    <ShellContent
-        Shell.NavBarIsVisible="true"
-        Title="ListDetail"
-        Icon="iconlistdetail.png"
-        ContentTemplate="{DataTemplate views:ListDetailPage}"
-        Route="ListDetailPage" />
-    <ShellContent
-        Shell.NavBarIsVisible="true"
-        Title="WebView"
-        Icon="iconwebview.png"
-        ContentTemplate="{DataTemplate views:WebViewPage}"
-        Route="WebViewPage" />
-    <ShellContent
-        Shell.NavBarIsVisible="true"
-        Title="Blank"
-        Icon="iconblank.png"
-        ContentTemplate="{DataTemplate views:BlankPage}"
-        Route="BlankPage" />
+    <ShellContent Title="Folders"
+                  Icon="folder_open.png"
+                  ContentTemplate="{DataTemplate views:FoldersPage}"
+                  Route="Folders" />
+    <ShellContent Title="Starred"
+                  Icon="star.png"
+                  ContentTemplate="{DataTemplate views:StarredPage}"
+                  Route="Starred" />
+    <ShellContent Title="Streams"
+                  Icon="wifi.png"
+                  ContentTemplate="{DataTemplate views:StreamPage}"
+                  Route="Steams" />
+    <ShellContent Title="Status"
+                  Icon="icon_feed.png"
+                  ContentTemplate="{DataTemplate views:StatusPage}"
+                  Route="Status" />
+    <ShellContent Shell.NavBarIsVisible="true"
+                  Title="Main"
+                  Icon="iconblank.png"
+                  ContentTemplate="{DataTemplate views:MainPage}"
+                  Route="MainPage" />
+    <ShellContent Shell.NavBarIsVisible="true"
+                  Title="ListDetail"
+                  Icon="iconlistdetail.png"
+                  ContentTemplate="{DataTemplate views:ListDetailPage}"
+                  Route="ListDetailPage" />
+    <ShellContent Shell.NavBarIsVisible="true"
+                  Title="WebView"
+                  Icon="iconwebview.png"
+                  ContentTemplate="{DataTemplate views:WebViewPage}"
+                  Route="WebViewPage" />
+    <ShellContent Shell.NavBarIsVisible="true"
+                  Title="Blank"
+                  Icon="iconblank.png"
+                  ContentTemplate="{DataTemplate views:BlankPage}"
+                  Route="BlankPage" />
 </Shell>
