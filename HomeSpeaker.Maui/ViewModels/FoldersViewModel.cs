@@ -33,6 +33,38 @@ public partial class FoldersViewModel : BaseViewModel
     }
     public bool StatusIsVisible => string.IsNullOrWhiteSpace(Status) is false;
 
+
+    [ObservableProperty]
+    private string filterText;
+
+    [ObservableProperty]
+    private IEnumerable<SongGroup> filteredSongs;
+
+    [RelayCommand]
+    public void ResetFilter()
+    {
+        FilterText = string.Empty;
+        FilteredSongs = Songs;
+        Title = $"Folders ({Songs.Count:n0})";
+    }
+
+    [RelayCommand]
+    public void PerformFilter()
+    {
+        if (string.IsNullOrWhiteSpace(FilterText))
+        {
+            FilteredSongs = Songs;
+            Title = $"Folders ({Songs.Count:n0})";
+            return;
+        }
+
+        FilteredSongs = Songs.Where(s =>
+            s.FolderName.Contains(FilterText, StringComparison.OrdinalIgnoreCase) ||
+            s.FolderPath.Contains(FilterText, StringComparison.OrdinalIgnoreCase)
+        );
+        Title = $"Filtered ({filteredSongs.Count():n0})";
+    }
+
     [RelayCommand]
     public async Task Loading()
     {
@@ -60,7 +92,7 @@ public partial class FoldersViewModel : BaseViewModel
             }
 
             Status = null;
-
+            FilteredSongs = Songs;
             Title = $"Folders ({Songs.Count:n0})";
 
             // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one

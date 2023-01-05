@@ -26,6 +26,7 @@
                                     Grid.Row="2"
                                     Grid.Column="1"
                                     HeightRequest="40"
+                                    Margin="5,0"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:StarredViewModel}}, Path=UnStarFolderCommand}"
                                     CommandParameter="{Binding .}" />
                             <Button Text="➕ Folder"
