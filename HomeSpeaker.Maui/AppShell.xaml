@@ -22,10 +22,10 @@
                   ContentTemplate="{DataTemplate views:StatusPage}"
                   Route="Status" />
     <ShellContent Shell.NavBarIsVisible="true"
-                  Title="Main"
+                  Title="Settings"
                   Icon="iconblank.png"
-                  ContentTemplate="{DataTemplate views:MainPage}"
-                  Route="MainPage" />
+                  ContentTemplate="{DataTemplate views:SettingsPage}"
+                  Route="SettingsPage" />
     <ShellContent Shell.NavBarIsVisible="true"
                   Title="ListDetail"
                   Icon="iconlistdetail.png"

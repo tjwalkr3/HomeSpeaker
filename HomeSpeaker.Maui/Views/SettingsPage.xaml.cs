@@ -1,8 +1,8 @@
 ﻿namespace HomeSpeaker.Maui.Views;
 
-public partial class MainPage : ContentPage
+public partial class SettingsPage : ContentPage
 {
-	public MainPage(MainViewModel viewModel)
+	public SettingsPage(SettingsViewModel viewModel)
 	{
 		InitializeComponent();
 		BindingContext = viewModel;

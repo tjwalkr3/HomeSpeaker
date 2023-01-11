@@ -1,14 +1,5 @@
 ﻿using HomeSpeaker.Shared;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace HomeSpeaker.Server
 {
@@ -25,8 +16,7 @@ namespace HomeSpeaker.Server
 
         public void PlaySong(string filePath)
         {
-            foreach (var existingVlc in Process.GetProcessesByName("vlc"))
-                existingVlc.Kill();
+            killVlc();
 
             playerProcess = new Process();
             playerProcess.StartInfo.FileName = vlc;
@@ -37,46 +27,56 @@ namespace HomeSpeaker.Server
             playerProcess.Start();
         }
 
+        private static void killVlc()
+        {
+            foreach (var existingVlc in Process.GetProcessesByName("vlc"))
+                existingVlc.Kill();
+        }
+
         public void EnqueueSong(string path)
         {
-            logger.LogError("Windows player does not support queuing");
+            PlaySong(path);//HACK: This is all messed up.  Copy over the logic from the linux player.
         }
 
         public void ClearQueue()
         {
-            throw new NotImplementedException();
+            logger.LogError("Windows plaer does not support queuing");
         }
 
         public void ResumePlay()
         {
-            throw new NotImplementedException();
+            logger.LogError("Windows plaer does not support resuming play");
+
         }
 
         public void SkipToNext()
         {
-            throw new NotImplementedException();
+            logger.LogError("Windows plaer does not support skipping to next");
         }
 
         public void Stop()
         {
-            throw new NotImplementedException();
+            killVlc();
         }
 
-        public void SetVolume(int level) => throw new NotImplementedException();
+        public void SetVolume(int level)
+        {
+            logger.LogError("Windows player does not support setting volume");
+        }
 
         public void ShuffleQueue()
         {
-            throw new NotImplementedException();
+            logger.LogError("Windows player does not support shuffling");
         }
 
         public void PlayStream(string streamUrl)
         {
-            throw new NotImplementedException();
+            logger.LogError("Windows player does not support playing streams");
         }
 
         public bool StillPlaying => playerProcess?.HasExited ?? true == false;
 
-        public PlayerStatus Status => throw new NotImplementedException();
+        public PlayerStatus Status => new PlayerStatus { CurrentSong = new Song { Album = "Unknown", Artist = "Unknown", Name = "Unknown", Path = "Unknown", SongId = 1 } };
 
         public IEnumerable<Song> SongQueue => throw new NotImplementedException();
     }
