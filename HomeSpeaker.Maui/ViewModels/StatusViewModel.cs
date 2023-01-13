@@ -5,7 +5,7 @@ namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class StatusViewModel : BaseViewModel
 {
-    public StatusViewModel(Database database, HomeSpeakerClient client)
+    public StatusViewModel(IStaredSongDb database, HomeSpeakerClient client)
     {
         Title = "Status";
         NowPlayingQueue = new ObservableCollection<SongViewModel>();
@@ -96,7 +96,7 @@ public partial class StatusViewModel : BaseViewModel
     });
 
     private readonly HomeSpeakerClient client;
-    private readonly Database database;
+    private readonly IStaredSongDb database;
     [ObservableProperty]
     private bool isBusy;
 

@@ -1,20 +1,19 @@
-﻿using HomeSpeaker.Shared;
-using static HomeSpeaker.Shared.HomeSpeaker;
-
-namespace HomeSpeaker.Maui.ViewModels;
+﻿namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class FoldersViewModel : BaseViewModel
 {
-    public FoldersViewModel(Database database, HomeSpeakerClient client)
+    public FoldersViewModel(IStaredSongDb staredSongDb, IPlayerService playerService)
     {
         Title = "Folders";
         Songs = new ObservableCollection<SongGroup>();
-        this.client = client;
-        this.database = database;
+
+        this.staredSongDb = staredSongDb;
+        this.playerService = playerService;
     }
 
-    private readonly HomeSpeakerClient client;
-    private readonly Database database;
+    private readonly IStaredSongDb
+        staredSongDb;
+    private readonly IPlayerService playerService;
 
     public Command LoginCommand { get; }
     [ObservableProperty]
@@ -34,19 +33,21 @@ public partial class FoldersViewModel : BaseViewModel
     public bool StatusIsVisible => string.IsNullOrWhiteSpace(Status) is false;
 
 
-    [ObservableProperty]
+    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(ResetFilterCommand))]
     private string filterText;
 
     [ObservableProperty]
     private IEnumerable<SongGroup> filteredSongs;
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanResetFilter))]
     public void ResetFilter()
     {
         FilterText = string.Empty;
         FilteredSongs = Songs;
         Title = $"Folders ({Songs.Count:n0})";
     }
+
+    public bool CanResetFilter() => !string.IsNullOrEmpty(FilterText);
 
     [RelayCommand]
     public void PerformFilter()
@@ -72,20 +73,7 @@ public partial class FoldersViewModel : BaseViewModel
         {
             Status = "getting song info...";
             Songs.Clear();
-            var groups = new Dictionary<string, List<SongViewModel>>();
-            var getSongsReply = client.GetSongs(new GetSongsRequest { });
-            var starredSongs = (await database.GetStarredSongsAsync()).Select(s => s.Path).ToList();
-            await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
-            {
-                foreach (var s in reply.Songs.Where(s => starredSongs.Contains(s.Path) == false))
-                {
-                    var song = s.ToSongViewModel();
-                    if (groups.ContainsKey(song.Folder) is false)
-                        groups[song.Folder] = new List<SongViewModel>();
-                    groups[song.Folder].Add(song);
-                }
-            }
-
+            var groups = await playerService.GetSongGroups();
             foreach (var group in groups.OrderBy(g => g.Key))
             {
                 Songs.Add(new SongGroup(group.Key, group.Value.OrderBy(s => s.Path).ToList()));
@@ -107,20 +95,13 @@ public partial class FoldersViewModel : BaseViewModel
     [RelayCommand]
     public void PlayFolder(SongGroup songs)
     {
-        client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
-        foreach (var s in songs)
-        {
-            client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
-        }
+        playerService.PlayFolder(songs);
     }
 
     [RelayCommand]
     public void EnqueueFolder(SongGroup songs)
     {
-        foreach (var s in songs)
-        {
-            client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
-        }
+        playerService.EnqueueFolder(songs);
     }
 
     [RelayCommand]
@@ -128,7 +109,7 @@ public partial class FoldersViewModel : BaseViewModel
     {
         foreach (var s in songs)
         {
-            await database.SaveStarredSongAsync(new StarredSong { Path = s.Path });
+            await staredSongDb.SaveStarredSongAsync(new StarredSong { Path = s.Path });
         }
         Songs.Remove(songs);
     }

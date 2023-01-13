@@ -20,6 +20,9 @@ public static class MauiProgram
         builder.Services.AddTransient<SampleDataService>();
         builder.Services.AddTransient<ListDetailDetailViewModel>();
         builder.Services.AddTransient<ListDetailDetailPage>();
+
+        builder.Services.AddSingleton<IPlayerService, GrpcPlayerService>();
+
         AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
         builder.Services.AddScoped(services =>
         {
@@ -36,10 +39,10 @@ public static class MauiProgram
             var channel = GrpcChannel.ForAddress(baseUri);
             return new HomeSpeakerClient(channel);
         });
-        builder.Services.AddSingleton(_ =>
+        builder.Services.AddSingleton<IStaredSongDb, StaredSongDb>(_ =>
         {
             var path = Path.Combine(FileSystem.Current.AppDataDirectory, "homespeaker_starredsongs.db3");
-            return new Database(path);
+            return new StaredSongDb(path);
         });
 
         builder.Services.AddSingleton<SettingsViewModel>();

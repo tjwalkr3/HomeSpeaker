@@ -6,7 +6,7 @@ namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class StarredViewModel : BaseViewModel
 {
-    public StarredViewModel(Database database, HomeSpeakerClient client)
+    public StarredViewModel(IStaredSongDb database, HomeSpeakerClient client)
     {
         Songs = new ObservableCollection<SongGroup>();
         this.client = client;
@@ -15,7 +15,7 @@ public partial class StarredViewModel : BaseViewModel
     }
 
     private readonly HomeSpeakerClient client;
-    private readonly Database database;
+    private readonly IStaredSongDb database;
 
     [ObservableProperty]
     private string title;
