@@ -115,9 +115,12 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.And("the following songs in the Folder2 folder", ((string)(null)), table2, "And ");
 #line hidden
 #line 13
- testRunner.When("I set the filter text to 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.And("I load all the songs", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 14
+ testRunner.When("I set the filter text to 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 15
  testRunner.And("click the Filter button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
@@ -130,7 +133,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "Artist2",
                             "Folder2",
                             "Song2"});
-#line 15
+#line 16
  testRunner.Then("I see the following songs", ((string)(null)), table3, "Then ");
 #line hidden
             }

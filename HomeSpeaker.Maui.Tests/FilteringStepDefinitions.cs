@@ -46,21 +46,32 @@ namespace HomeSpeaker.Maui.Tests
 
 
         [When(@"I set the filter text to (.*)")]
-        public void WhenISetTheFilterTextTo(int p0)
+        public void WhenISetTheFilterTextTo(string filterValue)
         {
-            throw new PendingStepException();
+            var vm = context.Get<FoldersViewModel>();
+            vm.FilterText = filterValue;
         }
 
         [When(@"click the Filter button")]
         public void WhenClickTheFilterButton()
         {
-            throw new PendingStepException();
+            var vm = context.Get<FoldersViewModel>();
+            vm.PerformFilterCommand.Execute(null);
         }
 
         [Then(@"I see the following songs")]
         public void ThenISeeTheFollowingSongs(Table table)
         {
-            throw new PendingStepException();
+            var vm = context.Get<FoldersViewModel>();
+            vm.FilteredSongs.Count().Should().Be(table.RowCount);
         }
+
+        [Given(@"I load all the songs")]
+        public async Task GivenILoadAllTheSongs()
+        {
+            var vm = context.Get<FoldersViewModel>();
+            await vm.Loading();
+        }
+
     }
 }

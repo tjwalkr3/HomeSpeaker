@@ -10,9 +10,10 @@ Scenario: Filter Songs
 	And the following songs in the Folder2 folder
 	| Album  | Artist  | Name  |
 	| Album2 | Artist2 | Song2 |
+	And I load all the songs
 	When I set the filter text to 1
 	And click the Filter button
 	Then I see the following songs
-	| Album | Artist | Folder | Name |
+	| Album  | Artist  | Folder  | Name  |
 	| Album2 | Artist2 | Folder2 | Song2 |
 
