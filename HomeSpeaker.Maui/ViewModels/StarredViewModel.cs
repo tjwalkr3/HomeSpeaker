@@ -47,7 +47,7 @@ public partial class StarredViewModel : BaseViewModel
         {
             foreach (var s in reply.Songs.Where(s => starredSongs.Contains(s.Path)))
             {
-                var song = s.ToSongViewModel(database, client);
+                var song = s.ToSongViewModel();
                 if (groups.ContainsKey(song.Folder) is false)
                     groups[song.Folder] = new List<SongViewModel>();
                 groups[song.Folder].Add(song);

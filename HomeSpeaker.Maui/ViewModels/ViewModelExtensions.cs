@@ -1,12 +1,11 @@
 ﻿using Grpc.Core;
 using HomeSpeaker.Shared;
-using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.Maui.ViewModels;
 
 public static class ViewModelExtensions
 {
-    public static SongViewModel ToSongViewModel(this SongMessage song, Database database, HomeSpeakerClient client)
+    public static SongViewModel ToSongViewModel(this SongMessage song)
     {
         return new SongViewModel
         {

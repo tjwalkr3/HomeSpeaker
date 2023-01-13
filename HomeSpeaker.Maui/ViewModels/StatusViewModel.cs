@@ -111,7 +111,7 @@ public partial class StatusViewModel : BaseViewModel
             await foreach (var reply in getQueueReply.ResponseStream.ReadAllAsync())
             {
                 foreach (var s in from songMessage in reply.Songs
-                                  select songMessage.ToSongViewModel(database, client))
+                                  select songMessage.ToSongViewModel())
                 {
                     NowPlayingQueue.Add(s);
                 }
