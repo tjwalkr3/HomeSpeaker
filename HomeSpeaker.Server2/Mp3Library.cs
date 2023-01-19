@@ -30,6 +30,8 @@ namespace HomeSpeaker.Server
             }
         }
 
+        public string RootFolder => fileSource.RootFolder;
+
         public bool SyncStarted { get; private set; }
         public bool SyncCompleted { get; private set; }
 

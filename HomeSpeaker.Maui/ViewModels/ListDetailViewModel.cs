@@ -3,55 +3,51 @@
 public partial class ListDetailViewModel : BaseViewModel
 {
     readonly SampleDataService dataService;
+    private readonly IPlayerService playerService;
+    public ListDetailViewModel(SampleDataService service, IPlayerService playerService)
+    {
+        dataService = service;
+        this.playerService = playerService;
+    }
 
     [ObservableProperty]
     bool isRefreshing;
 
-    [ObservableProperty]
-    ObservableCollection<SampleItem> items;
+    [ObservableProperty, NotifyPropertyChangedFor(nameof(IsStatusVisible))]
+    private string status;
 
-    public ListDetailViewModel(SampleDataService service)
-    {
-        dataService = service;
-    }
+    [ObservableProperty]
+    private string title;
+
+    public ObservableCollection<string> Folders { get; } = new();
+
+    public bool IsStatusVisible => !string.IsNullOrEmpty(status);
 
     [RelayCommand]
-    private async void OnRefreshing()
+    public async Task Loading()
     {
-        IsRefreshing = true;
-
         try
         {
-            await LoadDataAsync();
+            Status = "getting song info...";
+            Folders.Clear();
+            foreach (var folder in (await playerService.GetFolders()).Order())
+                Folders.Add(folder);
+
+            Status = null;
+            Title = $"Folders ({Folders.Count:n0})";
         }
-        finally
+        catch (Exception ex)
         {
-            IsRefreshing = false;
+            Status = ex.ToString();
         }
     }
 
     [RelayCommand]
-    public async Task LoadMore()
-    {
-        var items = await dataService.GetItems();
-
-        foreach (var item in items)
-        {
-            Items.Add(item);
-        }
-    }
-
-    public async Task LoadDataAsync()
-    {
-        Items = new ObservableCollection<SampleItem>(await dataService.GetItems());
-    }
-
-    [RelayCommand]
-    private async void GoToDetails(SampleItem item)
+    private async void GoToDetails(string folder)
     {
         await Shell.Current.GoToAsync(nameof(ListDetailDetailPage), true, new Dictionary<string, object>
         {
-            { "Item", item }
+            { "Folder", folder }
         });
     }
 }

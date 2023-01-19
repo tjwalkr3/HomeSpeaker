@@ -3,11 +3,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:HomeSpeaker.Maui.ViewModels"
              x:Class="HomeSpeaker.Maui.Views.ListDetailDetailPage"
-             x:DataType="vm:ListDetailDetailViewModel">
-    <ScrollView>
-        <VerticalStackLayout Margin="12">
-            <Label Text="{Binding Item.Title}" FontSize="Header" />
-            <Label Text="{Binding Item.Description}" FontSize="Default" />
-        </VerticalStackLayout>
-    </ScrollView>
+             Title="{Binding Folder}"
+             >
+    <CollectionView ItemsSource="{Binding Songs}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="vm:SongViewModel">
+                <Border Margin="0,2">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="5" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Margin="5,0,0,10">
+                        <Label Text="{Binding Name}"
+                               FontSize="Medium"
+                               Margin="0,2,0,0" />
+                        <Label Text="{Binding Album}"
+                               TextColor="Gray"
+                               Margin="10,0,0,4" />
+                        <Grid ColumnDefinitions="*,*,*">
+                            <Button Text="▶ Play"
+                                    Margin="5,0"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListDetailDetailViewModel}}, Path=PlaySongCommand}"
+                                    CommandParameter="{Binding .}" />
+                            <Button Text="➕ Add to Queue"
+                                    Margin="5,0"
+                                    Grid.Column="2"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListDetailDetailViewModel}}, Path=EnqueueSongCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
 </ContentPage>

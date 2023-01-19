@@ -43,7 +43,9 @@ message GetStatusReply {
 	SongMessage CurrentSong=5;
 }
 
-message GetSongsRequest { }
+message GetSongsRequest {
+	string Folder=1;
+}
 message GetSongsReply {
   repeated SongMessage Songs = 1;
 }

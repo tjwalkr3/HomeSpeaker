@@ -11,18 +11,27 @@ var builder = WebApplication.CreateBuilder(args);
 // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
 
 // Add services to the container.
-builder.Services.AddOpenTelemetry()
-    .WithTracing(b =>
+try
+{
+    var ping = new System.Net.NetworkInformation.Ping();
+    var response = ping.Send("http://jaeger");
+    if (response.Status == System.Net.NetworkInformation.IPStatus.Success)
     {
-        b.AddConsoleExporter()
-        .AddAspNetCoreInstrumentation()
-        .AddJaegerExporter(options => options.AgentHost = "jaeger");
-    })
-    .WithMetrics(b =>
-    {
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(b =>
+            {
+                b.AddConsoleExporter()
+                .AddAspNetCoreInstrumentation()
+                .AddJaegerExporter(options => options.AgentHost = "jaeger");
+            })
+            .WithMetrics(b =>
+            {
 
-    })
-    .StartWithHost();
+            })
+            .StartWithHost();
+    }
+}
+catch { }
 
 builder.Services.AddGrpc();
 

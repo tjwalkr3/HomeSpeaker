@@ -7,7 +7,11 @@ public interface IPlayerService
 {
     void PlayFolder(SongGroup songs);
     void EnqueueFolder(SongGroup songs);
+    void PlaySong(int songId);
+    void EnqueueSong(int songId);
     Task<Dictionary<string, List<SongViewModel>>> GetSongGroups();
+    Task<IEnumerable<string>> GetFolders();
+    Task<IEnumerable<SongViewModel>> GetSongsInFolder(string folder);
 }
 
 public class GrpcPlayerService : IPlayerService
@@ -38,6 +42,38 @@ public class GrpcPlayerService : IPlayerService
         }
     }
 
+    public async Task<IEnumerable<SongViewModel>> GetSongsInFolder(string folder)
+    {
+        var songs = new List<SongViewModel>();
+        var getSongsReply = client.GetSongs(new GetSongsRequest { Folder = folder });
+        await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
+        {
+            foreach (var s in reply.Songs)
+            {
+                songs.Add(s.ToSongViewModel());
+            }
+        }
+        return songs;
+    }
+
+    public async Task<IEnumerable<string>> GetFolders()
+    {
+        List<string> folders = new();
+
+        var getSongsReply = client.GetSongs(new GetSongsRequest { });
+        await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
+        {
+            foreach (var s in reply.Songs)
+            {
+                var directory = Path.GetDirectoryName(s.Path);
+                if (!folders.Contains(directory))
+                    folders.Add(directory);
+            }
+        }
+
+        return folders;
+    }
+
     public async Task<Dictionary<string, List<SongViewModel>>> GetSongGroups()
     {
         var groups = new Dictionary<string, List<SongViewModel>>();
@@ -55,5 +91,16 @@ public class GrpcPlayerService : IPlayerService
         }
 
         return groups;
+    }
+
+    public void PlaySong(int songId)
+    {
+        client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
+        client.EnqueueSong(new PlaySongRequest { SongId = songId });
+    }
+
+    public void EnqueueSong(int songId)
+    {
+        client.EnqueueSong(new PlaySongRequest { SongId = songId });
     }
 }

@@ -1,12 +1,11 @@
-﻿using Grpc.Net.Client;
-using static HomeSpeaker.Shared.HomeSpeaker;
+﻿namespace HomeSpeaker.Maui;
 
-namespace HomeSpeaker.Maui;
-
-public static class MauiProgram
+public static partial class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
@@ -23,22 +22,13 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<IPlayerService, GrpcPlayerService>();
 
-        AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+        builder.Services.AddSingleton<GrpcClientProvider>();
         builder.Services.AddScoped(services =>
         {
-            if (Preferences.ContainsKey(Constants.ServerAddress) is false)
-            {
-                Preferences.Set(Constants.ServerAddress, "http://192.168.1.110");
-            }
-            var baseUri = new Uri(Preferences.Get(Constants.ServerAddress, "http://192.168.1.110"));
-            var httpHandler = new HttpClientHandler();
-            // Return `true` to allow certificates that are untrusted/invalid
-            httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-
-            //var channel = GrpcChannel.ForAddress(baseUri, new GrpcChannelOptions { HttpHandler = httpHandler });
-            var channel = GrpcChannel.ForAddress(baseUri);
-            return new HomeSpeakerClient(channel);
+            var provider = services.GetRequiredService<GrpcClientProvider>();
+            return provider.Client;
         });
+
         builder.Services.AddSingleton<IStaredSongDb, StaredSongDb>(_ =>
         {
             var path = Path.Combine(FileSystem.Current.AppDataDirectory, "homespeaker_starredsongs.db3");

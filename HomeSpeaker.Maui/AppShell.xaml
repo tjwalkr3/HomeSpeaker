@@ -27,7 +27,7 @@
                   ContentTemplate="{DataTemplate views:SettingsPage}"
                   Route="SettingsPage" />
     <ShellContent Shell.NavBarIsVisible="true"
-                  Title="ListDetail"
+                  Title="Folders View"
                   Icon="iconlistdetail.png"
                   ContentTemplate="{DataTemplate views:ListDetailPage}"
                   Route="ListDetailPage" />

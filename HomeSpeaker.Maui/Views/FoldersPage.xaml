@@ -10,19 +10,13 @@
                                     Command="{Binding LoadingCommand}" />
     </ContentPage.Behaviors>
     <Grid RowDefinitions="Auto,*">
-        <Grid ColumnDefinitions="*,Auto,Auto">
-            <Entry Placeholder="Filter"
-                   Text="{Binding FilterText}" />
-            <Button Text="Filter"
-                    Grid.Column="1"
-                    Margin="5,3"
-                    Command="{Binding PerformFilterCommand}" />
-            <Button Text="Reset"
-                    Margin="0,3,3,3"
-                    Grid.Column="2"
-                    Command="{Binding ResetFilterCommand}" />
-        </Grid>
+        <SearchBar Placeholder="Filter songs &amp; albums"
+                   Margin="5"
+                   x:Name="searchBar"
+                   SearchCommand="{Binding PerformFilterCommand}"
+                   SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
         <CollectionView ItemsSource="{Binding FilteredSongs}"
+                        Margin="5"
                         Grid.Row="1">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="vm:SongGroup">

@@ -18,5 +18,7 @@
         <Button Command="{Binding UpdateServerAddressCommand}"
                 Text="Update Server Address" />
         <Label Text="{Binding ErrorMessage}" />
+        <Label Text="Past Servers:" />
+        <ListView ItemsSource="{Binding PastServers}"></ListView>
     </VerticalStackLayout>
 </ContentPage>

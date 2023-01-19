@@ -1,15 +1,7 @@
 using HomeSpeaker.Shared;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace HomeSpeaker.Server
 {
@@ -30,6 +22,7 @@ namespace HomeSpeaker.Server
         public PlayerStatus Status => (status ?? new PlayerStatus()) with { CurrentSong = currentSong };
 
         private bool startedPlaying = false;
+        private Song stoppedSong;
 
         public void PlayStream(string streamPath)
         {
@@ -48,7 +41,7 @@ namespace HomeSpeaker.Server
                     Album = url,
                     Artist = url,
                     Name = url,
-                    Path = url                    
+                    Path = url
                 }
             };
             playerProcess = new Process();
@@ -123,7 +116,7 @@ namespace HomeSpeaker.Server
 
         private void stopPlaying()
         {
-            if(playerProcess != null && playerProcess.HasExited is false)
+            if (playerProcess != null && playerProcess.HasExited is false)
                 playerProcess.Exited -= PlayerProcess_Exited;//stop listening to when the process ends.
 
             foreach (var proc in Process.GetProcessesByName("play").Union(Process.GetProcessesByName("vlc")))
@@ -220,8 +213,6 @@ namespace HomeSpeaker.Server
             playNextSongInQueue();
         }
 
-        private Song stoppedSong;
-
         public void Stop()
         {
             stoppedSong = currentSong;
@@ -243,7 +234,7 @@ namespace HomeSpeaker.Server
         {
             var oldQueue = songQueue.ToList();
             songQueue.Clear();
-            foreach(var s in oldQueue.OrderBy(i => Guid.NewGuid()))
+            foreach (var s in oldQueue.OrderBy(i => Guid.NewGuid()))
             {
                 songQueue.Enqueue(s);
             }

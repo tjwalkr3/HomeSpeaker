@@ -23,8 +23,13 @@ namespace HomeSpeaker.Server
             var reply = new GetSongsReply();
             if (library?.Songs?.Any() ?? false)
             {
+                IEnumerable<Song> songs = library.Songs;
+                if (!string.IsNullOrEmpty(request.Folder))
+                {
+                    songs = songs.Where(s => s.Path.Contains(request.Folder));
+                }
                 logger.LogInformation("Found songs!  Sending to client.");
-                reply.Songs.AddRange(translateSongs(library.Songs));
+                reply.Songs.AddRange(translateSongs(songs));
             }
             else
             {
@@ -101,19 +106,19 @@ namespace HomeSpeaker.Server
             await responseStream.WriteAsync(reply);
         }
 
-        private static IEnumerable<SongMessage> translateSongs(IEnumerable<Shared.Song> songQueue)
+        private IEnumerable<SongMessage> translateSongs(IEnumerable<Song> songQueue)
         {
-            return songQueue.Select(s => translateSong(s));
+            return songQueue.Select(translateSong);
         }
 
-        private static SongMessage translateSong(Shared.Song s)
+        private SongMessage translateSong(Song s)
         {
             return new SongMessage
             {
                 Album = s?.Album ?? "[ No Album ]",
                 Artist = s?.Artist ?? "[ No Artist ]",
-                Name = s?.Name ?? "[ No Name ]",
-                Path = s?.Path,
+                Name = s?.Name ?? Path.GetFileNameWithoutExtension(s?.Path),
+                Path = s?.Path.Substring(s.Path.IndexOf(library.RootFolder) + library.RootFolder.Length + 1),
                 SongId = s?.SongId ?? -1
             };
         }

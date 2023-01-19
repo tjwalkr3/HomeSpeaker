@@ -32,27 +32,13 @@ public partial class FoldersViewModel : BaseViewModel
     }
     public bool StatusIsVisible => string.IsNullOrWhiteSpace(Status) is false;
 
-
-    [ObservableProperty, NotifyCanExecuteChangedFor(nameof(ResetFilterCommand))]
-    private string filterText;
-
     [ObservableProperty]
     private IEnumerable<SongGroup> filteredSongs;
 
-    [RelayCommand(CanExecute = nameof(CanResetFilter))]
-    public void ResetFilter()
-    {
-        FilterText = string.Empty;
-        FilteredSongs = Songs;
-        Title = $"Folders ({Songs.Count:n0})";
-    }
-
-    public bool CanResetFilter() => !string.IsNullOrEmpty(FilterText);
-
     [RelayCommand]
-    public void PerformFilter()
+    public void PerformFilter(string filterText)
     {
-        if (string.IsNullOrWhiteSpace(FilterText))
+        if (string.IsNullOrWhiteSpace(filterText))
         {
             FilteredSongs = Songs;
             Title = $"Folders ({Songs.Count:n0})";
@@ -60,8 +46,8 @@ public partial class FoldersViewModel : BaseViewModel
         }
 
         FilteredSongs = Songs.Where(s =>
-            s.FolderName.Contains(FilterText, StringComparison.OrdinalIgnoreCase) ||
-            s.FolderPath.Contains(FilterText, StringComparison.OrdinalIgnoreCase)
+            s.FolderName.Contains(filterText, StringComparison.OrdinalIgnoreCase) ||
+            s.FolderPath.Contains(filterText, StringComparison.OrdinalIgnoreCase)
         );
         Title = $"Filtered ({filteredSongs.Count():n0})";
     }
