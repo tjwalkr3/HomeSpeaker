@@ -118,7 +118,7 @@ namespace HomeSpeaker.Server
                 Album = s?.Album ?? "[ No Album ]",
                 Artist = s?.Artist ?? "[ No Artist ]",
                 Name = s?.Name ?? Path.GetFileNameWithoutExtension(s?.Path),
-                Path = s?.Path.Substring(s.Path.IndexOf(library.RootFolder) + library.RootFolder.Length + 1),
+                Path = s?.Path.Substring(s.Path.IndexOf(library.RootFolder) + library.RootFolder.Length),
                 SongId = s?.SongId ?? -1
             };
         }

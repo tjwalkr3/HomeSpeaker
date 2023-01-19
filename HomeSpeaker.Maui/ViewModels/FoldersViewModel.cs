@@ -20,6 +20,21 @@ public partial class FoldersViewModel : BaseViewModel
     private string title;
     public ObservableCollection<SongGroup> Songs { get; private set; }
 
+    private string filterText;
+
+    public string FilterText
+    {
+        get { return filterText; }
+        set
+        {
+            SetProperty(ref filterText, value);
+            if (string.IsNullOrEmpty(filterText))
+            {
+                ResetFilter();
+            }
+        }
+    }
+
     private string status;
     public string Status
     {
@@ -34,6 +49,12 @@ public partial class FoldersViewModel : BaseViewModel
 
     [ObservableProperty]
     private IEnumerable<SongGroup> filteredSongs;
+
+    public void ResetFilter()
+    {
+        FilteredSongs = Songs;
+        Title = $"Folders ({Songs.Count:n0})";
+    }
 
     [RelayCommand]
     public void PerformFilter(string filterText)

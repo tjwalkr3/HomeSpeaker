@@ -1,22 +1,20 @@
 ﻿using HomeSpeaker.Shared;
 using MvvmHelpers;
-using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class StarredViewModel : BaseViewModel
 {
-    public StarredViewModel(IStaredSongDb database, HomeSpeakerClient client)
+    public StarredViewModel(IStaredSongDb database, HomeSpeakerClientProvider clientProvider)
     {
         Songs = new ObservableCollection<SongGroup>();
-        this.client = client;
         this.database = database;
+        this.clientProvider = clientProvider;
         Title = "Starred";
     }
 
-    private readonly HomeSpeakerClient client;
     private readonly IStaredSongDb database;
-
+    private readonly HomeSpeakerClientProvider clientProvider;
     [ObservableProperty]
     private string title;
     public ObservableCollection<SongGroup> Songs { get; private set; }
@@ -41,7 +39,7 @@ public partial class StarredViewModel : BaseViewModel
         Status = "getting song info...";
         Songs.Clear();
         var groups = new Dictionary<string, List<SongViewModel>>();
-        var getSongsReply = client.GetSongs(new GetSongsRequest { });
+        var getSongsReply = clientProvider.Client.GetSongs(new GetSongsRequest { });
         var starredSongs = (await database.GetStarredSongsAsync()).Select(s => s.Path).ToList();
         await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
         {
@@ -80,10 +78,10 @@ public partial class StarredViewModel : BaseViewModel
     [RelayCommand]
     public void PlayFolder(SongGroup songs)
     {
-        client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
+        clientProvider.Client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
         foreach (var s in songs)
         {
-            client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
+            clientProvider.Client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
         }
     }
 
@@ -92,7 +90,7 @@ public partial class StarredViewModel : BaseViewModel
     {
         foreach (var s in songs)
         {
-            client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
+            clientProvider.Client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
         }
     }
 

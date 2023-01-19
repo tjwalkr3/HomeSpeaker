@@ -202,7 +202,7 @@ namespace HomeSpeaker.Server
                 }
             };
             playerProcess = new Process();
-            playerProcess.StartInfo.FileName = "cvlc";
+            playerProcess.StartInfo.FileName = vlc;
             playerProcess.StartInfo.Arguments = $"\"{streamPath}\"";
             playerProcess.StartInfo.UseShellExecute = false;
             playerProcess.StartInfo.RedirectStandardOutput = true;

@@ -3,9 +3,9 @@ using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.Maui;
 
-public class GrpcClientProvider
+public class HomeSpeakerClientProvider
 {
-    public GrpcClientProvider()
+    public HomeSpeakerClientProvider()
     {
         ReloadClientFromPreferences();
     }

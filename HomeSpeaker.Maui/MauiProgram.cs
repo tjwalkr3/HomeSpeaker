@@ -21,13 +21,7 @@ public static partial class MauiProgram
         builder.Services.AddTransient<ListDetailDetailPage>();
 
         builder.Services.AddSingleton<IPlayerService, GrpcPlayerService>();
-
-        builder.Services.AddSingleton<GrpcClientProvider>();
-        builder.Services.AddScoped(services =>
-        {
-            var provider = services.GetRequiredService<GrpcClientProvider>();
-            return provider.Client;
-        });
+        builder.Services.AddSingleton<HomeSpeakerClientProvider>();
 
         builder.Services.AddSingleton<IStaredSongDb, StaredSongDb>(_ =>
         {

@@ -4,17 +4,22 @@
              xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="HomeSpeaker.Maui.Views.FoldersPage"
              xmlns:vm="clr-namespace:HomeSpeaker.Maui.ViewModels"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              Title="{Binding Title}">
     <ContentPage.Behaviors>
         <xct:EventToCommandBehavior EventName="Appearing"
                                     Command="{Binding LoadingCommand}" />
     </ContentPage.Behaviors>
     <Grid RowDefinitions="Auto,*">
-        <SearchBar Placeholder="Filter songs &amp; albums"
-                   Margin="5"
-                   x:Name="searchBar"
-                   SearchCommand="{Binding PerformFilterCommand}"
-                   SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+        <HorizontalStackLayout>
+            <SearchBar Placeholder="Filter songs &amp; albums"
+                       ios:SearchBar.SearchBarStyle="Minimal"
+                       Margin="5"
+                       x:Name="searchBar"
+                       Text="{Binding FilterText}"
+                       SearchCommand="{Binding PerformFilterCommand}"
+                       SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+        </HorizontalStackLayout>
         <CollectionView ItemsSource="{Binding FilteredSongs}"
                         Margin="5"
                         Grid.Row="1">
@@ -36,12 +41,12 @@
                                         Margin="5,0"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FoldersViewModel}}, Path=PlayFolderCommand}"
                                         CommandParameter="{Binding .}" />
-                                <Button Text="⭐ Move to Starred"
+                                <Button Text="⭐ Starred"
                                         Margin="5,0"
                                         Grid.Column="1"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FoldersViewModel}}, Path=StarFolderCommand}"
                                         CommandParameter="{Binding .}" />
-                                <Button Text="➕ Add to Queue"
+                                <Button Text="➕ Queue"
                                         Margin="5,0"
                                         Grid.Column="2"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FoldersViewModel}}, Path=EnqueueFolderCommand}"

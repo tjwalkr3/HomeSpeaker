@@ -1,26 +1,42 @@
-﻿using HomeSpeaker.Shared;
-using static HomeSpeaker.Shared.HomeSpeaker;
-
-namespace HomeSpeaker.Maui.ViewModels;
+﻿namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class SettingsViewModel : BaseViewModel
 {
-    private readonly HomeSpeakerClient client;
-    private readonly GrpcClientProvider clientProvider;
+    private readonly HomeSpeakerClientProvider clientProvider;
     public ObservableCollection<string> PastServers { get; } = new();
 
-    public SettingsViewModel(HomeSpeakerClient client, GrpcClientProvider clientProvider)
+    public SettingsViewModel(HomeSpeakerClientProvider clientProvider)
     {
-        this.client = client;
         this.clientProvider = clientProvider;
-        ServerAddress = Preferences.Get(Constants.ServerAddress, "Unknown");
+
         deserializePastServers();
+        CurrentServerAddress = Preferences.Get(Constants.ServerAddress, "Unknown");
     }
 
     public string Title => "Settings";
 
     [ObservableProperty]
-    private string serverAddress;
+    private string currentServerAddress;
+
+    [ObservableProperty]
+    private string newServerAddress;
+
+    private string selectedServer;
+
+    [RelayCommand]
+    private void DeleteServer(string serverToDelete)
+    {
+        PastServers.Remove(serverToDelete);
+        serializePastServers();
+    }
+
+    [RelayCommand]
+    private void ConnectServer(string serverAddress)
+    {
+        Preferences.Set(Constants.ServerAddress, serverAddress);
+        clientProvider.ReloadClientFromPreferences();
+        CurrentServerAddress = serverAddress;
+    }
 
     [RelayCommand]
     public async Task ViewModelLoading()
@@ -31,16 +47,12 @@ public partial class SettingsViewModel : BaseViewModel
     [ObservableProperty]
     private string errorMessage;
 
-    [ObservableProperty]
-    private ObservableCollection<Song> songs = new();
-
     [RelayCommand]
-    public void UpdateServerAddress()
+    public void AddServer()
     {
-        Preferences.Set(Constants.ServerAddress, ServerAddress);
-        clientProvider.ReloadClientFromPreferences();
-        PastServers.Add(ServerAddress);
+        PastServers.Add(NewServerAddress);
         serializePastServers();
+        NewServerAddress = null;
     }
 
     private void deserializePastServers()

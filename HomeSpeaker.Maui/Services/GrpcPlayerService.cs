@@ -1,5 +1,4 @@
 ﻿using HomeSpeaker.Shared;
-using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.Maui.Services;
 
@@ -16,12 +15,12 @@ public interface IPlayerService
 
 public class GrpcPlayerService : IPlayerService
 {
-    private readonly HomeSpeakerClient client;
+    private readonly HomeSpeakerClientProvider clientProvider;
     private readonly IStaredSongDb database;
 
-    public GrpcPlayerService(HomeSpeakerClient grpcClient, IStaredSongDb database)
+    public GrpcPlayerService(HomeSpeakerClientProvider clientProvider, IStaredSongDb database)
     {
-        this.client = grpcClient;
+        this.clientProvider = clientProvider;
         this.database = database;
     }
 
@@ -29,23 +28,23 @@ public class GrpcPlayerService : IPlayerService
     {
         foreach (var s in songs)
         {
-            client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
+            clientProvider.Client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
         }
     }
 
     public void PlayFolder(SongGroup songs)
     {
-        client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
+        clientProvider.Client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
         foreach (var s in songs)
         {
-            client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
+            clientProvider.Client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
         }
     }
 
     public async Task<IEnumerable<SongViewModel>> GetSongsInFolder(string folder)
     {
         var songs = new List<SongViewModel>();
-        var getSongsReply = client.GetSongs(new GetSongsRequest { Folder = folder });
+        var getSongsReply = clientProvider.Client.GetSongs(new GetSongsRequest { Folder = folder });
         await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
         {
             foreach (var s in reply.Songs)
@@ -60,7 +59,7 @@ public class GrpcPlayerService : IPlayerService
     {
         List<string> folders = new();
 
-        var getSongsReply = client.GetSongs(new GetSongsRequest { });
+        var getSongsReply = clientProvider.Client.GetSongs(new GetSongsRequest { });
         await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
         {
             foreach (var s in reply.Songs)
@@ -77,7 +76,7 @@ public class GrpcPlayerService : IPlayerService
     public async Task<Dictionary<string, List<SongViewModel>>> GetSongGroups()
     {
         var groups = new Dictionary<string, List<SongViewModel>>();
-        var getSongsReply = client.GetSongs(new GetSongsRequest { });
+        var getSongsReply = clientProvider.Client.GetSongs(new GetSongsRequest { });
         var starredSongs = (await database.GetStarredSongsAsync()).Select(s => s.Path).ToList();
         await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
         {
@@ -95,12 +94,12 @@ public class GrpcPlayerService : IPlayerService
 
     public void PlaySong(int songId)
     {
-        client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
-        client.EnqueueSong(new PlaySongRequest { SongId = songId });
+        clientProvider.Client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
+        clientProvider.Client.EnqueueSong(new PlaySongRequest { SongId = songId });
     }
 
     public void EnqueueSong(int songId)
     {
-        client.EnqueueSong(new PlaySongRequest { SongId = songId });
+        clientProvider.Client.EnqueueSong(new PlaySongRequest { SongId = songId });
     }
 }

@@ -5,20 +5,54 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:shared="clr-namespace:HomeSpeaker.Shared;assembly=HomeSpeaker.Shared"
              x:Class="HomeSpeaker.Maui.Views.SettingsPage"
-             Title="{Binding Title}"
-             >
+             Title="{Binding Title}">
     <ContentPage.Behaviors>
-        <toolkit:EventToCommandBehavior
-            EventName="Appearing"
-            Command="{Binding ViewModelLoadingCommand}" />
+        <toolkit:EventToCommandBehavior EventName="Appearing"
+                                        Command="{Binding ViewModelLoadingCommand}" />
     </ContentPage.Behaviors>
-    <VerticalStackLayout HorizontalOptions="Center" MinimumWidthRequest="250">
-        <Label Text="Server Address" />
-        <Entry Text="{Binding ServerAddress}" />
-        <Button Command="{Binding UpdateServerAddressCommand}"
-                Text="Update Server Address" />
+    <VerticalStackLayout HorizontalOptions="CenterAndExpand"
+                         Margin="5">
         <Label Text="{Binding ErrorMessage}" />
-        <Label Text="Past Servers:" />
-        <ListView ItemsSource="{Binding PastServers}"></ListView>
+        <Label Text="Current Server"
+               FontSize="Header" />
+        <Label Text="{Binding CurrentServerAddress}"
+               FontSize="Medium"
+               BackgroundColor="LightGrey"
+               Margin="5,0,5,20" />
+
+        <Label Text="Past Servers"
+               FontSize="Header" />
+
+        <CollectionView ItemsSource="{Binding PastServers}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border StrokeShape="RoundRectangle 5"
+                            Margin="5">
+                        <Grid ColumnDefinitions="*,Auto,Auto"
+                              Margin="5">
+                            <Label Text="{Binding .}"
+                                   VerticalOptions="CenterAndExpand"
+                                   Margin="5" />
+                            <Button Text="✅ Connect"
+                                    BackgroundColor="Green"
+                                    Grid.Column="1"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SettingsViewModel}}, Path=ConnectServerCommand}"
+                                    CommandParameter="{Binding .}" />
+                            <Button Text="❌ Delete"
+                                    BackgroundColor="Red"
+                                    Grid.Column="2"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SettingsViewModel}}, Path=DeleteServerCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Entry Margin="0,20,0,0"
+               Text="{Binding NewServerAddress}"
+               Placeholder="New server address" />
+        <Button Command="{Binding AddServerCommand}"
+                Text="Add Server" />
     </VerticalStackLayout>
 </ContentPage>

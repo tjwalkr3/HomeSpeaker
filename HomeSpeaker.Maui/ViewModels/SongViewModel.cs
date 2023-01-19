@@ -29,7 +29,8 @@ public partial class SongGroup : List<SongViewModel>
 
     public SongGroup(string name, List<SongViewModel> songs) : base(songs)
     {
-        FolderName = name;
+        var parts = name.Split('/', '\\');
+        FolderName = parts.Last();
         FolderPath = name;
     }
 }

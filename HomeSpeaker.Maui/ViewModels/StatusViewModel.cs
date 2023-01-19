@@ -1,17 +1,16 @@
 ﻿using HomeSpeaker.Shared;
-using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class StatusViewModel : BaseViewModel
 {
-    public StatusViewModel(IStaredSongDb database, HomeSpeakerClient client)
+    public StatusViewModel(IStaredSongDb database, HomeSpeakerClientProvider clientProvider)
     {
         Title = "Status";
         NowPlayingQueue = new ObservableCollection<SongViewModel>();
-        this.client = client;
         RefreshStatusCommand.Execute(this);
         this.database = database;
+        this.clientProvider = clientProvider;
     }
 
     public string Name { get; set; }
@@ -55,25 +54,25 @@ public partial class StatusViewModel : BaseViewModel
     private Command stop;
     public Command Stop => stop ??= new Command(() =>
     {
-        client.PlayerControl(new PlayerControlRequest { Stop = true });
+        clientProvider.Client.PlayerControl(new PlayerControlRequest { Stop = true });
         RefreshStatusCommand.Execute(this);
     });
     private Command play;
     public Command Play => play ??= new Command(() =>
     {
-        client.PlayerControl(new PlayerControlRequest { Play = true });
+        clientProvider.Client.PlayerControl(new PlayerControlRequest { Play = true });
         RefreshStatusCommand.Execute(this);
     });
     private Command forward;
     public Command Forward => forward ??= new Command(() =>
     {
-        client.PlayerControl(new PlayerControlRequest { SkipToNext = true });
+        clientProvider.Client.PlayerControl(new PlayerControlRequest { SkipToNext = true });
         RefreshStatusCommand.Execute(this);
     });
     private Command clear;
     public Command Clear => clear ??= new Command(() =>
     {
-        client.PlayerControl(new PlayerControlRequest { ClearQueue = true });
+        clientProvider.Client.PlayerControl(new PlayerControlRequest { ClearQueue = true });
         RefreshStatusCommand.Execute(this);
     });
     private string exception;
@@ -91,12 +90,12 @@ public partial class StatusViewModel : BaseViewModel
     private Command shuffle;
     public Command Shuffle => shuffle ??= new Command(() =>
     {
-        client.ShuffleQueue(new ShuffleQueueRequest());
+        clientProvider.Client.ShuffleQueue(new ShuffleQueueRequest());
         RefreshStatusCommand.Execute(this);
     });
 
-    private readonly HomeSpeakerClient client;
     private readonly IStaredSongDb database;
+    private readonly HomeSpeakerClientProvider clientProvider;
     [ObservableProperty]
     private bool isBusy;
 
@@ -107,7 +106,7 @@ public partial class StatusViewModel : BaseViewModel
         try
         {
             NowPlayingQueue.Clear();
-            var getQueueReply = client.GetPlayQueue(new GetSongsRequest());
+            var getQueueReply = clientProvider.Client.GetPlayQueue(new GetSongsRequest());
             await foreach (var reply in getQueueReply.ResponseStream.ReadAllAsync())
             {
                 foreach (var s in from songMessage in reply.Songs
@@ -119,7 +118,7 @@ public partial class StatusViewModel : BaseViewModel
             QueueLength = NowPlayingQueue.Count;
             OnPropertyChanged(nameof(NowPlayingQueue));
 
-            var statusReply = client.GetPlayerStatus(new GetStatusRequest());
+            var statusReply = clientProvider.Client.GetPlayerStatus(new GetStatusRequest());
             NowPlayingTitle = statusReply.CurrentSong.Name;
             Elapsed = statusReply.Elapsed.ToTimeSpan();
             Remaining = statusReply.Remaining.ToTimeSpan();

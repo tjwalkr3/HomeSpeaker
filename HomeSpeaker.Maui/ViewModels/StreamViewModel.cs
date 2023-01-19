@@ -1,5 +1,4 @@
 ﻿using HomeSpeaker.Shared;
-using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.Maui.ViewModels;
 
@@ -7,12 +6,11 @@ public class StreamViewModel : BaseViewModel
 {
     public string Title { get; }
 
-    private HomeSpeakerClient client;
 
-    public StreamViewModel(HomeSpeakerClient client)
+    public StreamViewModel(HomeSpeakerClientProvider clientProvider)
     {
         Title = "Internet Radio Streams";
-        this.client = client;
+        this.clientProvider = clientProvider;
     }
 
     public Dictionary<string, string> Streams { get; private set; } = new()
@@ -35,7 +33,9 @@ public class StreamViewModel : BaseViewModel
     };
 
     private Command<string> playStream;
+    private readonly HomeSpeakerClientProvider clientProvider;
+
     public Command<string> PlayStream => playStream ??= new Command<string>(async (path) =>
-        await client.PlayStreamAsync(new PlayStreamRequest { StreamUrl = path })
+        await clientProvider.Client.PlayStreamAsync(new PlayStreamRequest { StreamUrl = path })
     );
 }
