@@ -45,7 +45,7 @@ namespace HomeSpeaker.Server
             if (song != null)
             {
                 Task.Run(() =>
-                    musicPlayer.PlaySong(song.Path)
+                    musicPlayer.PlaySong(song)
                 );
                 reply.Ok = true;
             }
@@ -71,7 +71,7 @@ namespace HomeSpeaker.Server
             if (song != null)
             {
                 logger.LogInformation($"Queuing up #{song.SongId}: {song.Name}");
-                musicPlayer.EnqueueSong(song.Path);
+                musicPlayer.EnqueueSong(song);
                 reply.Ok = true;
             }
             return Task.FromResult(reply);

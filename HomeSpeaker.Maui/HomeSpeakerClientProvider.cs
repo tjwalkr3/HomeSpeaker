@@ -18,13 +18,27 @@ public class HomeSpeakerClientProvider
         }
         var baseUri = new Uri(Preferences.Get(Constants.ServerAddress, "http://192.168.1.110"));
         var channel = GrpcChannel.ForAddress(baseUri);
-        lock (lockObject)
-        {
-            Client = new HomeSpeakerClient(channel);
-        }
+        Client = new HomeSpeakerClient(channel);
     }
 
     private object lockObject = new();
+    private HomeSpeakerClient client;
 
-    public HomeSpeakerClient Client { get; private set; }
+    public HomeSpeakerClient Client
+    {
+        get
+        {
+            lock (lockObject)
+            {
+                return client;
+            }
+        }
+        private set
+        {
+            lock (lockObject)
+            {
+                client = value;
+            }
+        }
+    }
 }

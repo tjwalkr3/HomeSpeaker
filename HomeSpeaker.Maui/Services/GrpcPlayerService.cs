@@ -4,10 +4,10 @@ namespace HomeSpeaker.Maui.Services;
 
 public interface IPlayerService
 {
-    void PlayFolder(SongGroup songs);
-    void EnqueueFolder(SongGroup songs);
-    void PlaySong(int songId);
-    void EnqueueSong(int songId);
+    Task PlayFolderAsync(SongGroup songs);
+    Task EnqueueFolderAsync(SongGroup songs);
+    Task PlaySongAsync(int songId);
+    Task EnqueueSongAsync(int songId);
     Task<Dictionary<string, List<SongViewModel>>> GetSongGroups();
     Task<IEnumerable<string>> GetFolders();
     Task<IEnumerable<SongViewModel>> GetSongsInFolder(string folder);
@@ -24,20 +24,20 @@ public class GrpcPlayerService : IPlayerService
         this.database = database;
     }
 
-    public void EnqueueFolder(SongGroup songs)
+    public async Task EnqueueFolderAsync(SongGroup songs)
     {
         foreach (var s in songs)
         {
-            clientProvider.Client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
+            await clientProvider.Client.EnqueueSongAsync(new PlaySongRequest { SongId = s.SongId });
         }
     }
 
-    public void PlayFolder(SongGroup songs)
+    public async Task PlayFolderAsync(SongGroup songs)
     {
-        clientProvider.Client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
+        await clientProvider.Client.PlayerControlAsync(new PlayerControlRequest { Stop = true, ClearQueue = true });
         foreach (var s in songs)
         {
-            clientProvider.Client.EnqueueSong(new PlaySongRequest { SongId = s.SongId });
+            await clientProvider.Client.EnqueueSongAsync(new PlaySongRequest { SongId = s.SongId });
         }
     }
 
@@ -92,14 +92,14 @@ public class GrpcPlayerService : IPlayerService
         return groups;
     }
 
-    public void PlaySong(int songId)
+    public async Task PlaySongAsync(int songId)
     {
-        clientProvider.Client.PlayerControl(new PlayerControlRequest { Stop = true, ClearQueue = true });
-        clientProvider.Client.EnqueueSong(new PlaySongRequest { SongId = songId });
+        await clientProvider.Client.PlayerControlAsync(new PlayerControlRequest { Stop = true, ClearQueue = true });
+        await clientProvider.Client.EnqueueSongAsync(new PlaySongRequest { SongId = songId });
     }
 
-    public void EnqueueSong(int songId)
+    public async Task EnqueueSongAsync(int songId)
     {
-        clientProvider.Client.EnqueueSong(new PlaySongRequest { SongId = songId });
+        await clientProvider.Client.EnqueueSongAsync(new PlaySongRequest { SongId = songId });
     }
 }

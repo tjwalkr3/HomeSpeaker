@@ -27,10 +27,10 @@ namespace HomeSpeaker.Server
                 logger.LogInformation("Found {LastStatePath} file, re-setting current song and queue", LastStatePath);
 
                 var lastState = JsonSerializer.Deserialize<LastState>(await File.ReadAllTextAsync(LastStatePath));
-                player.PlaySong(lastState.CurrentSong.Path);
+                player.PlaySong(lastState.CurrentSong);
                 foreach (var s in lastState.Queue)
                 {
-                    player.EnqueueSong(s.Path);
+                    player.EnqueueSong(s);
                 }
 
                 logger.LogInformation("Restarted using {lastState}", lastState);

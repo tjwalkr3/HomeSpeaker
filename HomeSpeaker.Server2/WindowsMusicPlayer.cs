@@ -24,16 +24,16 @@ namespace HomeSpeaker.Server
 
         private bool startedPlaying = false;
 
-        public void PlaySong(string filePath)
+        public void PlaySong(Song song)
         {
+            currentSong = song;
             startedPlaying = true;
-            currentSong = library.Songs.Single(s => s.Path == filePath);
             stopPlaying();
             stoppedSong = null;
 
             playerProcess = new Process();
             playerProcess.StartInfo.FileName = vlc;
-            playerProcess.StartInfo.Arguments = $"--play-and-exit \"{filePath}\"";
+            playerProcess.StartInfo.Arguments = $"--play-and-exit \"{song.Path}\"";
             playerProcess.StartInfo.UseShellExecute = false;
             playerProcess.StartInfo.RedirectStandardOutput = true;
             playerProcess.StartInfo.RedirectStandardError = true;
@@ -62,7 +62,7 @@ namespace HomeSpeaker.Server
                 }
             });
 
-            logger.LogInformation($"Starting to play {filePath}");
+            logger.LogInformation($"Starting to play {song.Path}");
             playerProcess.EnableRaisingEvents = true;
             playerProcess.Start();
             playerProcess.Exited += PlayerProcess_Exited;
@@ -99,7 +99,7 @@ namespace HomeSpeaker.Server
             logger.LogInformation($"There are still {songQueue.Count} songs in the queue, so I'll play the next one:");
             if (songQueue.TryDequeue(out var nextSong))
             {
-                PlaySong(nextSong.Path);
+                PlaySong(nextSong);
             }
         }
 
@@ -128,21 +128,20 @@ namespace HomeSpeaker.Server
             return false;
         }
 
-        public void EnqueueSong(string path)
+        public void EnqueueSong(Song song)
         {
-            var story = new StringBuilder($"Queuing up {path}\n");
+            var story = new StringBuilder($"Queuing up #{song.SongId} ({song.Path})\n");
 
             if (StillPlaying)
             {
                 story.AppendLine("StillPlaying is true, so I'll add to queue.");
-                var song = library.Songs.Single(s => s.Path == path);
                 songQueue.Enqueue(song);
                 story.AppendLine($"Added song# {song.SongId} to queue, now contains {songQueue.Count} songs.");
             }
             else
             {
                 story.AppendLine("Nothing playing, so instead of queuing I'll just play it...");
-                PlaySong(path);
+                PlaySong(song);
             }
             logger.LogInformation(story.ToString());
         }
@@ -156,7 +155,7 @@ namespace HomeSpeaker.Server
         {
             if (StillPlaying == false && stoppedSong != null)
             {
-                PlaySong(stoppedSong.Path);
+                PlaySong(stoppedSong);
             }
             else if (songQueue.Any())
             {
@@ -239,8 +238,13 @@ namespace HomeSpeaker.Server
         {
             get
             {
-                logger.LogInformation($"StillPlaying: startedPlaying {startedPlaying} || (playerProcess?.HasExited {playerProcess?.HasExited} ?? true) {playerProcess?.HasExited ?? false} == false) {(playerProcess?.HasExited ?? true) == false}");
-                return startedPlaying || (playerProcess?.HasExited ?? true) == false;
+                try
+                {
+                    var stillPlaying = startedPlaying || (playerProcess?.HasExited ?? true) == false;
+                    logger.LogInformation("startedPlaying {startedPlaying}, playerProcess {playerProcess}, stillPlaying {stillPlaying}", startedPlaying, playerProcess, stillPlaying);
+                    return stillPlaying;
+                }
+                catch { return false; }
             }
         }
 

@@ -35,14 +35,14 @@ public partial class ListDetailDetailViewModel : BaseViewModel
     public ObservableCollection<SongViewModel> Songs { get; } = new();
 
     [RelayCommand]
-    private void PlaySong(SongViewModel song)
+    private async Task PlaySong(SongViewModel song)
     {
-        playerService.PlaySong(song.SongId);
+        await playerService.PlaySongAsync(song.SongId);
     }
 
     [RelayCommand]
-    private void EnqueueSong(SongViewModel song)
+    private async Task EnqueueSong(SongViewModel song)
     {
-        playerService.EnqueueSong(song.SongId);
+        await playerService.EnqueueSongAsync(song.SongId);
     }
 }

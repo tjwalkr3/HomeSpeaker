@@ -100,15 +100,15 @@ public partial class FoldersViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    public void PlayFolder(SongGroup songs)
+    public async Task PlayFolderAsync(SongGroup songs)
     {
-        playerService.PlayFolder(songs);
+        await playerService.PlayFolderAsync(songs);
     }
 
     [RelayCommand]
-    public void EnqueueFolder(SongGroup songs)
+    public async Task EnqueueFolderAsync(SongGroup songs)
     {
-        playerService.EnqueueFolder(songs);
+        await playerService.EnqueueFolderAsync(songs);
     }
 
     [RelayCommand]

@@ -1,17 +1,13 @@
 ﻿using HomeSpeaker.Shared;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HomeSpeaker.Server
 {
     public interface IMusicPlayer
     {
-        void PlaySong(string filePath);
+        void PlaySong(Song song);
         void PlayStream(string streamUrl);
         bool StillPlaying { get; }
-        void EnqueueSong(string path);
+        void EnqueueSong(Song song);
         PlayerStatus Status { get; }
         IEnumerable<Song> SongQueue { get; }
         void ClearQueue();
