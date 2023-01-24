@@ -10,6 +10,8 @@ package homespeaker;
 service HomeSpeaker {
 	rpc GetSongs(GetSongsRequest) returns (stream GetSongsReply);
 	rpc PlaySong(PlaySongRequest) returns (PlaySongReply);
+	rpc PlayFolder(PlayFolderRequest) returns (PlayFolderReply);
+	rpc EnqueueFolder(EnqueueFolderRequest) returns (EnqueueFolderReply);
 	rpc PlayStream(PlayStreamRequest) returns (PlaySongReply);
 	rpc EnqueueSong(PlaySongRequest) returns (PlaySongReply);
 	rpc ResetLibrary(google.protobuf.Empty) returns (google.protobuf.Empty);
@@ -19,9 +21,8 @@ service HomeSpeaker {
 	rpc ShuffleQueue(ShuffleQueueRequest) returns (ShuffleQueueReply);
 }
 
-message ShuffleQueueRequest{}
-message ShuffleQueueReply{}
-
+message ShuffleQueueRequest {}
+message ShuffleQueueReply {}
 message PlayerControlRequest {
 	bool Stop=1;
 	bool Play=2;
@@ -30,11 +31,9 @@ message PlayerControlRequest {
 	bool SetVolume=5;
 	int32 VolumeLevel=6;
 }
-
 message PlayerControlReply {
 }
-
-message GetStatusRequest{}
+message GetStatusRequest {}
 message GetStatusReply {
 	google.protobuf.Duration Elapsed=1;
 	google.protobuf.Duration Remaining=2;
@@ -42,24 +41,21 @@ message GetStatusReply {
 	double PercentComplete=4;
 	SongMessage CurrentSong=5;
 }
-
 message GetSongsRequest {
 	string Folder=1;
 }
 message GetSongsReply {
   repeated SongMessage Songs = 1;
 }
-
-message PlaySongRequest{
+message PlaySongRequest {
 	int32 SongId=1;
 }
-message PlaySongReply{
+message PlaySongReply {
 	bool Ok=1;
 }
-message PlayStreamRequest{
+message PlayStreamRequest {
 	string StreamUrl=1;
 }
-
 message SongMessage {
   int32 SongId=1;
   string Name=2;
@@ -67,3 +63,11 @@ message SongMessage {
   string Album=4;
   string Artist=5;
 }
+message PlayFolderRequest {
+	string FolderPath=1;
+}
+message PlayFolderReply {}
+message EnqueueFolderRequest {
+	string FolderPath=1;
+}
+message EnqueueFolderReply {}

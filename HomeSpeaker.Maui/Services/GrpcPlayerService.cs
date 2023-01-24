@@ -5,6 +5,8 @@ namespace HomeSpeaker.Maui.Services;
 
 public interface IPlayerService
 {
+    Task PlayFolderAsync(string folder);
+    Task EnqueueFolderAsync(string folder);
     Task PlayFolderAsync(SongGroup songs);
     Task EnqueueFolderAsync(SongGroup songs);
     Task PlaySongAsync(int songId);
@@ -114,5 +116,15 @@ public class GrpcPlayerService : IPlayerService
     public async Task EnqueueSongAsync(int songId)
     {
         await clientProvider.Client.EnqueueSongAsync(new PlaySongRequest { SongId = songId });
+    }
+
+    public async Task PlayFolderAsync(string folder)
+    {
+        await clientProvider.Client.PlayFolderAsync(new PlayFolderRequest { FolderPath = folder });
+    }
+
+    public async Task EnqueueFolderAsync(string folder)
+    {
+        await clientProvider.Client.EnqueueFolderAsync(new EnqueueFolderRequest { FolderPath = folder });
     }
 }

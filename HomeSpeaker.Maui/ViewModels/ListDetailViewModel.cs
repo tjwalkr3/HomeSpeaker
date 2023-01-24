@@ -67,4 +67,16 @@ public partial class ListDetailViewModel : BaseViewModel
             ["Folder"] = folder
         });
     }
+
+    [RelayCommand]
+    private async Task PlayFolder(string folder)
+    {
+        await playerService.PlayFolderAsync(folder);
+    }
+
+    [RelayCommand]
+    private async Task EnqueueFolder(string folder)
+    {
+        await playerService.EnqueueFolderAsync(folder);
+    }
 }

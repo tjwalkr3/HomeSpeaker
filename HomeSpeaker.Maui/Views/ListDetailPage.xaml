@@ -14,11 +14,28 @@
         <CollectionView ItemsSource="{Binding Folders}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="4" Padding="12">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListDetailViewModel}}, Path=GoToDetailsCommand}" CommandParameter="{Binding .}" />
-                        </Frame.GestureRecognizers>
-                        <Label Text="{Binding }" FontSize="Large" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Black}}" />
+                    <Frame Margin="4"
+                           Padding="12">
+                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="3">
+                            <Label Text="{Binding .}"
+                                   FontSize="Large"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Black}}">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListDetailViewModel}}, Path=GoToDetailsCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <Button Grid.Column="1"
+                                    VerticalOptions="Center"
+                                    Text="▶️"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListDetailViewModel}}, Path=PlayFolderCommand}"
+                                    CommandParameter="{Binding .}" />
+                            <Button Grid.Column="2"
+                                    VerticalOptions="Center"
+                                    Text="➕"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ListDetailViewModel}}, Path=EnqueueFolderCommand}"
+                                    CommandParameter="{Binding .}"/>
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

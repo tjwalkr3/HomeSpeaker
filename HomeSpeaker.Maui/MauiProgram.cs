@@ -1,5 +1,4 @@
-﻿using Microsoft.ApplicationInsights.Channel;
-using Microsoft.ApplicationInsights.Extensibility;
+﻿using MauiInsights;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
@@ -16,6 +15,8 @@ public static partial class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .AddApplicationInsights("InstrumentationKey=070db546-6b00-4f97-8b9e-5a4b4d4e97bf;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/")
+            .AddCrashLogging()
             .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
@@ -26,64 +27,44 @@ public static partial class MauiProgram
         SetupSerilog();
         builder.Logging.AddSerilog();
 
+        builder.Services.AddTransient<SampleDataService>();
+        builder.Services.AddTransient<ListDetailDetailViewModel>();
+        builder.Services.AddTransient<ListDetailDetailPage>();
 
-        using var channel = new InMemoryChannel();
-        try
+        builder.Services.AddSingleton<IPlayerService, GrpcPlayerService>();
+        builder.Services.AddSingleton<HomeSpeakerClientProvider>();
+
+        builder.Services.AddSingleton<IStaredSongDb, StaredSongDb>(_ =>
         {
-            builder.Services.Configure<TelemetryConfiguration>(config => config.TelemetryChannel = channel);
-            builder.Services.AddLogging(builder =>
-            {
-                // Only Application Insights is registered as a logger provider
-                builder.AddApplicationInsights(
-                    configureTelemetryConfiguration: (config) => config.ConnectionString = "InstrumentationKey=070db546-6b00-4f97-8b9e-5a4b4d4e97bf;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/",
-                    configureApplicationInsightsLoggerOptions: (options) => { }
-                );
-            });
+            var path = Path.Combine(FileSystem.Current.AppDataDirectory, "homespeaker_starredsongs.db3");
+            return new StaredSongDb(path);
+        });
 
-            builder.Services.AddTransient<SampleDataService>();
-            builder.Services.AddTransient<ListDetailDetailViewModel>();
-            builder.Services.AddTransient<ListDetailDetailPage>();
+        builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddSingleton<SettingsPage>();
 
-            builder.Services.AddSingleton<IPlayerService, GrpcPlayerService>();
-            builder.Services.AddSingleton<HomeSpeakerClientProvider>();
+        builder.Services.AddSingleton<ListDetailViewModel>();
+        builder.Services.AddSingleton<ListDetailPage>();
 
-            builder.Services.AddSingleton<IStaredSongDb, StaredSongDb>(_ =>
-            {
-                var path = Path.Combine(FileSystem.Current.AppDataDirectory, "homespeaker_starredsongs.db3");
-                return new StaredSongDb(path);
-            });
+        builder.Services.AddSingleton<WebViewViewModel>();
+        builder.Services.AddSingleton<WebViewPage>();
 
-            builder.Services.AddSingleton<SettingsViewModel>();
-            builder.Services.AddSingleton<SettingsPage>();
+        builder.Services.AddSingleton<BlankViewModel>();
+        builder.Services.AddSingleton<BlankPage>();
 
-            builder.Services.AddSingleton<ListDetailViewModel>();
-            builder.Services.AddSingleton<ListDetailPage>();
+        builder.Services.AddSingleton<StarredViewModel>();
+        builder.Services.AddSingleton<StarredPage>();
 
-            builder.Services.AddSingleton<WebViewViewModel>();
-            builder.Services.AddSingleton<WebViewPage>();
+        builder.Services.AddSingleton<FoldersViewModel>();
+        builder.Services.AddSingleton<FoldersPage>();
 
-            builder.Services.AddSingleton<BlankViewModel>();
-            builder.Services.AddSingleton<BlankPage>();
+        builder.Services.AddSingleton<StatusViewModel>();
+        builder.Services.AddSingleton<StatusPage>();
 
-            builder.Services.AddSingleton<StarredViewModel>();
-            builder.Services.AddSingleton<StarredPage>();
+        builder.Services.AddSingleton<StreamViewModel>();
+        builder.Services.AddSingleton<StreamPage>();
 
-            builder.Services.AddSingleton<FoldersViewModel>();
-            builder.Services.AddSingleton<FoldersPage>();
-
-            builder.Services.AddSingleton<StatusViewModel>();
-            builder.Services.AddSingleton<StatusPage>();
-
-            builder.Services.AddSingleton<StreamViewModel>();
-            builder.Services.AddSingleton<StreamPage>();
-
-            return builder.Build();
-        }
-        finally
-        {
-            //make sure telemetry is sent up if app crashes
-            channel.Flush();
-        }
+        return builder.Build();
     }
 
     private static void SetupSerilog()

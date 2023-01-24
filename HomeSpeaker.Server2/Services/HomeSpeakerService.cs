@@ -168,4 +168,23 @@ public class HomeSpeakerService : HomeSpeakerBase
         musicPlayer.ShuffleQueue();
         return Task.FromResult(new ShuffleQueueReply());
     }
+
+    public override Task<EnqueueFolderReply> EnqueueFolder(EnqueueFolderRequest request, ServerCallContext context)
+    {
+        foreach (var song in library.Songs.Where(s => s.Path.Contains(request.FolderPath)))
+        {
+            musicPlayer.EnqueueSong(song);
+        }
+        return Task.FromResult(new EnqueueFolderReply());
+    }
+
+    public override Task<PlayFolderReply> PlayFolder(PlayFolderRequest request, ServerCallContext context)
+    {
+        musicPlayer.Stop();
+        foreach (var song in library.Songs.Where(s => s.Path.Contains(request.FolderPath)))
+        {
+            musicPlayer.EnqueueSong(song);
+        }
+        return Task.FromResult(new PlayFolderReply());
+    }
 }
