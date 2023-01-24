@@ -101,7 +101,7 @@ public class HomeSpeakerService : HomeSpeakerBase
             PercentComplete = (double)status.PercentComplete,
             Remaining = Duration.FromTimeSpan(status.Remaining),
             StilPlaying = status.StillPlaying,
-            CurrentSong = translateSong(status.CurrentSong)
+            CurrentSong = status.CurrentSong != null ? translateSong(status.CurrentSong) : null
         });
     }
 

@@ -1,16 +1,18 @@
 ﻿using HomeSpeaker.Shared;
+using Microsoft.Extensions.Logging;
 
 namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class StatusViewModel : BaseViewModel
 {
-    public StatusViewModel(IStaredSongDb database, HomeSpeakerClientProvider clientProvider)
+    public StatusViewModel(IStaredSongDb database, HomeSpeakerClientProvider clientProvider, ILogger<StatusViewModel> logger)
     {
         Title = "Status";
         NowPlayingQueue = new ObservableCollection<SongViewModel>();
         RefreshStatusCommand.Execute(this);
         this.database = database;
         this.clientProvider = clientProvider;
+        this.logger = logger;
     }
 
     public string Name { get; set; }
@@ -96,6 +98,7 @@ public partial class StatusViewModel : BaseViewModel
 
     private readonly IStaredSongDb database;
     private readonly HomeSpeakerClientProvider clientProvider;
+    private readonly ILogger<StatusViewModel> logger;
     [ObservableProperty]
     private bool isBusy;
 
@@ -107,26 +110,33 @@ public partial class StatusViewModel : BaseViewModel
         {
             NowPlayingQueue.Clear();
             var getQueueReply = clientProvider.Client.GetPlayQueue(new GetSongsRequest());
-            await foreach (var reply in getQueueReply.ResponseStream.ReadAllAsync())
+            if (getQueueReply != null)
             {
-                foreach (var s in from songMessage in reply.Songs
-                                  select songMessage.ToSongViewModel())
+                await foreach (var reply in getQueueReply.ResponseStream.ReadAllAsync())
                 {
-                    NowPlayingQueue.Add(s);
+                    foreach (var s in from songMessage in reply.Songs
+                                      select songMessage.ToSongViewModel())
+                    {
+                        NowPlayingQueue.Add(s);
+                    }
                 }
+                QueueLength = NowPlayingQueue.Count;
+                OnPropertyChanged(nameof(NowPlayingQueue));
             }
-            QueueLength = NowPlayingQueue.Count;
-            OnPropertyChanged(nameof(NowPlayingQueue));
 
             var statusReply = clientProvider.Client.GetPlayerStatus(new GetStatusRequest());
-            NowPlayingTitle = statusReply.CurrentSong.Name;
-            Elapsed = statusReply.Elapsed.ToTimeSpan();
-            Remaining = statusReply.Remaining.ToTimeSpan();
-            PercentComplete = statusReply.PercentComplete;
+            if (statusReply != null)
+            {
+                NowPlayingTitle = statusReply.CurrentSong.Name;
+                Elapsed = statusReply.Elapsed.ToTimeSpan();
+                Remaining = statusReply.Remaining.ToTimeSpan();
+                PercentComplete = statusReply.PercentComplete;
+            }
             Exception = null;
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "Trouble refreshing status");
             Exception = ex.ToString();
         }
         finally
