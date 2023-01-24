@@ -12,7 +12,7 @@ public partial class StatusViewModel : BaseViewModel
         RefreshStatusCommand.Execute(this);
         this.database = database;
         this.clientProvider = clientProvider;
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger), ;
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public string Name { get; set; }
