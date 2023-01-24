@@ -3,9 +3,15 @@ using HomeSpeaker.Server.Data;
 using HomeSpeaker.Server2.Services;
 using OpenTelemetry;
 using OpenTelemetry.Trace;
+using Serilog;
+using Serilog.Exceptions;
 using System.Runtime.InteropServices;
 
 var builder = WebApplication.CreateBuilder(args);
+//builder.Logging.ClearProviders();
+//builder.Logging.AddJsonConsole();
+//builder.Logging.AddDebug();
+builder.Services.AddApplicationInsightsTelemetry();
 
 // Additional configuration is required to successfully run gRPC on macOS.
 // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
@@ -32,6 +38,14 @@ try
     }
 }
 catch { }
+
+builder.Host.UseSerilog((context, loggerConfig) =>
+{
+    loggerConfig
+        .WriteTo.Console()
+        .Enrich.WithExceptionDetails()
+        .WriteTo.Seq("http://localhost:5341");
+});
 
 builder.Services.AddGrpc();
 

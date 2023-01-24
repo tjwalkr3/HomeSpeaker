@@ -1,4 +1,5 @@
 ﻿using HomeSpeaker.Shared;
+using Microsoft.Extensions.Logging;
 
 namespace HomeSpeaker.Maui.Services;
 
@@ -17,11 +18,13 @@ public class GrpcPlayerService : IPlayerService
 {
     private readonly HomeSpeakerClientProvider clientProvider;
     private readonly IStaredSongDb database;
+    private readonly ILogger<GrpcPlayerService> logger;
 
-    public GrpcPlayerService(HomeSpeakerClientProvider clientProvider, IStaredSongDb database)
+    public GrpcPlayerService(HomeSpeakerClientProvider clientProvider, IStaredSongDb database, ILogger<GrpcPlayerService> logger)
     {
         this.clientProvider = clientProvider;
         this.database = database;
+        this.logger = logger;
     }
 
     public async Task EnqueueFolderAsync(SongGroup songs)
@@ -55,18 +58,28 @@ public class GrpcPlayerService : IPlayerService
         return songs;
     }
 
+    readonly char[] separators = new[] { '/', '\\' };
+
     public async Task<IEnumerable<string>> GetFolders()
     {
         List<string> folders = new();
+
+        logger.LogInformation("User wanted folders, so first I'll get all the songs.");
 
         var getSongsReply = clientProvider.Client.GetSongs(new GetSongsRequest { });
         await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
         {
             foreach (var s in reply.Songs)
             {
-                var directory = Path.GetDirectoryName(s.Path);
+                var parts = s.Path.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                //var directory = s.Path.Replace(parts.Last(), string.Empty);
+                var directory = parts[0];
+
                 if (!folders.Contains(directory))
+                {
+                    logger.LogInformation("Found directory {directory} from path {path}", directory, s.Path);
                     folders.Add(directory);
+                }
             }
         }
 
