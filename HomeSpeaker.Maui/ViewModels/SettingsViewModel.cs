@@ -1,14 +1,18 @@
-﻿namespace HomeSpeaker.Maui.ViewModels;
+﻿using Microsoft.Extensions.Logging;
+
+namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class SettingsViewModel : BaseViewModel
 {
     private readonly HomeSpeakerClientProvider clientProvider;
+    private readonly ILogger<SettingsViewModel> logger;
+
     public ObservableCollection<string> PastServers { get; } = new();
 
-    public SettingsViewModel(HomeSpeakerClientProvider clientProvider)
+    public SettingsViewModel(HomeSpeakerClientProvider clientProvider, ILogger<SettingsViewModel> logger)
     {
         this.clientProvider = clientProvider;
-
+        this.logger = logger;
         deserializePastServers();
         CurrentServerAddress = Preferences.Get(Constants.ServerAddress, "Unknown");
     }

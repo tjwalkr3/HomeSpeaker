@@ -9,7 +9,6 @@ public partial class StatusViewModel : BaseViewModel
     {
         Title = "Status";
         NowPlayingQueue = new ObservableCollection<SongViewModel>();
-        RefreshStatusCommand.Execute(this);
         this.database = database;
         this.clientProvider = clientProvider;
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -114,10 +113,13 @@ public partial class StatusViewModel : BaseViewModel
             {
                 await foreach (var reply in getQueueReply.ResponseStream.ReadAllAsync())
                 {
-                    foreach (var s in from songMessage in reply.Songs
-                                      select songMessage.ToSongViewModel())
+                    if (reply.Songs != null)
                     {
-                        NowPlayingQueue.Add(s);
+                        foreach (var s in from songMessage in reply.Songs
+                                          select songMessage.ToSongViewModel())
+                        {
+                            NowPlayingQueue.Add(s);
+                        }
                     }
                 }
                 QueueLength = NowPlayingQueue.Count;
@@ -125,13 +127,10 @@ public partial class StatusViewModel : BaseViewModel
             }
 
             var statusReply = clientProvider.Client.GetPlayerStatus(new GetStatusRequest());
-            if (statusReply != null)
-            {
-                NowPlayingTitle = statusReply.CurrentSong.Name;
-                Elapsed = statusReply.Elapsed.ToTimeSpan();
-                Remaining = statusReply.Remaining.ToTimeSpan();
-                PercentComplete = statusReply.PercentComplete;
-            }
+            NowPlayingTitle = statusReply?.CurrentSong?.Name ?? "Nothing Playing";
+            Elapsed = statusReply?.Elapsed?.ToTimeSpan() ?? TimeSpan.Zero;
+            Remaining = statusReply?.Remaining?.ToTimeSpan() ?? TimeSpan.Zero;
+            PercentComplete = statusReply?.PercentComplete ?? 0;
             Exception = null;
         }
         catch (Exception ex)

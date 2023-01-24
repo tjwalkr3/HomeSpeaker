@@ -12,6 +12,7 @@ public static partial class MauiProgram
     {
         AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
+        SetupSerilog();
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
@@ -24,8 +25,8 @@ public static partial class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        SetupSerilog();
         builder.Logging.AddSerilog();
+
 
         builder.Services.AddTransient<SampleDataService>();
         builder.Services.AddTransient<ListDetailDetailViewModel>();

@@ -1,19 +1,23 @@
-﻿namespace HomeSpeaker.Maui.ViewModels;
+﻿using Microsoft.Extensions.Logging;
+
+namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class FoldersViewModel : BaseViewModel
 {
-    public FoldersViewModel(IStaredSongDb staredSongDb, IPlayerService playerService)
+    public FoldersViewModel(IStaredSongDb staredSongDb, IPlayerService playerService, ILogger<FoldersViewModel> logger)
     {
         Title = "Folders";
         Songs = new ObservableCollection<SongGroup>();
 
         this.staredSongDb = staredSongDb;
         this.playerService = playerService;
+        this.logger = logger;
     }
 
     private readonly IStaredSongDb
         staredSongDb;
     private readonly IPlayerService playerService;
+    private readonly ILogger<FoldersViewModel> logger;
 
     public Command LoginCommand { get; }
     [ObservableProperty]

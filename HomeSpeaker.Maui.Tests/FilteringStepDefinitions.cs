@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using TechTalk.SpecFlow;
 
 namespace HomeSpeaker.Maui.Tests
@@ -15,9 +16,10 @@ namespace HomeSpeaker.Maui.Tests
 
             var staredSongMock = new Mock<IStaredSongDb>();
             var playerServiceMock = new Mock<IPlayerService>();
-
             playerServiceMock.Setup(m => m.GetSongGroups()).ReturnsAsync(() => allSongs);
-            var vm = new FoldersViewModel(staredSongMock.Object, playerServiceMock.Object);
+
+            var loggerMock = new Mock<ILogger<FoldersViewModel>>();
+            var vm = new FoldersViewModel(staredSongMock.Object, playerServiceMock.Object, loggerMock.Object);
 
             context.Set(allSongs);
             context.Set(vm);

@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 namespace HomeSpeaker.Maui.Tests;
 
 public class FilterTests
@@ -13,6 +15,7 @@ public class FilterTests
         //Arrange
         var staredSongMock = new Mock<IStaredSongDb>();
         var playerServiceMock = new Mock<IPlayerService>();
+        var loggerMock = new Mock<ILogger<FoldersViewModel>>();
         var folder1Songs = new List<SongViewModel>()
         {
             new SongViewModel
@@ -48,7 +51,7 @@ public class FilterTests
             return groups;
         });
 
-        var vm = new FoldersViewModel(staredSongMock.Object, playerServiceMock.Object);
+        var vm = new FoldersViewModel(staredSongMock.Object, playerServiceMock.Object, loggerMock.Object);
         await vm.Loading();
 
         //Act

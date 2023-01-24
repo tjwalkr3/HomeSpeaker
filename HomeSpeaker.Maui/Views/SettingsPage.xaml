@@ -20,7 +20,13 @@
                BackgroundColor="LightGrey"
                Margin="5,0,5,20" />
 
+        <Entry Text="{Binding NewServerAddress}"
+               Placeholder="New server address" />
+        <Button Command="{Binding AddServerCommand}"
+                Text="Add Server" />
+
         <Label Text="Past Servers"
+               Margin="0,20,0,0"
                FontSize="Header" />
 
         <CollectionView ItemsSource="{Binding PastServers}">
@@ -48,11 +54,5 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <Entry Margin="0,20,0,0"
-               Text="{Binding NewServerAddress}"
-               Placeholder="New server address" />
-        <Button Command="{Binding AddServerCommand}"
-                Text="Add Server" />
     </VerticalStackLayout>
 </ContentPage>
