@@ -33,7 +33,7 @@ namespace HomeSpeaker.Server
 
             playerProcess = new Process();
             playerProcess.StartInfo.FileName = vlc;
-            playerProcess.StartInfo.Arguments = $"--play-and-exit \"{song.Path}\"";
+            playerProcess.StartInfo.Arguments = $"--play-and-exit \"{song.Path}\" --qt-start-minimized";
             playerProcess.StartInfo.UseShellExecute = false;
             playerProcess.StartInfo.RedirectStandardOutput = true;
             playerProcess.StartInfo.RedirectStandardError = true;
