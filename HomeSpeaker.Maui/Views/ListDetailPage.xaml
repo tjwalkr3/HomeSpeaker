@@ -10,7 +10,7 @@
         <xct:EventToCommandBehavior EventName="Appearing"
                                     Command="{Binding LoadingCommand}" />
     </ContentPage.Behaviors>
-    <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadingCommand}">
+    <!--<RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadingCommand}">-->
         <CollectionView ItemsSource="{Binding Folders}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
@@ -40,5 +40,5 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </RefreshView>
+    <!--</RefreshView>-->
 </ContentPage>
