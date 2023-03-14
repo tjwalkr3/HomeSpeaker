@@ -62,6 +62,8 @@ namespace HomeSpeaker.Server
                 }
             });
 
+            status = new PlayerStatus { CurrentSong = currentSong, StillPlaying = true };
+
             logger.LogInformation($"Starting to play {song.Path}");
             playerProcess.EnableRaisingEvents = true;
             playerProcess.Start();
