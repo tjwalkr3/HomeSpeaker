@@ -6,10 +6,9 @@ services:
     build:
       context: .
       dockerfile: HomeSpeaker.Server2/Dockerfile
-    ports:
-    - 80:80
-    - 443:443
     restart: unless-stopped
+    ports:
+    - 8080:80
     devices:
     - /dev/snd:/dev/snd
     volumes:
@@ -38,3 +37,14 @@ services:
     - 14268:14268
     - 14269:14269
     - 9411:9411
+
+  homespeaker.webassembly:
+    image: ${DOCKER_REGISTRY-}homespeakerwebassembly
+    build:
+      context: .
+      dockerfile: HomeSpeaker.WebAssembly/Dockerfile
+    ports:
+    - 80:80
+    - 443:443
+
+

@@ -49,6 +49,14 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 
 builder.Services.AddGrpc();
 
+builder.Services.AddCors(o => o.AddDefaultPolicy(builder =>
+{
+    builder.AllowAnyHeader()
+           .AllowAnyMethod()
+           .AllowAnyOrigin()
+           .WithExposedHeaders("Grpc-Status", "Grpc-Message", "GrpcEncoding", "Grpc-AcceptEncoding");
+}));
+
 builder.Services.AddSingleton<IDataStore, OnDiskDataStore>();
 builder.Services.AddSingleton<IFileSource>(_ => new DefaultFileSource(builder.Configuration[ConfigKeys.MediaFolder]));
 builder.Services.AddSingleton<ITagParser, DefaultTagParser>();
@@ -61,6 +69,9 @@ builder.Services.AddHostedService<LifecycleEvents>();
 
 
 var app = builder.Build();
+
+app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<GreeterService>();
