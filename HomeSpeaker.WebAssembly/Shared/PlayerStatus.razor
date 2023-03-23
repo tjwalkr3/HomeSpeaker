@@ -1,0 +1,27 @@
+﻿@inject HomeSpeakerService svc
+
+<p>
+    Current Song: @(status?.CurrentSong?.Name ?? "No status yet")<br />
+    Message from server: @serverMessage
+</p>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        svc.StatusChanged += async (_, msg) =>
+        {
+            serverMessage = msg;
+            await refreshAsync();
+            StateHasChanged();
+        };
+        await refreshAsync();
+    }
+
+    async Task refreshAsync()
+    {
+        status = await svc.GetStatusAsync();
+    }
+
+    GetStatusReply status;
+    string serverMessage;
+}

@@ -1,0 +1,20 @@
+﻿@inject HomeSpeakerService svc
+
+<div class="row">
+    <div class="col">
+        <div class="h5">@(Name ?? "Folder Unknown")</div>
+    </div>
+    <div class="col">
+        <button @onclick=play>Play</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? Name { get; set; }
+
+    async Task play()
+    {
+        await svc.PlayFolderAsync(Name);
+    }
+}

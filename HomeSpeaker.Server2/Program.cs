@@ -61,12 +61,19 @@ builder.Services.AddSingleton<IDataStore, OnDiskDataStore>();
 builder.Services.AddSingleton<IFileSource>(_ => new DefaultFileSource(builder.Configuration[ConfigKeys.MediaFolder]));
 builder.Services.AddSingleton<ITagParser, DefaultTagParser>();
 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-    builder.Services.AddSingleton<IMusicPlayer, WindowsMusicPlayer>();
+    builder.Services.AddSingleton<WindowsMusicPlayer>();
 else
-    builder.Services.AddSingleton<IMusicPlayer, LinuxSoxMusicPlayer>();
+    builder.Services.AddSingleton<LinuxSoxMusicPlayer>();
+builder.Services.AddSingleton<IMusicPlayer>(services =>
+{
+    IMusicPlayer actualPlayer = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+        ? services.GetRequiredService<WindowsMusicPlayer>()
+        : services.GetRequiredService<LinuxSoxMusicPlayer>();
+
+    return new ChattyMusicPlayer(actualPlayer);
+});
 builder.Services.AddSingleton<Mp3Library>();
 builder.Services.AddHostedService<LifecycleEvents>();
-
 
 var app = builder.Build();
 

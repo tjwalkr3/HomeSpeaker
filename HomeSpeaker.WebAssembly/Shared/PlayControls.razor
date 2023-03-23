@@ -1,0 +1,13 @@
+﻿@inject HomeSpeakerService svc
+
+<button @onclick=Play>▶️</button>
+<button @onclick=Stop>⏹️</button>
+<button @onclick=Clear>🧹</button>
+<button @onclick=Skip>⏩</button>
+
+@code {
+    async Task Play() => await svc.ResumePlayAsync();
+    async Task Stop() => await svc.StopPlayingAsync();
+    async Task Clear() => await svc.ClearQueueAsync();
+    async Task Skip() => await svc.SkipToNextAsync();
+}

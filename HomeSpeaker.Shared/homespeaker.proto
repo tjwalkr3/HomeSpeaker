@@ -19,6 +19,7 @@ service HomeSpeaker {
 	rpc GetPlayQueue(GetSongsRequest) returns (stream GetSongsReply);
 	rpc PlayerControl(PlayerControlRequest) returns (PlayerControlReply);
 	rpc ShuffleQueue(ShuffleQueueRequest) returns (ShuffleQueueReply);
+	rpc SendEvent(google.protobuf.Empty) returns (stream StreamServerEvent);
 }
 
 message ShuffleQueueRequest {}
@@ -71,3 +72,6 @@ message EnqueueFolderRequest {
 	string FolderPath=1;
 }
 message EnqueueFolderReply {}
+message StreamServerEvent{
+	string Message=1;
+}

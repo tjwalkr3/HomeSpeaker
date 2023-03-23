@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.Maui", "HomeSpe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.Maui.Tests", "HomeSpeaker.Maui.Tests\HomeSpeaker.Maui.Tests.csproj", "{42C870D2-28EF-47DE-B065-96A1B20EBFE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeSpeaker.WebAssembly", "HomeSpeaker.WebAssembly\HomeSpeaker.WebAssembly.csproj", "{72E636EC-4188-479E-9FCE-6B7EC1EF9339}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.WebAssembly", "HomeSpeaker.WebAssembly\HomeSpeaker.WebAssembly.csproj", "{72E636EC-4188-479E-9FCE-6B7EC1EF9339}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

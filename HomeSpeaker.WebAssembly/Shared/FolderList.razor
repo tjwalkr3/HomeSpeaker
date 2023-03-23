@@ -1,0 +1,22 @@
+﻿@inject HomeSpeakerService svc
+<h3>Folder List</h3>
+@if(folders == null)
+{
+    <div>No folders found...</div>
+}
+else
+{
+    @foreach(var folder in folders)
+    {
+        <Folder Name=@folder />
+    }
+}
+
+@code {
+    IEnumerable<string> folders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        folders = await svc.GetFolders();
+    }
+}

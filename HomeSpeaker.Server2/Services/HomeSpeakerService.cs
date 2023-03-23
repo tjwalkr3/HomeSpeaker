@@ -10,12 +10,40 @@ public class HomeSpeakerService : HomeSpeakerBase
     private readonly ILogger<HomeSpeakerService> logger;
     private readonly Mp3Library library;
     private readonly IMusicPlayer musicPlayer;
+    private readonly List<IServerStreamWriter<StreamServerEvent>> eventClients = new();
+    private readonly List<IServerStreamWriter<StreamServerEvent>> failedEvents = new();
 
     public HomeSpeakerService(ILogger<HomeSpeakerService> logger, Mp3Library library, IMusicPlayer musicPlayer)
     {
         this.logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
         this.library = library ?? throw new System.ArgumentNullException(nameof(library));
         this.musicPlayer = musicPlayer ?? throw new System.ArgumentNullException(nameof(musicPlayer));
+
+        musicPlayer.PlayerEvent += MusicPlayer_PlayerEvent;
+    }
+
+    private async void MusicPlayer_PlayerEvent(object? sender, string message)
+    {
+        foreach (var client in eventClients)
+        {
+            try
+            {
+                await client.WriteAsync(new StreamServerEvent { Message = message });
+            }
+            catch
+            {
+                failedEvents.Add(client);
+            }
+        }
+
+        if (failedEvents.Any())
+        {
+            foreach (var client in failedEvents)
+            {
+                eventClients.Remove(client);
+            }
+            failedEvents.Clear();
+        }
     }
 
     public override async Task GetSongs(GetSongsRequest request, IServerStreamWriter<GetSongsReply> responseStream, ServerCallContext context)
@@ -39,11 +67,12 @@ public class HomeSpeakerService : HomeSpeakerBase
         await responseStream.WriteAsync(reply);
     }
 
-    public override Task<PlaySongReply> PlaySong(PlaySongRequest request, ServerCallContext context)
+    public override async Task<PlaySongReply> PlaySong(PlaySongRequest request, ServerCallContext context)
     {
         logger.LogInformation("PlaySong request for {songid}", request.SongId);
 
         var song = library.Songs.FirstOrDefault(s => s.SongId == request.SongId);
+
         var reply = new PlaySongReply { Ok = false };
         if (song != null)
         {
@@ -56,14 +85,14 @@ public class HomeSpeakerService : HomeSpeakerBase
         {
             logger.LogWarning("Song {songid} not found in library.", request.SongId);
         }
-        return Task.FromResult(reply);
+        return reply;
     }
 
-    public override Task<PlaySongReply> PlayStream(PlayStreamRequest request, ServerCallContext context)
+    public override async Task<PlaySongReply> PlayStream(PlayStreamRequest request, ServerCallContext context)
     {
         logger.LogInformation("PlayStream request for {streamurl}", request.StreamUrl);
         musicPlayer.PlayStream(request.StreamUrl);
-        return Task.FromResult(new PlaySongReply { Ok = true });
+        return new PlaySongReply { Ok = true };
     }
 
     public override Task<Empty> ResetLibrary(Empty request, ServerCallContext context)
@@ -73,7 +102,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         return Task.FromResult(new Empty());
     }
 
-    public override Task<PlaySongReply> EnqueueSong(PlaySongRequest request, ServerCallContext context)
+    public override async Task<PlaySongReply> EnqueueSong(PlaySongRequest request, ServerCallContext context)
     {
         logger.LogInformation("EnqueueSong request for {songid}", request.SongId);
 
@@ -89,7 +118,8 @@ public class HomeSpeakerService : HomeSpeakerBase
         {
             logger.LogWarning("Song {songid} not found in library", request.SongId);
         }
-        return Task.FromResult(reply);
+
+        return reply;
     }
 
     public override Task<GetStatusReply> GetPlayerStatus(GetStatusRequest request, ServerCallContext context)
@@ -138,7 +168,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         };
     }
 
-    public override Task<PlayerControlReply> PlayerControl(PlayerControlRequest request, ServerCallContext context)
+    public override async Task<PlayerControlReply> PlayerControl(PlayerControlRequest request, ServerCallContext context)
     {
         if (request.ClearQueue)
         {
@@ -160,7 +190,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         {
             musicPlayer.SetVolume(request.VolumeLevel);
         }
-        return Task.FromResult(new PlayerControlReply());
+        return new PlayerControlReply();
     }
 
     public override Task<ShuffleQueueReply> ShuffleQueue(ShuffleQueueRequest request, ServerCallContext context)
@@ -186,5 +216,12 @@ public class HomeSpeakerService : HomeSpeakerBase
             musicPlayer.EnqueueSong(song);
         }
         return Task.FromResult(new PlayFolderReply());
+    }
+
+    public override async Task SendEvent(Empty request, IServerStreamWriter<StreamServerEvent> responseStream, ServerCallContext context)
+    {
+        eventClients.Add(responseStream);
+        responseStream.WriteAsync(new StreamServerEvent { Message = "Client connected." });
+        await Task.Delay(TimeSpan.FromMinutes(90));
     }
 }
