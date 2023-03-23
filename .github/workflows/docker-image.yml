@@ -9,7 +9,7 @@ on:
   # Then push those tags
   # git push --tags
   # Then a new version will be deployed on the self-hosted runner.
-  
+
 jobs:
 
   build:
@@ -18,5 +18,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Restart the docker compose
+    - name: Docker compose down
+      run: docker-compose down
+    - name: Docker compose up
       run: docker-compose up -d --build
