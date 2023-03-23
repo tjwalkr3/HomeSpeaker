@@ -18,7 +18,7 @@ public class ChattyMusicPlayer : IMusicPlayer
 
     public IEnumerable<Song> SongQueue => actualPlayer.SongQueue;
 
-    public event EventHandler<string> PlayerEvent;
+    public event EventHandler<string>? PlayerEvent;
 
     public void ClearQueue()
     {

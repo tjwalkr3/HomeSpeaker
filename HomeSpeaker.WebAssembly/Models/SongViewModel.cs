@@ -3,23 +3,23 @@
 public class SongViewModel
 {
     public int SongId { get; set; }
-    public string Name { get; set; }
-    private string path;
-    public string Path
+    public required string Name { get; init; }
+    private string? path;
+    public string? Path
     {
         get => path;
         set
         {
             path = value;
-            if (path.Contains('\\'))
+            if (path?.Contains('\\') ?? false)
                 Folder = System.IO.Path.GetDirectoryName(path.Replace('\\', '/'));
             else
                 Folder = System.IO.Path.GetDirectoryName(path);
         }
     }
-    public string Album { get; set; }
-    public string Artist { get; set; }
-    public string Folder { get; set; }
+    public required string Album { get; init; }
+    public required string Artist { get; init; }
+    public string? Folder { get; private set; }
 }
 
 public partial class SongGroup : List<SongViewModel>
@@ -43,8 +43,8 @@ public static class ViewModelExtensions
         {
             SongId = song?.SongId ?? -1,
             Name = song?.Name ?? "[ Null Song Response ??? ]",
-            Album = song?.Album,
-            Artist = song?.Artist,
+            Album = song?.Album ?? "[ No Album ]",
+            Artist = song?.Artist ?? "[ No Artist ]",
             Path = song?.Path
         };
     }

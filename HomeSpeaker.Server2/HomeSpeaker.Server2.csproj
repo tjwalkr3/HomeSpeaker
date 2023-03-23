@@ -10,9 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\HomeSpeaker.Shared\homespeaker.proto" GrpcServices="Server">
-      <Link>Protos\homespeaker.proto</Link>
-    </Protobuf>
     <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
   </ItemGroup>
 

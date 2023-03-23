@@ -16,6 +16,7 @@ public static class ViewModelExtensions
             Path = song?.Path
         };
     }
+
     public async static IAsyncEnumerable<T> ReadAllAsync<T>(this IAsyncStreamReader<T> streamReader, CancellationToken cancellationToken = default)
     {
         if (streamReader == null)

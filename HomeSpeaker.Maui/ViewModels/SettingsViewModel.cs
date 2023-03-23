@@ -25,8 +25,6 @@ public partial class SettingsViewModel : BaseViewModel
     [ObservableProperty]
     private string newServerAddress;
 
-    private string selectedServer;
-
     [RelayCommand]
     private void DeleteServer(string serverToDelete)
     {
@@ -40,12 +38,6 @@ public partial class SettingsViewModel : BaseViewModel
         Preferences.Set(Constants.ServerAddress, serverAddress);
         clientProvider.ReloadClientFromPreferences();
         CurrentServerAddress = serverAddress;
-    }
-
-    [RelayCommand]
-    public async Task ViewModelLoading()
-    {
-
     }
 
     [ObservableProperty]

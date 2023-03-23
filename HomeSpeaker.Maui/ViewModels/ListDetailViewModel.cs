@@ -28,7 +28,7 @@ public partial class ListDetailViewModel : BaseViewModel
 
     public ObservableCollection<string> Folders { get; } = new();
 
-    public bool IsStatusVisible => !string.IsNullOrEmpty(status);
+    public bool IsStatusVisible => !string.IsNullOrEmpty(Status);
 
     [RelayCommand]
     public async Task Loading()

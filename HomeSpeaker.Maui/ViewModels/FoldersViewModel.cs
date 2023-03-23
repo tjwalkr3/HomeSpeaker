@@ -74,7 +74,7 @@ public partial class FoldersViewModel : BaseViewModel
             s.FolderName.Contains(filterText, StringComparison.OrdinalIgnoreCase) ||
             s.FolderPath.Contains(filterText, StringComparison.OrdinalIgnoreCase)
         );
-        Title = $"Filtered ({filteredSongs.Count():n0})";
+        Title = $"Filtered ({FilteredSongs.Count():n0})";
     }
 
     [RelayCommand]

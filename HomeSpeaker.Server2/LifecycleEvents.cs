@@ -13,7 +13,7 @@ namespace HomeSpeaker.Server
         }
 
         //write to media folder because that exists outside of the container
-        public string LastStatePath => Path.Combine(config[ConfigKeys.MediaFolder], "lastState.json");
+        public string LastStatePath => Path.Combine(config[ConfigKeys.MediaFolder] ?? throw new MissingConfigException(ConfigKeys.MediaFolder), "lastState.json");
 
         private readonly ILogger<LifecycleEvents> logger;
         private readonly IMusicPlayer player;
@@ -27,13 +27,16 @@ namespace HomeSpeaker.Server
                 logger.LogInformation("Found {LastStatePath} file, re-setting current song and queue", LastStatePath);
 
                 var lastState = JsonSerializer.Deserialize<LastState>(await File.ReadAllTextAsync(LastStatePath));
-                player.PlaySong(lastState.CurrentSong);
-                foreach (var s in lastState.Queue)
+                if (lastState?.CurrentSong != null && lastState?.Queue != null)
                 {
-                    player.EnqueueSong(s);
-                }
+                    player.PlaySong(lastState.CurrentSong);
+                    foreach (var s in lastState.Queue)
+                    {
+                        player.EnqueueSong(s);
+                    }
 
-                logger.LogInformation("Restarted using {lastState}", lastState);
+                    logger.LogInformation("Restarted using {lastState}", lastState);
+                }
             }
         }
 
@@ -62,8 +65,8 @@ namespace HomeSpeaker.Server
 
         public class LastState
         {
-            public Song CurrentSong { get; set; }
-            public IEnumerable<Song> Queue { get; set; }
+            public Song? CurrentSong { get; set; }
+            public IEnumerable<Song>? Queue { get; set; }
         }
     }
 }

@@ -9,7 +9,7 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
 {
     private readonly ILogger<LinuxSoxMusicPlayer> logger;
     private readonly Mp3Library library;
-    private Process playerProcess;
+    private Process? playerProcess;
 
     public LinuxSoxMusicPlayer(ILogger<LinuxSoxMusicPlayer> logger, Mp3Library library)
     {
@@ -17,12 +17,12 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
         this.library = library;
     }
 
-    private PlayerStatus status;
-    private Song currentSong;
+    private PlayerStatus status = new();
+    private Song? currentSong;
     public PlayerStatus Status => (status ?? new PlayerStatus()) with { CurrentSong = currentSong };
 
     private bool startedPlaying = false;
-    private Song stoppedSong;
+    private Song? stoppedSong;
 
     public void PlayStream(string streamPath)
     {
@@ -83,6 +83,9 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
 
         playerProcess.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
         {
+            if (e?.Data == null)
+                return;
+
             if (TryParsePlayerOutput(e.Data, out var status))
             {
                 this.status = status;
@@ -94,6 +97,9 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
         });
         playerProcess.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
         {
+            if (e?.Data == null)
+                return;
+
             if (TryParsePlayerOutput(e.Data, out var status))
             {
                 this.status = status;
@@ -124,7 +130,7 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
             proc.Kill();
     }
 
-    private void PlayerProcess_Exited(object sender, EventArgs e)
+    private void PlayerProcess_Exited(object? sender, EventArgs e)
     {
         logger.LogInformation("Finished playing a song.");
         currentSong = null;
@@ -251,7 +257,7 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
 
     private ConcurrentQueue<Song> songQueue = new ConcurrentQueue<Song>();
 
-    public event EventHandler<string> PlayerEvent;
+    public event EventHandler<string>? PlayerEvent;
 
     public IEnumerable<Song> SongQueue => songQueue.ToArray();
 }

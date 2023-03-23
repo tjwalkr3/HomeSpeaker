@@ -67,7 +67,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         await responseStream.WriteAsync(reply);
     }
 
-    public override async Task<PlaySongReply> PlaySong(PlaySongRequest request, ServerCallContext context)
+    public override Task<PlaySongReply> PlaySong(PlaySongRequest request, ServerCallContext context)
     {
         logger.LogInformation("PlaySong request for {songid}", request.SongId);
 
@@ -76,7 +76,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         var reply = new PlaySongReply { Ok = false };
         if (song != null)
         {
-            Task.Run(() =>
+            _ = Task.Run(() =>
                 musicPlayer.PlaySong(song)
             );
             reply.Ok = true;
@@ -85,14 +85,14 @@ public class HomeSpeakerService : HomeSpeakerBase
         {
             logger.LogWarning("Song {songid} not found in library.", request.SongId);
         }
-        return reply;
+        return Task.FromResult(reply);
     }
 
-    public override async Task<PlaySongReply> PlayStream(PlayStreamRequest request, ServerCallContext context)
+    public override Task<PlaySongReply> PlayStream(PlayStreamRequest request, ServerCallContext context)
     {
         logger.LogInformation("PlayStream request for {streamurl}", request.StreamUrl);
         musicPlayer.PlayStream(request.StreamUrl);
-        return new PlaySongReply { Ok = true };
+        return Task.FromResult(new PlaySongReply { Ok = true });
     }
 
     public override Task<Empty> ResetLibrary(Empty request, ServerCallContext context)
@@ -102,7 +102,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         return Task.FromResult(new Empty());
     }
 
-    public override async Task<PlaySongReply> EnqueueSong(PlaySongRequest request, ServerCallContext context)
+    public override Task<PlaySongReply> EnqueueSong(PlaySongRequest request, ServerCallContext context)
     {
         logger.LogInformation("EnqueueSong request for {songid}", request.SongId);
 
@@ -119,7 +119,7 @@ public class HomeSpeakerService : HomeSpeakerBase
             logger.LogWarning("Song {songid} not found in library", request.SongId);
         }
 
-        return reply;
+        return Task.FromResult(reply);
     }
 
     public override Task<GetStatusReply> GetPlayerStatus(GetStatusRequest request, ServerCallContext context)
@@ -168,7 +168,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         };
     }
 
-    public override async Task<PlayerControlReply> PlayerControl(PlayerControlRequest request, ServerCallContext context)
+    public override Task<PlayerControlReply> PlayerControl(PlayerControlRequest request, ServerCallContext context)
     {
         if (request.ClearQueue)
         {
@@ -190,7 +190,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         {
             musicPlayer.SetVolume(request.VolumeLevel);
         }
-        return new PlayerControlReply();
+        return Task.FromResult(new PlayerControlReply());
     }
 
     public override Task<ShuffleQueueReply> ShuffleQueue(ShuffleQueueRequest request, ServerCallContext context)
@@ -221,7 +221,7 @@ public class HomeSpeakerService : HomeSpeakerBase
     public override async Task SendEvent(Empty request, IServerStreamWriter<StreamServerEvent> responseStream, ServerCallContext context)
     {
         eventClients.Add(responseStream);
-        responseStream.WriteAsync(new StreamServerEvent { Message = "Client connected." });
-        await Task.Delay(TimeSpan.FromMinutes(90));
+        await responseStream.WriteAsync(new StreamServerEvent { Message = "Client connected." });
+        await Task.Delay(TimeSpan.FromMinutes(180));
     }
 }

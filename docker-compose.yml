@@ -2,6 +2,7 @@ version: '3.4'
 
 services:
   homespeaker.server2:
+    container_name: homespeaker.server2
     image: ${DOCKER_REGISTRY-}homespeakerserver2
     build:
       context: .

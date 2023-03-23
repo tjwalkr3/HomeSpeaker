@@ -3,7 +3,7 @@
 public class StaredSongDb : IStaredSongDb
 {
     //readonly SQLiteAsyncConnection _database;
-    bool initialized = false;
+    //bool initialized = false;
     List<StarredSong> starredSongs = new();
     private readonly string dbPath;
 

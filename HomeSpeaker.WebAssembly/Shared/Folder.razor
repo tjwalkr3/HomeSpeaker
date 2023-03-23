@@ -15,6 +15,9 @@
 
     async Task play()
     {
+        if (Name == null)
+            return;
+
         await svc.PlayFolderAsync(Name);
     }
 }

@@ -16,10 +16,10 @@ public class WindowsMusicPlayer : IMusicPlayer
     const string vlc = @"c:\program files\videolan\vlc\vlc.exe";
     private readonly ILogger<WindowsMusicPlayer> logger;
     private readonly Mp3Library library;
-    private Process playerProcess;
-    private PlayerStatus status;
-    private Song currentSong;
-    private Song stoppedSong;
+    private Process? playerProcess;
+    private PlayerStatus status = new();
+    private Song? currentSong;
+    private Song? stoppedSong;
     public PlayerStatus Status => (status ?? new PlayerStatus()) with { CurrentSong = currentSong };
 
     private bool startedPlaying = false;
@@ -41,6 +41,9 @@ public class WindowsMusicPlayer : IMusicPlayer
 
         playerProcess.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
         {
+            if (e?.Data == null)
+                return;
+
             if (TryParsePlayerOutput(e.Data, out var status))
             {
                 this.status = status;
@@ -52,6 +55,9 @@ public class WindowsMusicPlayer : IMusicPlayer
         });
         playerProcess.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
         {
+            if (e?.Data == null)
+                return;
+
             if (TryParsePlayerOutput(e.Data, out var status))
             {
                 this.status = status;
@@ -83,7 +89,7 @@ public class WindowsMusicPlayer : IMusicPlayer
             proc.Kill();
     }
 
-    private void PlayerProcess_Exited(object sender, EventArgs e)
+    private void PlayerProcess_Exited(object? sender, EventArgs e)
     {
         logger.LogInformation("Finished playing a song.");
         currentSong = null;
@@ -253,7 +259,7 @@ public class WindowsMusicPlayer : IMusicPlayer
 
     private ConcurrentQueue<Song> songQueue = new ConcurrentQueue<Song>();
 
-    public event EventHandler<string> PlayerEvent;
+    public event EventHandler<string>? PlayerEvent;
 
     public IEnumerable<Song> SongQueue => songQueue.ToArray();
 }

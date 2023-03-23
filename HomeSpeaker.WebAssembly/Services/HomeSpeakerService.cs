@@ -8,7 +8,7 @@ public class HomeSpeakerService
 
     public HomeSpeakerService(IConfiguration config, ILogger<HomeSpeakerService> logger)
     {
-        var channel = GrpcChannel.ForAddress(config["ServerAddress"], new GrpcChannelOptions
+        var channel = GrpcChannel.ForAddress(config["ServerAddress"] ?? throw new MissingConfigException("ServerAddress"), new GrpcChannelOptions
         {
             HttpHandler = new GrpcWebHandler(new HttpClientHandler())
         });
@@ -16,7 +16,7 @@ public class HomeSpeakerService
         client = new HomeSpeaker.Shared.HomeSpeaker.HomeSpeakerClient(channel);
         this.logger = logger;
 
-        listenForEvents();
+        _ = listenForEvents();
     }
 
     private async Task listenForEvents()
@@ -103,6 +103,9 @@ public class HomeSpeakerService
             foreach (var s in reply.Songs/*.Where(s => starredSongs.Contains(s.Path) == false)*/)
             {
                 var song = s.ToSongViewModel();
+                if (song.Folder == null)
+                    continue;
+
                 if (groups.ContainsKey(song.Folder) is false)
                     groups[song.Folder] = new List<SongViewModel>();
                 groups[song.Folder].Add(song);
@@ -138,5 +141,5 @@ public class HomeSpeakerService
     public async Task SkipToNextAsync() => await client.PlayerControlAsync(new PlayerControlRequest { SkipToNext = true });
     public async Task ResumePlayAsync() => await client.PlayerControlAsync(new PlayerControlRequest { Play = true });
 
-    public event EventHandler<string> StatusChanged;
+    public event EventHandler<string>? StatusChanged;
 }
