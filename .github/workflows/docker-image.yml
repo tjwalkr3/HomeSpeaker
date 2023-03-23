@@ -21,4 +21,6 @@ jobs:
     - name: Docker compose down
       run: docker-compose down
     - name: Docker compose up
-      run: docker-compose up -d --build
+      run: COMPOSE_DOCKER_CLI_BUILD=1 \
+           DOCKER_BUILDKIT=1 \
+           docker-compose up -d --build
