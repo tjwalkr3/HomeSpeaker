@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HomeSpeaker.Shared;
-using Microsoft.Extensions.Logging;
+﻿using HomeSpeaker.Shared;
 
 namespace HomeSpeaker.Server
 {
@@ -24,7 +18,7 @@ namespace HomeSpeaker.Server
 
             logger.LogInformation($"Initialized with fileSource {fileSource.RootFolder}");
 
-            if(SyncStarted is false)
+            if (SyncStarted is false)
             {
                 SyncLibrary();
             }
@@ -38,7 +32,8 @@ namespace HomeSpeaker.Server
         private void SyncLibrary()
         {
             SyncStarted = true;
-            foreach (var file in fileSource.GetAllMp3s())
+            var files = fileSource.GetAllMp3s();
+            foreach (var file in files)
             {
                 try
                 {

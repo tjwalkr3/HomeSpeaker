@@ -1,11 +1,5 @@
 ﻿using HomeSpeaker.Shared;
 using Id3;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace HomeSpeaker.Server
 {
@@ -25,12 +19,18 @@ namespace HomeSpeaker.Server
 
         public Song CreateSong(FileInfo file)
         {
-            var mp3 = new Mp3(file); var tag = mp3.GetTag(Id3TagFamily.Version2X) ?? mp3.GetTag(Id3TagFamily.Version1X) ?? throw new ApplicationException("Unable to find MP3 tags for " + file.FullName);
+            var mp3 = new Mp3(file);
+            var tag = mp3.GetTag(Id3TagFamily.Version2X) ?? mp3.GetTag(Id3TagFamily.Version1X) ?? throw new ApplicationException("Unable to find MP3 tags for " + file.FullName);
+            var title = tag.Title?.Value?.Replace("\0", string.Empty) ?? string.Empty;
+            if (title.Length == 0)
+            {
+                title = file.Name.Replace(".mp3", string.Empty);
+            }
             return new Song
             {
-                Album = tag.Album.Value,
-                Artist = tag.Artists.Value.FirstOrDefault() ?? "[Artist Unknown]",
-                Name = tag.Title.Value,
+                Album = tag.Album.Value?.Replace("\0", string.Empty),
+                Artist = tag.Artists.Value.FirstOrDefault()?.Replace("\0", string.Empty) ?? "[Artist Unknown]",
+                Name = title,
                 Path = file.FullName
             };
         }

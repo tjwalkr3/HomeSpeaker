@@ -1,4 +1,5 @@
 ﻿@inject HomeSpeakerService svc
+@inject ILogger<Song> logger
 
 @if (SongViewModel == null)
 {
@@ -10,7 +11,10 @@ else
         <div class="col">
             <div class="fw-bold">@SongViewModel.Name</div>
             <div>@SongViewModel.Artist @(SongViewModel.Artist != SongViewModel.Album ? $" ({SongViewModel.Album})" : string.Empty)</div>
-            <div>@SongViewModel.Folder</div>
+            @if (ShowFolder)
+            {
+                <div>@SongViewModel.Folder</div>
+            }
         </div>
         <div class="col-auto">
             <button @onclick=Play>▶️</button>
@@ -22,6 +26,9 @@ else
 @code {
     [Parameter]
     public SongViewModel SongViewModel { get; set; }
+
+    [Parameter]
+    public bool ShowFolder{ get; set; }
 
     async Task Play() => await svc.PlaySongAsync(SongViewModel.SongId);
     async Task Queue() => await svc.EnqueueSongAsync(SongViewModel.SongId);

@@ -1,7 +1,6 @@
 using HomeSpeaker.Server;
 using HomeSpeaker.Server.Data;
 using HomeSpeaker.Server2.Services;
-using OpenTelemetry;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Exceptions;
@@ -33,8 +32,7 @@ try
             .WithMetrics(b =>
             {
 
-            })
-            .StartWithHost();
+            });
     }
 }
 catch { }
@@ -75,7 +73,6 @@ builder.Services.AddHostedService<LifecycleEvents>();
 
 var app = builder.Build();
 
-app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
@@ -85,6 +82,7 @@ else
     app.UseExceptionHandler("/Error");
 }
 
+app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();

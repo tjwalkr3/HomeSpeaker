@@ -17,6 +17,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        folders = await svc.GetFolders();
+        folders = (await svc.GetFolders()).Order();
     }
 }

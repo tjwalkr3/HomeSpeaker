@@ -5,7 +5,7 @@
         <div class="h5" @onclick=toggleExpanded>@(Name ?? "Folder Unknown")</div>
         @if(isExpanded)
         {
-            <FolderDetails Name="Name" />
+            <FolderDetails Name=@Name />
         }
     </div>
     <div class="col-auto">

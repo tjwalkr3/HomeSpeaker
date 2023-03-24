@@ -48,11 +48,9 @@ public class HomeSpeakerService
         var getSongsReply = client.GetSongs(new GetSongsRequest { Folder = folder });
         await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
         {
-            foreach (var s in reply.Songs)
-            {
-                songs.Add(s.ToSongViewModel());
-            }
+            songs.AddRange(reply.Songs.Select(s => s.ToSongViewModel()));
         }
+
         return songs;
     }
 
@@ -74,9 +72,14 @@ public class HomeSpeakerService
                 //var directory = s.Path.Replace(parts.Last(), string.Empty);
                 var directory = parts[0];
 
+                if (directory == "c:")
+                {
+                    logger.LogInformation("Directory: '{directory}' ({path})", directory, s.Path);
+                }
+
                 if (!folders.Contains(directory))
                 {
-                    logger.LogInformation("Found directory {directory} from path {path}", directory, s.Path);
+                    logger.LogInformation("Directory: '{directory}' ({path})", directory, s.Path);
                     folders.Add(directory);
                 }
             }

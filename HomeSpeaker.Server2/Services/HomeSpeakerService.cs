@@ -58,7 +58,8 @@ public class HomeSpeakerService : HomeSpeakerBase
                 songs = songs.Where(s => s.Path.Contains(request.Folder));
             }
             logger.LogInformation("Found songs!  Sending to client.");
-            reply.Songs.AddRange(translateSongs(songs));
+            var songMessages = translateSongs(songs);
+            reply.Songs.AddRange(songMessages);
         }
         else
         {
@@ -158,12 +159,17 @@ public class HomeSpeakerService : HomeSpeakerBase
 
     private SongMessage translateSong(Song s)
     {
+        string? path = s?.Path.Replace(library.RootFolder, string.Empty, StringComparison.InvariantCultureIgnoreCase).Substring(1);
+        if (path == s?.Path)
+        {
+            logger.LogWarning("what? orig {orig} is same as {new}", s.Path, path);
+        }
         return new SongMessage
         {
             Album = s?.Album ?? "[ No Album ]",
             Artist = s?.Artist ?? "[ No Artist ]",
             Name = s?.Name ?? Path.GetFileNameWithoutExtension(s?.Path),
-            Path = s?.Path.Substring(s.Path.IndexOf(library.RootFolder) + library.RootFolder.Length),
+            Path = path,
             SongId = s?.SongId ?? -1
         };
     }
