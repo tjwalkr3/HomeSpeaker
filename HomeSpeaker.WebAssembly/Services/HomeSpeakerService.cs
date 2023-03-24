@@ -139,6 +139,7 @@ public class HomeSpeakerService
     public async Task ClearQueueAsync() => await client.PlayerControlAsync(new PlayerControlRequest { ClearQueue = true });
     public async Task SkipToNextAsync() => await client.PlayerControlAsync(new PlayerControlRequest { SkipToNext = true });
     public async Task ResumePlayAsync() => await client.PlayerControlAsync(new PlayerControlRequest { Play = true });
+    public async Task ShuffleQueueAsync() => await client.ShuffleQueueAsync(new ShuffleQueueRequest { });
 
     public event EventHandler<string>? StatusChanged;
 }
