@@ -113,7 +113,7 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
         logger.LogInformation($"Starting to play {song.Path}");
         playerProcess.EnableRaisingEvents = true;
         playerProcess.Start();
-        PlayerEvent?.Invoke(this, "Playing " + song.Path);
+        PlayerEvent?.Invoke(this, "Playing " + song.Name);
         playerProcess.Exited += PlayerProcess_Exited;
 
         playerProcess.BeginOutputReadLine();

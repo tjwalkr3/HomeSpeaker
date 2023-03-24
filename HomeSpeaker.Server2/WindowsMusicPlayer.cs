@@ -71,7 +71,7 @@ public class WindowsMusicPlayer : IMusicPlayer
         status = new PlayerStatus { CurrentSong = currentSong, StillPlaying = true };
 
         logger.LogInformation($"Starting to play {song.Path}");
-        PlayerEvent?.Invoke(this, "Playing " + song.Path);
+        PlayerEvent?.Invoke(this, "Playing " + song.Name);
         playerProcess.EnableRaisingEvents = true;
         playerProcess.Start();
         playerProcess.Exited += PlayerProcess_Exited;

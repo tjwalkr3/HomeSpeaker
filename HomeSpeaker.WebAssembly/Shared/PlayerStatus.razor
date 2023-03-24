@@ -1,21 +1,18 @@
 ﻿@inject HomeSpeakerService svc
 @inject ILogger<PlayerStatus> logger
 
-<p>
-    Current Song: @(status?.CurrentSong?.Name ?? "No status yet")<br />
-    Message from server: @serverMessage
-</p>
+<div class="align-middle">
+    @serverMessage
+</div>
 
 @code {
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        svc.StatusChanged += async (_, msg) =>
+        svc.StatusChanged += (_, msg) =>
         {
             serverMessage = msg;
             StateHasChanged();
         };
     }
-
-    GetStatusReply? status;
     string? serverMessage;
 }
