@@ -7,13 +7,13 @@
 }
 else
 {
-    var classVal = "row ms-1";
+    var classVal = "row ms-1 gx-0";
     if(toggleBackground())
     {
         classVal += " bg-light";
     }
     <div class=@classVal>
-        <div class="col">
+        <div class="col ms-3">
             <div class="fw-bold">@SongViewModel.Name</div>
             <div>@SongViewModel.Artist @(SongViewModel.Artist != SongViewModel.Album ? $" ({SongViewModel.Album})" : string.Empty)</div>
             @if (ShowFolder)

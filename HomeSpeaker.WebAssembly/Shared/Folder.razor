@@ -1,7 +1,7 @@
 ﻿@inject HomeSpeakerService svc
 
-<div class="row border">
-    <div class="row mb-1">
+<div class="row border gx-1 mb-1">
+    <div class="row mb-0 gx-1 ms-1">
         <div class="col">
             <div class="h5 mb-2" @onclick=toggleExpanded>@(Name ?? "Folder Unknown")</div>
         </div>
@@ -12,7 +12,7 @@
     </div>
     @if (isExpanded)
     {
-        <div class="row">
+        <div class="row gx-1">
             <FolderDetails Name=@Name />
         </div>
     }
