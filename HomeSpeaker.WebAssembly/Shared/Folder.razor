@@ -1,13 +1,13 @@
 ﻿@inject HomeSpeakerService svc
 
-<div class="row border gx-1 mb-1">
+<div class="row border gx-1 p-1">
     <div class="row mb-0 gx-1 ms-1">
         <div class="col">
             <div class="h5 mb-2" @onclick=toggleExpanded>@(Name ?? "Folder Unknown")</div>
         </div>
         <div class="col-auto">
-            <button @onclick=play>▶️</button>
-            <button @onclick=queue>➕</button>
+            <button @onclick=play class="btn btn-outline-primary"><span class="oi oi-media-play" /></button>
+            <button @onclick=queue class="btn btn-outline-primary"><span class="oi oi-plus" /></button>
         </div>
     </div>
     @if (isExpanded)

@@ -7,7 +7,7 @@
 }
 else
 {
-    var classVal = "row ms-1 gx-0";
+    var classVal = "row ms-1 py-1 gx-0";
     if(toggleBackground())
     {
         classVal += " bg-light";
@@ -22,8 +22,8 @@ else
             }
         </div>
         <div class="col-auto">
-            <button @onclick=Play>▶️</button>
-            <button @onclick=Queue>➕</button>
+            <button @onclick=Play class="btn btn-outline-secondary"><span class="oi oi-media-play" /></button>
+            <button @onclick=Queue class="btn btn-outline-secondary"><span class="oi oi-plus" /></button>
         </div>
     </div>
 }
