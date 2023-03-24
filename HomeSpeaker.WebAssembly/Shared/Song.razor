@@ -7,7 +7,12 @@
 }
 else
 {
-    <div class="row ms-3">
+    var classVal = "row ms-1";
+    if(toggleBackground())
+    {
+        classVal += " bg-light";
+    }
+    <div class=@classVal>
         <div class="col">
             <div class="fw-bold">@SongViewModel.Name</div>
             <div>@SongViewModel.Artist @(SongViewModel.Artist != SongViewModel.Album ? $" ({SongViewModel.Album})" : string.Empty)</div>
@@ -29,6 +34,13 @@ else
 
     [Parameter]
     public bool ShowFolder{ get; set; }
+
+    static bool showBackground = false;
+    bool toggleBackground()
+    {
+        showBackground = !showBackground;
+        return showBackground;
+    }
 
     async Task Play() => await svc.PlaySongAsync(SongViewModel.SongId);
     async Task Queue() => await svc.EnqueueSongAsync(SongViewModel.SongId);

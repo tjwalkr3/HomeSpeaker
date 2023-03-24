@@ -1,15 +1,17 @@
 ﻿@inject HomeSpeakerService svc
 <h3>Folder List</h3>
-@if(folders == null)
+@if (folders == null)
 {
     <div>Loading folders...</div>
 }
 else
 {
-    @foreach(var folder in folders)
-    {
-        <Folder Name=@folder />
-    }
+    <div class="container">
+        @foreach (var folder in folders)
+        {
+            <Folder Name=@folder />
+        }
+    </div>
 }
 
 @code {
