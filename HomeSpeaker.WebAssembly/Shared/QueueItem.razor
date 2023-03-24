@@ -1,0 +1,15 @@
+﻿<div class="row">
+    <div class="col">
+        @SongViewModel.Name
+    </div>
+    <div class="col-auto">
+        <button>Play Next</button>
+        <button>Remove</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public SongViewModel SongViewModel{ get; set; }
+
+}

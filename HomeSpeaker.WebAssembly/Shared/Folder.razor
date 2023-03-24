@@ -1,17 +1,24 @@
 ﻿@inject HomeSpeakerService svc
 
-<div class="row">
+<div class="row border bg-light mb-1">
     <div class="col">
-        <div class="h5">@(Name ?? "Folder Unknown")</div>
+        <div class="h5" @onclick=toggleExpanded>@(Name ?? "Folder Unknown")</div>
+        @if(isExpanded)
+        {
+            <FolderDetails Name="Name" />
+        }
     </div>
-    <div class="col">
-        <button @onclick=play>Play</button>
+    <div class="col-auto">
+        <button @onclick=play>▶️</button>
+        <button @onclick=queue>➕</button>
     </div>
 </div>
 
 @code {
     [Parameter]
     public string? Name { get; set; }
+
+    private bool isExpanded = false;
 
     async Task play()
     {
@@ -20,4 +27,14 @@
 
         await svc.PlayFolderAsync(Name);
     }
+
+    async Task queue()
+    {
+        if(Name == null)
+            return;
+
+        await svc.EnqueueFolderAsync(Name);
+    }
+
+    void toggleExpanded() => isExpanded = !isExpanded;
 }

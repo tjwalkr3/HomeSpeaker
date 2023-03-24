@@ -33,22 +33,8 @@ public class HomeSpeakerService
         return await client.GetPlayerStatusAsync(new GetStatusRequest());
     }
 
-    public async Task EnqueueFolderAsync(SongGroup songs)
-    {
-        foreach (var s in songs)
-        {
-            await client.EnqueueSongAsync(new PlaySongRequest { SongId = s.SongId });
-        }
-    }
+    public async Task EnqueueFolderAsync(SongGroup songs) => await client.EnqueueFolderAsync(new EnqueueFolderRequest { FolderPath = songs.FolderPath });
 
-    public async Task PlayFolderAsync(SongGroup songs)
-    {
-        await client.PlayerControlAsync(new PlayerControlRequest { Stop = true, ClearQueue = true });
-        foreach (var s in songs)
-        {
-            await client.EnqueueSongAsync(new PlaySongRequest { SongId = s.SongId });
-        }
-    }
 
     public async Task<IEnumerable<SongViewModel>> GetSongsInFolder(string folder)
     {
@@ -104,10 +90,15 @@ public class HomeSpeakerService
             {
                 var song = s.ToSongViewModel();
                 if (song.Folder == null)
+                {
                     continue;
+                }
 
                 if (groups.ContainsKey(song.Folder) is false)
+                {
                     groups[song.Folder] = new List<SongViewModel>();
+                }
+
                 groups[song.Folder].Add(song);
             }
         }
@@ -121,21 +112,20 @@ public class HomeSpeakerService
         await client.EnqueueSongAsync(new PlaySongRequest { SongId = songId });
     }
 
-    public async Task EnqueueSongAsync(int songId)
+    public async Task<IEnumerable<SongViewModel>> GetPlayQueueAsync()
     {
-        await client.EnqueueSongAsync(new PlaySongRequest { SongId = songId });
+        var queue = new List<SongViewModel>();
+        var queueResponse = client.GetPlayQueue(new GetSongsRequest());
+        await foreach (var reply in queueResponse.ResponseStream.ReadAllAsync())
+        {
+            queue.AddRange(reply.Songs.Select(s => s.ToSongViewModel()));
+        }
+        return queue;
     }
 
-    public async Task PlayFolderAsync(string folder)
-    {
-        await client.PlayFolderAsync(new PlayFolderRequest { FolderPath = folder });
-    }
-
-    public async Task EnqueueFolderAsync(string folder)
-    {
-        await client.EnqueueFolderAsync(new EnqueueFolderRequest { FolderPath = folder });
-    }
-
+    public async Task EnqueueSongAsync(int songId) => await client.EnqueueSongAsync(new PlaySongRequest { SongId = songId });
+    public async Task PlayFolderAsync(string folder) => await client.PlayFolderAsync(new PlayFolderRequest { FolderPath = folder });
+    public async Task EnqueueFolderAsync(string folder) => await client.EnqueueFolderAsync(new EnqueueFolderRequest { FolderPath = folder });
     public async Task StopPlayingAsync() => await client.PlayerControlAsync(new PlayerControlRequest { Stop = true });
     public async Task ClearQueueAsync() => await client.PlayerControlAsync(new PlayerControlRequest { ClearQueue = true });
     public async Task SkipToNextAsync() => await client.PlayerControlAsync(new PlayerControlRequest { SkipToNext = true });

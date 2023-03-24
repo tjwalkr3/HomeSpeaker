@@ -1,0 +1,25 @@
+﻿@inject HomeSpeakerService svc
+
+@if(songs == null)
+{
+    <div>No songs in the folder...?</div>
+}
+else
+{
+    @foreach(var song in songs)
+    {
+        <Song SongViewModel="song"/>
+    }
+}
+
+@code {
+    [Parameter]
+    public string Name{ get; set; }
+
+    private IEnumerable<SongViewModel> songs;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        songs = await svc.GetSongsInFolder(Name);
+    }
+}

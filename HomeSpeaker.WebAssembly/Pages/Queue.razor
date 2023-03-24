@@ -1,0 +1,37 @@
+﻿@page "/Queue"
+@inject HomeSpeakerService svc
+
+<div class="row">
+    <div class="col">
+        <h3>Play Queue</h3>
+    </div>
+    <div class="col-auto">
+        <div class="fw-bold fs-6">(@queue?.Count() songs in queue)</div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <PlayControls />
+    </div>
+</div>
+@if (queue == null)
+{
+    <div>Loading queue...</div>
+}
+else
+{
+
+    @foreach (var song in queue)
+    {
+        <QueueItem SongViewModel=song />
+    }
+}
+
+@code {
+    IEnumerable<SongViewModel> queue;
+
+    protected override async Task OnInitializedAsync()
+    {
+        queue = await svc.GetPlayQueueAsync();
+    }
+}

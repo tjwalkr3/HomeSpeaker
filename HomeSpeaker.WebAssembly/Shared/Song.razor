@@ -1,0 +1,28 @@
+﻿@inject HomeSpeakerService svc
+
+@if (SongViewModel == null)
+{
+    <div>Nothing to see here...</div>
+}
+else
+{
+    <div class="row ms-3">
+        <div class="col">
+            <div class="fw-bold">@SongViewModel.Name</div>
+            <div>@SongViewModel.Artist @(SongViewModel.Artist != SongViewModel.Album ? $" ({SongViewModel.Album})" : string.Empty)</div>
+            <div>@SongViewModel.Folder</div>
+        </div>
+        <div class="col-auto">
+            <button @onclick=Play>▶️</button>
+            <button @onclick=Queue>➕</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public SongViewModel SongViewModel { get; set; }
+
+    async Task Play() => await svc.PlaySongAsync(SongViewModel.SongId);
+    async Task Queue() => await svc.EnqueueSongAsync(SongViewModel.SongId);
+}
