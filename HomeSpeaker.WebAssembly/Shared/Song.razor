@@ -8,7 +8,7 @@
 else
 {
     var classVal = "row ms-1 py-1 gx-0";
-    if(toggleBackground())
+    if(ShowBackground)
     {
         classVal += " bg-light";
     }
@@ -35,12 +35,8 @@ else
     [Parameter]
     public bool ShowFolder{ get; set; }
 
-    static bool showBackground = false;
-    bool toggleBackground()
-    {
-        showBackground = !showBackground;
-        return showBackground;
-    }
+    [Parameter]
+    public bool ShowBackground { get; set; }
 
     async Task Play() => await svc.PlaySongAsync(SongViewModel.SongId);
     async Task Queue() => await svc.EnqueueSongAsync(SongViewModel.SongId);

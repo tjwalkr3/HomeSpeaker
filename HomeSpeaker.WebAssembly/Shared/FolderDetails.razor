@@ -8,7 +8,7 @@ else
 {
     @foreach(var song in songs)
     {
-        <Song SongViewModel=@song/>
+        <Song SongViewModel=@song ShowBackground=@toggleBackground()/>
     }
 }
 
@@ -17,6 +17,14 @@ else
     public string Name{ get; set; }
 
     private IEnumerable<SongViewModel> songs;
+
+    private bool showBackground = false;
+
+    private bool toggleBackground()
+    {
+        showBackground = !showBackground;
+        return showBackground;
+    }
 
     protected override async Task OnParametersSetAsync()
     {
