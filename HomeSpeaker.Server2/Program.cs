@@ -47,23 +47,21 @@ builder.Host.UseSerilog((context, loggerConfig) =>
         .WriteTo.Seq("http://localhost:5341");
 });
 
+builder.Services.AddRazorPages();
 builder.Services.AddGrpc();
-
-builder.Services.AddCors(o => o.AddDefaultPolicy(builder =>
-{
-    builder.AllowAnyHeader()
-           .AllowAnyMethod()
-           .AllowAnyOrigin()
-           .WithExposedHeaders("Grpc-Status", "Grpc-Message", "GrpcEncoding", "Grpc-AcceptEncoding");
-}));
 
 builder.Services.AddSingleton<IDataStore, OnDiskDataStore>();
 builder.Services.AddSingleton<IFileSource>(_ => new DefaultFileSource(builder.Configuration[ConfigKeys.MediaFolder] ?? throw new MissingConfigException(ConfigKeys.MediaFolder)));
 builder.Services.AddSingleton<ITagParser, DefaultTagParser>();
 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+{
     builder.Services.AddSingleton<WindowsMusicPlayer>();
+}
 else
+{
     builder.Services.AddSingleton<LinuxSoxMusicPlayer>();
+}
+
 builder.Services.AddSingleton<IMusicPlayer>(services =>
 {
     IMusicPlayer actualPlayer = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
@@ -78,11 +76,25 @@ builder.Services.AddHostedService<LifecycleEvents>();
 var app = builder.Build();
 
 app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
-app.UseCors();
+if (app.Environment.IsDevelopment())
+{
+    app.UseWebAssemblyDebugging();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+}
+
+app.UseHttpsRedirection();
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
+app.UseRouting();
+app.MapRazorPages();
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<GreeterService>();
 app.MapGrpcService<HomeSpeakerService>();
-app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

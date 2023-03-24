@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.4" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.51.0" />
     <PackageReference Include="Grpc.AspNetCore.Web" Version="2.52.0" />
     <PackageReference Include="ID3" Version="0.6.0" />
@@ -31,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeSpeaker.Shared\HomeSpeaker.Shared.csproj" />
+    <ProjectReference Include="..\HomeSpeaker.WebAssembly\HomeSpeaker.WebAssembly.csproj" />
   </ItemGroup>
 
 </Project>

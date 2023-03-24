@@ -1,4 +1,6 @@
-﻿namespace HomeSpeaker.WebAssembly.Services;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+
+namespace HomeSpeaker.WebAssembly.Services;
 
 public class HomeSpeakerService
 {
@@ -6,9 +8,13 @@ public class HomeSpeakerService
     private List<SongMessage> songs = new();
     public IEnumerable<SongMessage> Songs => songs;
 
-    public HomeSpeakerService(IConfiguration config, ILogger<HomeSpeakerService> logger)
+    public HomeSpeakerService(IConfiguration config, ILogger<HomeSpeakerService> logger, IWebAssemblyHostEnvironment hostEnvironment)
     {
-        var channel = GrpcChannel.ForAddress(config["ServerAddress"] ?? throw new MissingConfigException("ServerAddress"), new GrpcChannelOptions
+        string address = config["ServerAddress"] ?? throw new MissingConfigException("ServerAddress");
+        logger.LogInformation($"I was about to use {address}");
+        address = hostEnvironment.BaseAddress;
+        logger.LogInformation("Bug instead I'll use {address}", address);
+        var channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions
         {
             HttpHandler = new GrpcWebHandler(new HttpClientHandler())
         });
