@@ -1,6 +1,6 @@
 {
-  "name": "HomeSpeaker.WebAssembly",
-  "short_name": "HomeSpeaker.WebAssembly",
+  "name": "Home Speaker",
+  "short_name": "Home Speaker",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

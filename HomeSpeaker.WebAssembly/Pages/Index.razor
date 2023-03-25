@@ -1,10 +1,44 @@
 ﻿@page "/"
 @inject HomeSpeakerService svc;
+@*@using Microsoft.Fast.Components.FluentUI*@
 
-<PageTitle>Home Speaker</PageTitle>
 
-<FolderList />
+<div class="input-group">
+    <input type="text" class="form-control" placeholder="Search / Filter" @bind=@filterValue />
+    <span class="oi oi-magnifying-glass input-group-text"></span>
+</div>
 
-@code{
+@*<FluentTreeView>
+    <FluentTreeItem>
+        Root item 1
+        <FluentTreeItem>
+            Flowers
+            <FluentTreeItem Disabled="true">Daisy</FluentTreeItem>
+            <FluentTreeItem>Sunflower</FluentTreeItem>
+            <FluentTreeItem>Rose</FluentTreeItem>
+        </FluentTreeItem>
+        <FluentTreeItem>Nested item 2</FluentTreeItem>
+        <FluentTreeItem>Nested item 3</FluentTreeItem>
+    </FluentTreeItem>
+    <FluentTreeItem>
+        Root item 2 - Leaf Erikson
+    </FluentTreeItem>
+</FluentTreeView>
+*@
+@code {
+    private string filterValue;
+    public string FilterValue
+    {
+        get => filterValue;
+        set
+        {
+            filterValue = value;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
 
 }
