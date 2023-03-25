@@ -34,6 +34,8 @@ public class HomeSpeakerService
         }
     }
 
+    public async Task PlayStreamAsync(string streamUri) => await client.PlayStreamAsync(new PlayStreamRequest { StreamUrl = streamUri });
+
     public async Task<GetStatusReply> GetStatusAsync()
     {
         return await client.GetPlayerStatusAsync(new GetStatusRequest());
