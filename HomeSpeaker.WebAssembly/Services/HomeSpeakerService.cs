@@ -90,6 +90,18 @@ public class HomeSpeakerService
         return folders;
     }
 
+    public async Task<IEnumerable<SongViewModel>> GetAllSongsAsync()
+    {
+        var songs = new List<SongViewModel>();
+        var getSongsReply = client.GetSongs(new GetSongsRequest { });
+        await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
+        {
+            songs.AddRange(reply.Songs.Select(s => s.ToSongViewModel()));
+        }
+
+        return songs;
+    }
+
     public async Task<Dictionary<string, List<SongViewModel>>> GetSongGroups()
     {
         var groups = new Dictionary<string, List<SongViewModel>>();
