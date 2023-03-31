@@ -34,8 +34,15 @@ try
 
             });
     }
+    else
+    {
+        Console.WriteLine("!!! Cannot contact jaeger ?!? ***********");
+    }
 }
-catch { }
+catch (Exception ex)
+{
+    Console.WriteLine("!!! Trouble contacting jaeger: " + ex.ToString());
+}
 
 builder.Host.UseSerilog((context, loggerConfig) =>
 {
