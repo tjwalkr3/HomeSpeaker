@@ -14,11 +14,9 @@
 }
 else
 {
+    <div>Found @artistCount artists. You're on page @pageNum. <button @onclick=@(()=>pageNum++)>Next Page</button><button @onclick=@(()=>pageNum--)>Prev Page</button></div>
     <FluentTreeView>
-        @foreach (var artist in from s in songs
-                               group s by s.Artist into artists
-                               orderby artists.Key
-                               select artists)
+        @foreach (var artist in artists.Skip(pageSize * pageNum).Take(pageSize))
         {
             <FluentTreeItem>
                 @artist.Key
@@ -30,7 +28,9 @@ else
                         @album.Key
                         @foreach (var song in album)
                         {
-                            <FluentTreeItem>@song.Name</FluentTreeItem>
+                            <FluentTreeItem>
+                                <Song SongViewModel=@song />
+                            </FluentTreeItem>
                         }
                     </FluentTreeItem>
                 }
@@ -40,6 +40,9 @@ else
 }
 
 @code {
+    private int pageNum = 0;
+    private int pageSize = 10;
+    private int artistCount;
     private string filterValue;
     public string FilterValue
     {
@@ -51,10 +54,16 @@ else
     }
 
     IEnumerable<SongViewModel>? songs;
+    IOrderedEnumerable<IGrouping<string, SongViewModel>> artists;
 
     protected override async Task OnInitializedAsync()
     {
         songs = await svc.GetAllSongsAsync();
+        artists = from s in songs
+                  group s by s.Artist into artists
+                  orderby artists.Key
+                  select artists;
+        artistCount = artists.Count();
     }
 
 }
