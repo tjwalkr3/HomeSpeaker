@@ -13,12 +13,19 @@
     @if (isExpanded)
     {
         <div class="row gx-1">
-            <FolderDetails Name=@Name />
+            <FolderDetails Name=@Name Songs="@songs" />
         </div>
     }
 </div>
 
 @code {
+    protected override async Task OnParametersSetAsync()
+    {
+        songs = await svc.GetSongsInFolder(Name);
+    }
+
+    IEnumerable<SongViewModel> songs;
+
     [Parameter]
     public string? Name { get; set; }
 

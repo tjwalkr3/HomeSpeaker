@@ -1,12 +1,12 @@
 ﻿@inject HomeSpeakerService svc
 
-@if(songs == null)
+@if(Songs == null)
 {
     <div>No songs in the folder...?</div>
 }
 else
 {
-    @foreach(var song in songs)
+    @foreach(var song in Songs)
     {
         <Song SongViewModel=@song ShowBackground=@toggleBackground()/>
     }
@@ -16,7 +16,8 @@ else
     [Parameter]
     public string Name{ get; set; }
 
-    private IEnumerable<SongViewModel> songs;
+    [Parameter]
+    public IEnumerable<SongViewModel> Songs { get; set; }
 
     private bool showBackground = false;
 
@@ -24,10 +25,5 @@ else
     {
         showBackground = !showBackground;
         return showBackground;
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        songs = await svc.GetSongsInFolder(Name);
     }
 }

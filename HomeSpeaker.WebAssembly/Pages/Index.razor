@@ -1,47 +1,38 @@
 ﻿@page "/"
 @inject HomeSpeakerService svc;
+@inject ILogger<Index> logger
 @using Microsoft.Fast.Components.FluentUI
 
-
-<div class="input-group">
-    <input type="text" class="form-control" placeholder="Search / Filter" @bind=@filterValue />
-    <span class="oi oi-magnifying-glass input-group-text"></span>
-</div>
+<FluentSearch class="w-100" Placeholder="Search / Filter" DisplayName="Search & Filter" ValueChanged="(s)=>FilterValue = s" ValueExpression="() => FilterValue" />
 
 @if (songs == null)
 {
     <p>Loading...</p>
 }
+else if (numPages == 0)
+{
+    <div class="text-center">
+        No artists / albums / songs contain '@FilterValue'
+    </div>
+}
 else
 {
-    <div>Found @artistCount artists. You're on page @pageNum. <button @onclick=@(()=>pageNum++)>Next Page</button><button @onclick=@(()=>pageNum--)>Prev Page</button></div>
-    <FluentTreeView>
-        @foreach (var artist in artists.Skip(pageSize * pageNum).Take(pageSize))
-        {
-            <FluentTreeItem>
-                @artist.Key
-                @foreach (var album in from song in artist
-                                      group song by song.Album into album
-                                      select album)
-                {
-                    <FluentTreeItem>
-                        @album.Key
-                        @foreach (var song in album)
-                        {
-                            <FluentTreeItem>
-                                <Song SongViewModel=@song />
-                            </FluentTreeItem>
-                        }
-                    </FluentTreeItem>
-                }
-            </FluentTreeItem>
-        }
-    </FluentTreeView>
+    <div class="d-flex justify-content-around mt-2">
+        <FluentButton @onclick=@(()=>pageNum--) Disabled=@(pageNum == 0)><span class="oi oi-chevron-left me-2" />Prev Page</FluentButton>
+        <div>Page @(pageNum + 1) of @numPages </div>
+        <FluentButton @onclick=@(()=>pageNum++) Disabled=@(pageNum+1 >= numPages)>Next Page <span class="oi oi-chevron-right ms-2" /></FluentButton>
+    </div>
+
+    @foreach (var artist in artists.Skip(pageSize * pageNum).Take(pageSize))
+    {
+        <Artist Content="@artist" />
+    }
 }
 
 @code {
     private int pageNum = 0;
     private int pageSize = 10;
+    private int numPages = 0;
     private int artistCount;
     private string filterValue;
     public string FilterValue
@@ -49,7 +40,9 @@ else
         get => filterValue;
         set
         {
+            logger.LogInformation("Setting FilterValue to {value}", value);
             filterValue = value;
+            refresh();
         }
     }
 
@@ -59,10 +52,31 @@ else
     protected override async Task OnInitializedAsync()
     {
         songs = await svc.GetAllSongsAsync();
-        artists = from s in songs
+        refresh();
+    }
+
+    void refresh()
+    {
+        if (songs == null)
+            return;
+
+        var filteredSongs = songs;
+        if (!string.IsNullOrWhiteSpace(FilterValue))
+        {
+            logger.LogInformation("Filtering artists, albums and songs like {filterValue}", filterValue);
+
+            filteredSongs = songs.Where(a =>
+                a.Artist.Contains(FilterValue, StringComparison.OrdinalIgnoreCase) ||
+                a.Album.Contains(FilterValue, StringComparison.OrdinalIgnoreCase) ||
+                a.Name.Contains(FilterValue, StringComparison.OrdinalIgnoreCase)
+            );
+
+        }
+        artists = from s in filteredSongs
                   group s by s.Artist into artists
                   orderby artists.Key
                   select artists;
         artistCount = artists.Count();
+        numPages = (artistCount + pageSize - 1) / pageSize;
     }
 }

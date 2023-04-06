@@ -14,8 +14,7 @@ else
     }
     <div class=@classVal>
         <div class="col ms-3">
-            <div class="fw-bold">@SongViewModel.Name</div>
-            <div>@SongViewModel.Artist @(SongViewModel.Artist != SongViewModel.Album ? $" ({SongViewModel.Album})" : string.Empty)</div>
+            <div class="text-wrap">@SongViewModel.Name</div>
             @if (ShowFolder)
             {
                 <div>@SongViewModel.Folder</div>
