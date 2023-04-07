@@ -3,7 +3,7 @@
 @inject ILogger<Index> logger
 @using Microsoft.Fast.Components.FluentUI
 
-<FluentSearch class="w-100" Placeholder="Search / Filter" DisplayName="Search & Filter" ValueChanged="(s)=>FilterValue = s" ValueExpression="() => FilterValue" />
+<FluentSearch class="w-100 mb-2" Placeholder="Search / Filter" DisplayName="Search & Filter" ValueChanged="(s)=>FilterValue = s" ValueExpression="() => FilterValue" />
 
 @if (songs == null)
 {
@@ -17,11 +17,16 @@ else if (numPages == 0)
 }
 else
 {
-    <div class="d-flex justify-content-around mt-2">
-        <FluentButton @onclick=@(()=>pageNum--) Disabled=@(pageNum == 0)><span class="oi oi-chevron-left me-2" />Prev Page</FluentButton>
-        <div>Page @(pageNum + 1) of @numPages </div>
-        <FluentButton @onclick=@(()=>pageNum++) Disabled=@(pageNum+1 >= numPages)>Next Page <span class="oi oi-chevron-right ms-2" /></FluentButton>
-    </div>
+    if (numPages > 1)
+    {
+        <div class="d-flex justify-content-around mt-2">
+            <FluentButton @onclick=@(()=>pageNum--) Disabled=@(pageNum == 0)><span class="oi oi-chevron-left me-2" />Prev Page</FluentButton>
+            <div>Page @(
+          pageNum + 1
+          ) of @numPages </div>
+            <FluentButton @onclick=@(()=>pageNum++) Disabled=@(pageNum+1 >= numPages)>Next Page <span class="oi oi-chevron-right ms-2" /></FluentButton>
+        </div>
+    }
 
     @foreach (var artist in artists.Skip(pageSize * pageNum).Take(pageSize))
     {
@@ -31,7 +36,7 @@ else
 
 @code {
     private int pageNum = 0;
-    private int pageSize = 10;
+    private int pageSize = 200;
     private int numPages = 0;
     private int artistCount;
     private string filterValue;
