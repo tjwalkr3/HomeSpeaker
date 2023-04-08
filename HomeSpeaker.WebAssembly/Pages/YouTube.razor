@@ -1,0 +1,55 @@
+﻿@page "/youtube"
+@inject ILogger<YouTube> logger
+@inject HomeSpeakerService svc
+
+<h3>YouTube Cache</h3>
+
+<input type="text" @bind=searchTerm />
+<button @onclick=searchAsync>Search</button>
+
+@if(isSearching)
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Searching...</span>
+    </div>
+}
+else if (videos == null)
+{
+    <p>Search for something to create a temporary fair-use local cache.</p>
+}
+else
+{
+    @foreach (var searchResult in videos)
+    {
+        <div class="row border m-1">
+            <div class="col-auto">
+                <img src="@searchResult.Thumbnail" height="64">
+            </div>
+            <div class="col">
+                <a class="h6" href="@searchResult.Url">@searchResult.Title</a>
+                <br>
+                by @searchResult.Author (@searchResult.Duration)
+            </div>
+            <div class="col-auto">
+                <button @onclick=@(()=>svc.HomeSpeakerClient.CacheVideoAsync(new CacheVideoRequest{Video= searchResult}))>
+                    <span class="oi oi-cloud-download"></span>
+                </button>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    bool isSearching = false;
+    IEnumerable<Video> videos;
+    string searchTerm;
+    async Task searchAsync()
+    {
+        isSearching = true;
+        logger.LogInformation("Starting youtube search for {searchTerm}", searchTerm);
+        var response = await svc.HomeSpeakerClient.SearchViedoAsync(new SearchVideoRequest { SearchTerm = searchTerm });
+        videos = response.Results;
+        logger.LogInformation("Found {resultCount} results", videos.Count());
+        isSearching = false;
+    }
+}

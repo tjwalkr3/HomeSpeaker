@@ -20,6 +20,8 @@ service HomeSpeaker {
 	rpc PlayerControl(PlayerControlRequest) returns (PlayerControlReply);
 	rpc ShuffleQueue(ShuffleQueueRequest) returns (ShuffleQueueReply);
 	rpc SendEvent(google.protobuf.Empty) returns (stream StreamServerEvent);
+	rpc SearchViedo(SearchVideoRequest) returns (SearchVideoReply);
+	rpc CacheVideo(CacheVideoRequest) returns (CacheVideoReply);
 }
 
 message ShuffleQueueRequest {}
@@ -74,4 +76,23 @@ message EnqueueFolderRequest {
 message EnqueueFolderReply {}
 message StreamServerEvent{
 	string Message=1;
+}
+message SearchVideoRequest {
+	string SearchTerm = 1;
+}
+message SearchVideoReply {
+	repeated Video Results = 1;
+}
+message Video{
+	string Title=1;
+	string Id=2;
+	string Url=3;
+	string Thumbnail=4;
+	string Author=5;
+	google.protobuf.Duration Duration=6;
+}
+message CacheVideoRequest {
+	Video Video=1;
+}
+message CacheVideoReply {
 }
