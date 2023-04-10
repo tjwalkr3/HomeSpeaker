@@ -24,6 +24,7 @@ services:
     - ASPNETCORE_URLS=https://+443;http://+:8080
     #- ASPNETCORE_Kestrel__Certificates__Default__Password=ThisIsMySslCertPassword23
     - ASPNETCORE_Kestrel__Certificates__Default__Path=/certs/certificate.pfx
+    - FFMpegLocation=/usr/bin/ffmpeg
 
   jaeger:
     image: jaegertracing/all-in-one:1.41
