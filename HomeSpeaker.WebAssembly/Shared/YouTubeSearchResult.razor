@@ -1,0 +1,65 @@
+﻿@inject ILogger<YouTubeSearchResult> logger
+@inject HomeSpeakerService svc
+
+@if (SearchResult == null)
+{
+    <div>Nothing to see here</div>
+}
+else
+{
+    <div class="row border m-1">
+        <div class="col-auto">
+            <img src="@SearchResult.Thumbnail" height="64">
+        </div>
+        <div class="col">
+            <a class="h6" href="@SearchResult.Url">@SearchResult.Title</a>
+            <br>
+            by @SearchResult.Author (@SearchResult.Duration)
+        </div>
+        <div class="col-auto">
+            @if (isDownloading)
+            {
+                <progress value="@progressValue" max="100" />
+            }
+            else if(isComplete)
+            {
+                <span class="oi oi-check m-2"></span>
+            }
+            else
+            {
+                <button @onclick=cacheVideoAsync>
+                    <span class="oi oi-cloud-download"></span>
+                </button>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Video? SearchResult { get; set; }
+
+    bool isDownloading = false;
+    bool isComplete = false;
+    double progressValue;
+
+    async Task cacheVideoAsync()
+    {
+        isDownloading = true;
+        var cacheCallReply = svc.HomeSpeakerClient.CacheVideo(new CacheVideoRequest { Video = SearchResult });
+        await foreach (var reply in cacheCallReply.ResponseStream.ReadAllAsync())
+        {
+            progressValue = reply.PercentComplete * 100;
+            if(progressValue == 100)
+            {
+                isDownloading = false;
+                isComplete = true;
+            }
+            logger.LogInformation("Progress {value} for {title}", progressValue, SearchResult?.Title);
+            StateHasChanged();
+        }
+
+        isDownloading = false;
+        isComplete = true;
+    }
+}

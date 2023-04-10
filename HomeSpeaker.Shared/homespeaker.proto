@@ -21,7 +21,7 @@ service HomeSpeaker {
 	rpc ShuffleQueue(ShuffleQueueRequest) returns (ShuffleQueueReply);
 	rpc SendEvent(google.protobuf.Empty) returns (stream StreamServerEvent);
 	rpc SearchViedo(SearchVideoRequest) returns (SearchVideoReply);
-	rpc CacheVideo(CacheVideoRequest) returns (CacheVideoReply);
+	rpc CacheVideo(CacheVideoRequest) returns (stream CacheVideoReply);
 }
 
 message ShuffleQueueRequest {}
@@ -95,4 +95,6 @@ message CacheVideoRequest {
 	Video Video=1;
 }
 message CacheVideoReply {
+	double PercentComplete=1;
+	string Title=2;
 }

@@ -53,7 +53,7 @@ public class YoutubeService
         }
         return results;
     }
-    public async Task CacheVideoAsync(string id, string title)
+    public async Task CacheVideoAsync(string id, string title, IProgress<double> progress)
     {
         var fileName = string.Join("_", $"{title}.mp3".Split(Path.GetInvalidFileNameChars()));
         var destinationPath = Path.Combine(config[ConfigKeys.MediaFolder]!, "YouTube Cache");
@@ -64,14 +64,14 @@ public class YoutubeService
 
         logger.LogInformation("Beginning to cache {title}", title);
 
-        await client.Videos.DownloadAsync(VideoId.Parse(id), new ConversionRequest(ffmpegLocation, destinationPath, Container.Mp3, ConversionPreset.Medium));
+        await client.Videos.DownloadAsync(VideoId.Parse(id), new ConversionRequest(ffmpegLocation, destinationPath, Container.Mp3, ConversionPreset.Medium), progress);
 
         try
         {
             using var mediaFile = MediaFile.Create(destinationPath);
             mediaFile.SetArtist("Youtube Cache");
-            mediaFile.SetTitle(title);
             mediaFile.SetAlbum("Youtube Cache");
+            mediaFile.SetTitle(title);
         }
         catch
         {
@@ -190,9 +190,6 @@ internal partial class MediaFile : IDisposable
         _file.Save();
         _file.Dispose();
     }
-}
 
-internal partial class MediaFile
-{
     public static MediaFile Create(string filePath) => new(TagFile.Create(filePath));
 }

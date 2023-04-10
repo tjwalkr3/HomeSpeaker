@@ -7,10 +7,12 @@
 <input type="text" @bind=searchTerm />
 <button @onclick=searchAsync>Search</button>
 
-@if(isSearching)
+@if (isSearching)
 {
-    <div class="spinner-border" role="status">
-        <span class="visually-hidden">Searching...</span>
+    <div class="row mt-3 mx-5">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Searching...</span>
+        </div>
     </div>
 }
 else if (videos == null)
@@ -21,21 +23,7 @@ else
 {
     @foreach (var searchResult in videos)
     {
-        <div class="row border m-1">
-            <div class="col-auto">
-                <img src="@searchResult.Thumbnail" height="64">
-            </div>
-            <div class="col">
-                <a class="h6" href="@searchResult.Url">@searchResult.Title</a>
-                <br>
-                by @searchResult.Author (@searchResult.Duration)
-            </div>
-            <div class="col-auto">
-                <button @onclick=@(()=>svc.HomeSpeakerClient.CacheVideoAsync(new CacheVideoRequest{Video= searchResult}))>
-                    <span class="oi oi-cloud-download"></span>
-                </button>
-            </div>
-        </div>
+        <YouTubeSearchResult SearchResult="searchResult" />
     }
 }
 

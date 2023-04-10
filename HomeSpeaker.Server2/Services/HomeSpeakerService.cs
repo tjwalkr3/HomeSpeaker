@@ -64,11 +64,11 @@ public class HomeSpeakerService : HomeSpeakerBase
         return result;
     }
 
-    public override async Task<CacheVideoReply> CacheVideo(CacheVideoRequest request, ServerCallContext context)
+    public override async Task CacheVideo(CacheVideoRequest request, IServerStreamWriter<CacheVideoReply> responseStream, ServerCallContext context)
     {
         var v = request.Video;
-        await youtubeService.CacheVideoAsync(v.Id, v.Title);
-        return new CacheVideoReply();
+        var streamingProgress = new StreamingProgress(responseStream, v.Title, logger);
+        await youtubeService.CacheVideoAsync(v.Id, v.Title, streamingProgress);
     }
 
     public override async Task GetSongs(GetSongsRequest request, IServerStreamWriter<GetSongsReply> responseStream, ServerCallContext context)
