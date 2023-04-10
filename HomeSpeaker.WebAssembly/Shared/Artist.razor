@@ -1,15 +1,6 @@
 ﻿@inject HomeSpeakerService svc
 
-@*<div class="h4">@(String.IsNullOrWhiteSpace(Content.Key) ? "[ No Artist ]" : Content.Key)</div>
-@foreach (var album in from song in Content
-                      group song by song.Album into album
-                      select album)
-{
-    <div class="h5">@(String.IsNullOrWhiteSpace(album.Key) ? "[ No Album ]" : album.Key)</div>
-    <FolderDetails Name="@album.Key" Songs="@album" />
-}*@
-
-<div class="row border gx-1 p-1">
+<div class="row gx-1 p-1">
     <div class="row mb-1 gx-1 mx-1 py-1 bg-primary text-white rounded">
         <div class="col">
             <div class="h5 mb-2" @onclick=toggleExpanded>@(String.IsNullOrWhiteSpace(Content.Key) ? "[ No Artist ]" : Content.Key)</div>

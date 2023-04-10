@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using HomeSpeaker.Server2.Services;
 using HomeSpeaker.Shared;
 using static HomeSpeaker.Shared.HomeSpeaker;
 
@@ -10,15 +11,16 @@ public class HomeSpeakerService : HomeSpeakerBase
     private readonly ILogger<HomeSpeakerService> logger;
     private readonly Mp3Library library;
     private readonly IMusicPlayer musicPlayer;
+    private readonly YoutubeService youtubeService;
     private readonly List<IServerStreamWriter<StreamServerEvent>> eventClients = new();
     private readonly List<IServerStreamWriter<StreamServerEvent>> failedEvents = new();
 
-    public HomeSpeakerService(ILogger<HomeSpeakerService> logger, Mp3Library library, IMusicPlayer musicPlayer)
+    public HomeSpeakerService(ILogger<HomeSpeakerService> logger, Mp3Library library, IMusicPlayer musicPlayer, YoutubeService youtubeService)
     {
         this.logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
         this.library = library ?? throw new System.ArgumentNullException(nameof(library));
         this.musicPlayer = musicPlayer ?? throw new System.ArgumentNullException(nameof(musicPlayer));
-
+        this.youtubeService = youtubeService;
         musicPlayer.PlayerEvent += MusicPlayer_PlayerEvent;
     }
 
@@ -44,6 +46,29 @@ public class HomeSpeakerService : HomeSpeakerBase
             }
             failedEvents.Clear();
         }
+    }
+
+    public override async Task<SearchVideoReply> SearchViedo(SearchVideoRequest request, ServerCallContext context)
+    {
+        var videos = await youtubeService.SearchAsync(request.SearchTerm);
+        var result = new SearchVideoReply();
+        result.Results.AddRange(videos.Select(v => new Shared.Video
+        {
+            Title = v.Title,
+            Id = v.Id,
+            Url = v.Url,
+            Thumbnail = v.Thumbnail,
+            Author = v.Author,
+            Duration = Duration.FromTimeSpan(v.Duration ?? TimeSpan.Zero)
+        }));
+        return result;
+    }
+
+    public override async Task<CacheVideoReply> CacheVideo(CacheVideoRequest request, ServerCallContext context)
+    {
+        var v = request.Video;
+        await youtubeService.CacheVideoAsync(v.Id, v.Title);
+        return new CacheVideoReply();
     }
 
     public override async Task GetSongs(GetSongsRequest request, IServerStreamWriter<GetSongsReply> responseStream, ServerCallContext context)

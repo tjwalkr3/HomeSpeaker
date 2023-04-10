@@ -29,8 +29,13 @@ namespace HomeSpeaker.Server
         public bool SyncStarted { get; private set; }
         public bool SyncCompleted { get; private set; }
 
-        private void SyncLibrary()
+        public void SyncLibrary()
         {
+            if (SyncStarted)
+            {
+                return;
+            }
+
             SyncStarted = true;
             var files = fileSource.GetAllMp3s();
             foreach (var file in files)

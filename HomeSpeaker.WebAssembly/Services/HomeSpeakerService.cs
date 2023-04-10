@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.WebAssembly.Services;
 
@@ -24,6 +25,8 @@ public class HomeSpeakerService
 
         _ = listenForEvents();
     }
+
+    public HomeSpeakerClient HomeSpeakerClient => client;
 
     private async Task listenForEvents()
     {
