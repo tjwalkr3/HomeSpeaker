@@ -8,7 +8,7 @@
 else
 {
     var classVal = "row ms-1 py-1 gx-0";
-    if(ShowBackground)
+    if (ShowBackground)
     {
         classVal += " bg-light";
     }
@@ -19,18 +19,27 @@ else
             {
                 <div>@SongViewModel.Folder</div>
             }
-            @if(showDetails)
-            {
-                <div class="row">
-                    <span class="fw-bold">Song Actions:</span>
-                    <button class="btn btn-link" @onclick=delete><span class="oi oi-delete"></span> Delete</button>
-                </div>
-            }
         </div>
         <div class="col-auto">
+            <button @onclick=toggleDetailsView class="btn btn-outline"><span class=@toggleIcon></span></button>
             <button @onclick=Play class="btn btn-outline-secondary"><span class="oi oi-media-play" /></button>
             <button @onclick=Queue class="btn btn-outline-secondary"><span class="oi oi-plus" /></button>
         </div>
+        @if (showDetails)
+        {
+            <span class="fw-bold ms-2">Song Actions:</span>
+            <div class="row justify-content-around border-top mb-2 pt-2 g-0">
+                <div class="col">
+                    <button class="btn btn-danger" @onclick=delete><span class="oi oi-delete"></span> Delete</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-success"><span class="oi oi-list"></span> Add to Playlist</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-info"><span class="oi oi-pencil"></span> Edit Artist/Album</button>
+                </div>
+            </div>
+        }
     </div>
 }
 
@@ -39,14 +48,15 @@ else
     public SongViewModel SongViewModel { get; set; }
 
     [Parameter]
-    public bool ShowFolder{ get; set; }
+    public bool ShowFolder { get; set; }
 
     [Parameter]
     public bool ShowBackground { get; set; }
 
-    private bool showDetails{ get; set; }
+    private bool showDetails { get; set; }
 
     private void toggleDetailsView() => showDetails = !showDetails;
+    private string toggleIcon => showDetails ? "oi oi-chevron-top" : "oi oi-chevron-bottom";
 
     async Task Play() => await svc.PlaySongAsync(SongViewModel.SongId);
     async Task Queue() => await svc.EnqueueSongAsync(SongViewModel.SongId);
