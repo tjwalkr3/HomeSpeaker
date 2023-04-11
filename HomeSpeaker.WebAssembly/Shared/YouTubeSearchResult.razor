@@ -19,7 +19,7 @@ else
         <div class="col-auto">
             @if (isDownloading)
             {
-                <progress value="@progressValue" max="100" />
+                <progress value="@progressValue" />
             }
             else if(isComplete)
             {
@@ -49,12 +49,7 @@ else
         var cacheCallReply = svc.HomeSpeakerClient.CacheVideo(new CacheVideoRequest { Video = SearchResult });
         await foreach (var reply in cacheCallReply.ResponseStream.ReadAllAsync())
         {
-            progressValue = reply.PercentComplete * 100;
-            if(progressValue == 100)
-            {
-                isDownloading = false;
-                isComplete = true;
-            }
+            progressValue = reply.PercentComplete;
             logger.LogInformation("Progress {value} for {title}", progressValue, SearchResult?.Title);
             StateHasChanged();
         }

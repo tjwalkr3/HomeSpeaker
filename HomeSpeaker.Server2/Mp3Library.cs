@@ -1,4 +1,5 @@
-﻿using HomeSpeaker.Shared;
+﻿using HomeSpeaker.Server2;
+using HomeSpeaker.Shared;
 
 namespace HomeSpeaker.Server
 {
@@ -8,6 +9,7 @@ namespace HomeSpeaker.Server
         private readonly ITagParser tagParser;
         private readonly IDataStore dataStore;
         private readonly ILogger<Mp3Library> logger;
+        private readonly object lockObject = new();
 
         public Mp3Library(IFileSource fileSource, ITagParser tagParser, IDataStore dataStore, ILogger<Mp3Library> logger)
         {
@@ -18,50 +20,75 @@ namespace HomeSpeaker.Server
 
             logger.LogInformation($"Initialized with fileSource {fileSource.RootFolder}");
 
-            if (SyncStarted is false)
-            {
-                SyncLibrary();
-            }
+            SyncLibrary();
         }
 
         public string RootFolder => fileSource.RootFolder;
 
-        public bool SyncStarted { get; private set; }
-        public bool SyncCompleted { get; private set; }
-
         public void SyncLibrary()
         {
-            if (SyncStarted)
+            lock (lockObject)
             {
-                return;
-            }
-
-            SyncStarted = true;
-            var files = fileSource.GetAllMp3s();
-            foreach (var file in files)
-            {
-                try
+                logger.LogInformation("Synchronizing MP3 library - reloading from disk.");
+                dataStore.Clear();
+                var files = fileSource.GetAllMp3s();
+                foreach (var file in files)
                 {
-                    var song = tagParser.CreateSong(file);
-                    dataStore.Add(song);
+                    try
+                    {
+                        var song = tagParser.CreateSong(file);
+                        dataStore.Add(song);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, "Trouble parsing tag info!");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Trouble parsing tag info!");
-                }
+                logger.LogInformation("Sync Completed! {count} songs in database.", dataStore.GetSongs().Count());
             }
-            SyncCompleted = true;
-            logger.LogInformation($"Sync Completed! {dataStore.GetSongs().Count():n0} songs in database.");
         }
 
-        public IEnumerable<Artist> Artists => dataStore.GetArtists();
-        public IEnumerable<Album> Albums => dataStore.GetAlbums();
-        public IEnumerable<Song> Songs => dataStore.GetSongs();
+        public IEnumerable<Artist> Artists
+        {
+            get
+            {
+                if (IsDirty)
+                {
+                    ResetLibrary();
+                }
+                return dataStore.GetArtists();
+            }
+        }
 
+        public IEnumerable<Album> Albums
+        {
+            get
+            {
+                if (IsDirty)
+                {
+                    ResetLibrary();
+                }
+                return dataStore.GetAlbums();
+            }
+        }
+
+        public IEnumerable<Song> Songs
+        {
+            get
+            {
+                if (IsDirty)
+                {
+                    ResetLibrary();
+                }
+                return dataStore.GetSongs();
+            }
+        }
+
+        public bool IsDirty { get; set; } = false;
         public void ResetLibrary()
         {
-            dataStore.Clear();
             SyncLibrary();
+            IsDirty = false;
         }
     }
 }

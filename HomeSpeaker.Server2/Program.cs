@@ -1,5 +1,6 @@
 using HomeSpeaker.Server;
 using HomeSpeaker.Server.Data;
+using HomeSpeaker.Server2;
 using HomeSpeaker.Server2.Services;
 using OpenTelemetry.Trace;
 using Serilog;

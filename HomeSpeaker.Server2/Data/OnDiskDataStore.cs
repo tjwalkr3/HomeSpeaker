@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Text.Json;
-using System.IO;
+﻿using HomeSpeaker.Server2;
 using HomeSpeaker.Shared;
 
 namespace HomeSpeaker.Server.Data
@@ -27,9 +22,9 @@ namespace HomeSpeaker.Server.Data
         public IEnumerable<Album> GetAlbums()
         {
             foreach (var album in from s in songs
-                                   group s by s.Album into albums
-                                   orderby albums.Key
-                                   select new { AlbumName = albums.Key, Songs = albums })
+                                  group s by s.Album into albums
+                                  orderby albums.Key
+                                  select new { AlbumName = albums.Key, Songs = albums })
             {
                 yield return new Album
                 {
@@ -42,9 +37,9 @@ namespace HomeSpeaker.Server.Data
         public IEnumerable<Artist> GetArtists()
         {
             foreach (var artist in from s in songs
-                                  group s by s.Artist into artists
-                                  orderby artists.Key
-                                  select new { ArtistName = artists.Key, Songs = artists })
+                                   group s by s.Artist into artists
+                                   orderby artists.Key
+                                   select new { ArtistName = artists.Key, Songs = artists })
             {
                 yield return new Artist
                 {

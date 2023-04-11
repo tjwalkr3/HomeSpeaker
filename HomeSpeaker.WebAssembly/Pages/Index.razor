@@ -3,7 +3,19 @@
 @inject ILogger<Index> logger
 @using Microsoft.Fast.Components.FluentUI
 
-<FluentSearch class="w-100 mb-2" Placeholder="Search / Filter" DisplayName="Search & Filter" ValueChanged="(s)=>FilterValue = s" ValueExpression="() => FilterValue" />
+<div class="row">
+    <div class="col">
+        <FluentSearch class="w-100 mb-2" Placeholder="Search / Filter" DisplayName="Search & Filter" ValueChanged="(s)=>FilterValue = s" ValueExpression="() => FilterValue" />
+    </div>
+    <div class="col-auto gx-0">
+        <button @onclick=refresh class="btn btn-primary d-md-none"><span class="oi oi-magnifying-glass"></span></button>
+        <button @onclick=refresh class="btn btn-primary d-none d-md-block"><span class="oi oi-magnifying-glass me-2"></span>Search </button>
+    </div>
+    <div class="col-auto ps-1">
+        <button @onclick=reloadSongsAsync class="btn btn-secondary d-md-none"><span class="oi oi-reload"></span></button>
+        <button @onclick=reloadSongsAsync class="btn btn-secondary d-none d-md-block"><span class="oi oi-reload me-2"></span>Refresh</button>
+    </div>
+</div>
 
 @if (songs == null)
 {
@@ -21,9 +33,11 @@ else
     {
         <div class="d-flex justify-content-around mt-2">
             <FluentButton @onclick=@(()=>pageNum--) Disabled=@(pageNum == 0)><span class="oi oi-chevron-left me-2" />Prev Page</FluentButton>
-            <div>Page @(
-          pageNum + 1
-          ) of @numPages </div>
+            <div>
+                Page @(
+               pageNum + 1
+               ) of @numPages
+            </div>
             <FluentButton @onclick=@(()=>pageNum++) Disabled=@(pageNum+1 >= numPages)>Next Page <span class="oi oi-chevron-right ms-2" /></FluentButton>
         </div>
     }
@@ -56,7 +70,15 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await reloadSongsAsync();
+    }
+
+    async Task reloadSongsAsync()
+    {
+        songs = null;
+        StateHasChanged();
         songs = await svc.GetAllSongsAsync();
+        FilterValue = null;
         refresh();
     }
 
@@ -75,7 +97,6 @@ else
                 a.Album.Contains(FilterValue, StringComparison.OrdinalIgnoreCase) ||
                 a.Name.Contains(FilterValue, StringComparison.OrdinalIgnoreCase)
             );
-
         }
         artists = from s in filteredSongs
                   group s by s.Artist into artists

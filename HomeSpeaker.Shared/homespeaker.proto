@@ -14,7 +14,6 @@ service HomeSpeaker {
 	rpc EnqueueFolder(EnqueueFolderRequest) returns (EnqueueFolderReply);
 	rpc PlayStream(PlayStreamRequest) returns (PlaySongReply);
 	rpc EnqueueSong(PlaySongRequest) returns (PlaySongReply);
-	rpc ResetLibrary(google.protobuf.Empty) returns (google.protobuf.Empty);
 	rpc GetPlayerStatus(GetStatusRequest) returns (GetStatusReply);
 	rpc GetPlayQueue(GetSongsRequest) returns (stream GetSongsReply);
 	rpc PlayerControl(PlayerControlRequest) returns (PlayerControlReply);

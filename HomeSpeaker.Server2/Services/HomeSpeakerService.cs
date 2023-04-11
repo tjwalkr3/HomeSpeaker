@@ -69,6 +69,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         var v = request.Video;
         var streamingProgress = new StreamingProgress(responseStream, v.Title, logger);
         await youtubeService.CacheVideoAsync(v.Id, v.Title, streamingProgress);
+        library.IsDirty = true;
     }
 
     public override async Task GetSongs(GetSongsRequest request, IServerStreamWriter<GetSongsReply> responseStream, ServerCallContext context)
@@ -119,13 +120,6 @@ public class HomeSpeakerService : HomeSpeakerBase
         logger.LogInformation("PlayStream request for {streamurl}", request.StreamUrl);
         musicPlayer.PlayStream(request.StreamUrl);
         return Task.FromResult(new PlaySongReply { Ok = true });
-    }
-
-    public override Task<Empty> ResetLibrary(Empty request, ServerCallContext context)
-    {
-        logger.LogInformation("ResetLibrary request received");
-        library.ResetLibrary();
-        return Task.FromResult(new Empty());
     }
 
     public override Task<PlaySongReply> EnqueueSong(PlaySongRequest request, ServerCallContext context)
