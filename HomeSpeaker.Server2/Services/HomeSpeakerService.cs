@@ -48,6 +48,12 @@ public class HomeSpeakerService : HomeSpeakerBase
         }
     }
 
+    public override Task<DeleteSongReply> DeleteSong(DeleteSongRequest request, ServerCallContext context)
+    {
+        library.DeleteSong(request.SongId);
+        return Task.FromResult(new DeleteSongReply());
+    }
+
     public override async Task<SearchVideoReply> SearchViedo(SearchVideoRequest request, ServerCallContext context)
     {
         var videos = await youtubeService.SearchAsync(request.SearchTerm);

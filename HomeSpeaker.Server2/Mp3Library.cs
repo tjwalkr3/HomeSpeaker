@@ -90,5 +90,15 @@ namespace HomeSpeaker.Server
             SyncLibrary();
             IsDirty = false;
         }
+
+        internal void DeleteSong(int songId)
+        {
+            var song = Songs.Where(s => s.SongId == songId).FirstOrDefault();
+            if (song == null)
+                return;
+            logger.LogWarning("About to delete song# {songId} at {path}", songId, song.Path);
+            //File.Delete(song.Path);
+            //IsDirty = true;
+        }
     }
 }

@@ -21,6 +21,7 @@ service HomeSpeaker {
 	rpc SendEvent(google.protobuf.Empty) returns (stream StreamServerEvent);
 	rpc SearchViedo(SearchVideoRequest) returns (SearchVideoReply);
 	rpc CacheVideo(CacheVideoRequest) returns (stream CacheVideoReply);
+	rpc DeleteSong(DeleteSongRequest) returns (DeleteSongReply);
 }
 
 message ShuffleQueueRequest {}
@@ -97,3 +98,7 @@ message CacheVideoReply {
 	double PercentComplete=1;
 	string Title=2;
 }
+message DeleteSongRequest{
+	int32 SongId=1;
+}
+message DeleteSongReply{}

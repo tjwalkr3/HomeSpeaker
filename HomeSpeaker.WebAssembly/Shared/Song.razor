@@ -14,10 +14,17 @@ else
     }
     <div class=@classVal>
         <div class="col ms-3">
-            <div class="text-wrap">@SongViewModel.Name</div>
+            <div class="text-wrap" @onclick=toggleDetailsView>@SongViewModel.Name</div>
             @if (ShowFolder)
             {
                 <div>@SongViewModel.Folder</div>
+            }
+            @if(showDetails)
+            {
+                <div class="row">
+                    <span class="fw-bold">Song Actions:</span>
+                    <button class="btn btn-link" @onclick=delete><span class="oi oi-delete"></span> Delete</button>
+                </div>
             }
         </div>
         <div class="col-auto">
@@ -37,6 +44,11 @@ else
     [Parameter]
     public bool ShowBackground { get; set; }
 
+    private bool showDetails{ get; set; }
+
+    private void toggleDetailsView() => showDetails = !showDetails;
+
     async Task Play() => await svc.PlaySongAsync(SongViewModel.SongId);
     async Task Queue() => await svc.EnqueueSongAsync(SongViewModel.SongId);
+    async Task delete() => await svc.HomeSpeakerClient.DeleteSongAsync(new DeleteSongRequest { SongId = SongViewModel.SongId });
 }
