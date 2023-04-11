@@ -1,5 +1,6 @@
 ﻿@inject HomeSpeakerService svc
 @inject ILogger<Song> logger
+@inject IJSRuntime JsRuntime
 
 @if (SongViewModel == null)
 {
@@ -28,20 +29,21 @@ else
         @if (showDetails)
         {
             <span class="fw-bold ms-2">Song Actions:</span>
-            <div class="row justify-content-around border-top mb-2 pt-2 g-0">
+            <div class="row justify-content-around border-top mb-2 pt-2 ps-2 g-0">
                 <div class="col">
                     <button class="btn btn-danger" @onclick=delete><span class="oi oi-delete"></span> Delete</button>
                 </div>
                 <div class="col">
-                    <button class="btn btn-success"><span class="oi oi-list"></span> Add to Playlist</button>
+                    <button class="btn btn-success" disabled><span class="oi oi-list"></span> Add to Playlist</button>
                 </div>
                 <div class="col">
-                    <button class="btn btn-info"><span class="oi oi-pencil"></span> Edit Artist/Album</button>
+                    <button class="btn btn-info" disabled><span class="oi oi-pencil"></span> Edit Artist/Album</button>
                 </div>
             </div>
         }
     </div>
 }
+
 
 @code {
     [Parameter]
@@ -58,7 +60,16 @@ else
     private void toggleDetailsView() => showDetails = !showDetails;
     private string toggleIcon => showDetails ? "oi oi-chevron-top" : "oi oi-chevron-bottom";
 
+    private bool isDeleteConfirmationOpen = false;
+
     async Task Play() => await svc.PlaySongAsync(SongViewModel.SongId);
     async Task Queue() => await svc.EnqueueSongAsync(SongViewModel.SongId);
-    async Task delete() => await svc.HomeSpeakerClient.DeleteSongAsync(new DeleteSongRequest { SongId = SongViewModel.SongId });
+    async Task delete()
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+        if (confirmed)
+        {
+            await svc.HomeSpeakerClient.DeleteSongAsync(new DeleteSongRequest { SongId = SongViewModel.SongId });
+        }
+    }
 }

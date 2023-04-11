@@ -95,10 +95,13 @@ namespace HomeSpeaker.Server
         {
             var song = Songs.Where(s => s.SongId == songId).FirstOrDefault();
             if (song == null)
+            {
                 return;
-            logger.LogWarning("About to delete song# {songId} at {path}", songId, song.Path);
-            //File.Delete(song.Path);
-            //IsDirty = true;
+            }
+
+            logger.LogWarning("Deleting song# {songId} at {path}", songId, song.Path);
+            fileSource.SoftDelete(song.Path);
+            IsDirty = true;
         }
     }
 }
