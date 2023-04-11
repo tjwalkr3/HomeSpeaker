@@ -8,7 +8,7 @@ else
 {
     @foreach(var song in Songs)
     {
-        <Song SongViewModel=@song ShowBackground=@toggleBackground()/>
+        <Song SongViewModel=@song ShowBackground=@toggleBackground() OnDeleted="songDeleted"/>
     }
 }
 
@@ -25,5 +25,10 @@ else
     {
         showBackground = !showBackground;
         return showBackground;
+    }
+
+    private void songDeleted(int songId)
+    {
+        Songs = Songs.Where(s => s.SongId != songId);
     }
 }

@@ -2,7 +2,7 @@
 {
     public interface IFileSource
     {
-        IEnumerable<FileInfo> GetAllMp3s();
+        IEnumerable<string> GetAllMp3s();
         void SoftDelete(string path);
 
         string RootFolder { get; }
@@ -20,7 +20,7 @@
 
         public string RootFolder => rootFolder;
 
-        public IEnumerable<FileInfo> GetAllMp3s()
+        public IEnumerable<string> GetAllMp3s()
         {
             var musicFolder = rootFolder.Replace("~", userProfile);
 
@@ -29,14 +29,17 @@
                 Directory.CreateDirectory(musicFolder);
             }
 
-            var files = from f in Directory.GetFiles(musicFolder, "*.mp3", SearchOption.AllDirectories)
-                        select new FileInfo(f);
-            return files;
+            return Directory.GetFiles(musicFolder, "*.mp3", SearchOption.AllDirectories);
         }
 
         public void SoftDelete(string path)
         {
-            File.Move(path, Path.Combine(userProfile, "DeletedMusic", Path.GetFileName(path)));
+            var destFolder = Path.Combine(userProfile, "DeletedMusic");
+            if (!Directory.Exists(destFolder))
+            {
+                Directory.CreateDirectory(destFolder);
+            }
+            File.Move(path, Path.Combine(destFolder, Path.GetFileName(path)));
         }
     }
 }

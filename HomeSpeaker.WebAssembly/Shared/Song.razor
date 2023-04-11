@@ -55,6 +55,9 @@ else
     [Parameter]
     public bool ShowBackground { get; set; }
 
+    [Parameter]
+    public EventCallback<int> OnDeleted{ get; set; }
+
     private bool showDetails { get; set; }
 
     private void toggleDetailsView() => showDetails = !showDetails;
@@ -70,6 +73,8 @@ else
         if (confirmed)
         {
             await svc.HomeSpeakerClient.DeleteSongAsync(new DeleteSongRequest { SongId = SongViewModel.SongId });
+            await OnDeleted.InvokeAsync(SongViewModel.SongId);
+            showDetails = false;
         }
     }
 }
