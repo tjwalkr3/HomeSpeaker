@@ -8,6 +8,7 @@ public class HomeSpeakerService
     private HomeSpeaker.Shared.HomeSpeaker.HomeSpeakerClient client;
     private List<SongMessage> songs = new();
     public IEnumerable<SongMessage> Songs => songs;
+    public event EventHandler QueueChanged;
 
     public HomeSpeakerService(IConfiguration config, ILogger<HomeSpeakerService> logger, IWebAssemblyHostEnvironment hostEnvironment)
     {
@@ -153,10 +154,29 @@ public class HomeSpeakerService
     public async Task PlayFolderAsync(string folder) => await client.PlayFolderAsync(new PlayFolderRequest { FolderPath = folder });
     public async Task EnqueueFolderAsync(string folder) => await client.EnqueueFolderAsync(new EnqueueFolderRequest { FolderPath = folder });
     public async Task StopPlayingAsync() => await client.PlayerControlAsync(new PlayerControlRequest { Stop = true });
-    public async Task ClearQueueAsync() => await client.PlayerControlAsync(new PlayerControlRequest { ClearQueue = true });
-    public async Task SkipToNextAsync() => await client.PlayerControlAsync(new PlayerControlRequest { SkipToNext = true });
-    public async Task ResumePlayAsync() => await client.PlayerControlAsync(new PlayerControlRequest { Play = true });
-    public async Task ShuffleQueueAsync() => await client.ShuffleQueueAsync(new ShuffleQueueRequest { });
+    public async Task ClearQueueAsync()
+    {
+        await client.PlayerControlAsync(new PlayerControlRequest { ClearQueue = true });
+        QueueChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public async Task SkipToNextAsync()
+    {
+        await client.PlayerControlAsync(new PlayerControlRequest { SkipToNext = true });
+        QueueChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public async Task ResumePlayAsync()
+    {
+        await client.PlayerControlAsync(new PlayerControlRequest { Play = true });
+        QueueChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public async Task ShuffleQueueAsync()
+    {
+        await client.ShuffleQueueAsync(new ShuffleQueueRequest());
+        QueueChanged?.Invoke(this, EventArgs.Empty);
+    }
 
     public event EventHandler<string>? StatusChanged;
 }

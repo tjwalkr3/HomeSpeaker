@@ -32,6 +32,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await refresh();
+        svc.QueueChanged += async (_, _) => await refresh();
+    }
+
+    async Task refresh()
+    {
         queue = await svc.GetPlayQueueAsync();
+        StateHasChanged();
     }
 }
