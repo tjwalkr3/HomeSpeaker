@@ -12,15 +12,17 @@ public class HomeSpeakerService : HomeSpeakerBase
     private readonly Mp3Library library;
     private readonly IMusicPlayer musicPlayer;
     private readonly YoutubeService youtubeService;
+    private readonly PlaylistService playlistService;
     private readonly List<IServerStreamWriter<StreamServerEvent>> eventClients = new();
     private readonly List<IServerStreamWriter<StreamServerEvent>> failedEvents = new();
 
-    public HomeSpeakerService(ILogger<HomeSpeakerService> logger, Mp3Library library, IMusicPlayer musicPlayer, YoutubeService youtubeService)
+    public HomeSpeakerService(ILogger<HomeSpeakerService> logger, Mp3Library library, IMusicPlayer musicPlayer, YoutubeService youtubeService, PlaylistService playlistService)
     {
         this.logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
         this.library = library ?? throw new System.ArgumentNullException(nameof(library));
         this.musicPlayer = musicPlayer ?? throw new System.ArgumentNullException(nameof(musicPlayer));
         this.youtubeService = youtubeService;
+        this.playlistService = playlistService;
         musicPlayer.PlayerEvent += MusicPlayer_PlayerEvent;
     }
 
@@ -46,6 +48,29 @@ public class HomeSpeakerService : HomeSpeakerBase
             }
             failedEvents.Clear();
         }
+    }
+
+    public override async Task<AddSongToPlaylistReply> AddSongToPlaylist(AddSongToPlaylistRequest request, ServerCallContext context)
+    {
+        await playlistService.AppendSongToPlaylistAsync(request.PlaylistName, request.SongPath);
+        return new AddSongToPlaylistReply();
+    }
+
+    public override async Task<GetPlaylistsReply> GetPlaylists(GetPlaylistsRequest request, ServerCallContext context)
+    {
+        var reply = new GetPlaylistsReply();
+        var playlists = await playlistService.GetPlaylistsAsync();
+        foreach (var playlist in playlists)
+        {
+            var playlistMessage = new PlaylistMessage
+            {
+                PlaylistName = playlist.Name,
+                PlaylistDescription = playlist.Description,
+            };
+            playlistMessage.Songs.AddRange(translateSongs(playlist.Songs));
+            reply.Playlists.Add(playlistMessage);
+        }
+        return reply;
     }
 
     public override Task<DeleteSongReply> DeleteSong(DeleteSongRequest request, ServerCallContext context)

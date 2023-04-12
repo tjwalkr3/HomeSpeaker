@@ -22,8 +22,24 @@ service HomeSpeaker {
 	rpc SearchViedo(SearchVideoRequest) returns (SearchVideoReply);
 	rpc CacheVideo(CacheVideoRequest) returns (stream CacheVideoReply);
 	rpc DeleteSong(DeleteSongRequest) returns (DeleteSongReply);
+	rpc AddSongToPlaylist(AddSongToPlaylistRequest) returns (AddSongToPlaylistReply);
+	rpc GetPlaylists(GetPlaylistsRequest) returns (GetPlaylistsReply);
 }
 
+message AddSongToPlaylistRequest {
+	string PlaylistName=1;
+	string SongPath=2;
+}
+message AddSongToPlaylistReply{}
+message GetPlaylistsRequest{}
+message GetPlaylistsReply{
+	repeated PlaylistMessage Playlists=1;
+}
+message PlaylistMessage{
+	string PlaylistName=1;
+	string PlaylistDescription=2;
+	repeated SongMessage Songs=3;
+}
 message ShuffleQueueRequest {}
 message ShuffleQueueReply {}
 message PlayerControlRequest {

@@ -1,7 +1,9 @@
 using HomeSpeaker.Server;
 using HomeSpeaker.Server.Data;
 using HomeSpeaker.Server2;
+using HomeSpeaker.Server2.Data;
 using HomeSpeaker.Server2.Services;
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Exceptions;
@@ -55,7 +57,8 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 
 builder.Services.AddRazorPages();
 builder.Services.AddGrpc();
-
+builder.Services.AddScoped<PlaylistService>();
+builder.Services.AddDbContext<MusicContext>(options => options.UseSqlite("data source=music.db"));
 builder.Services.AddSingleton<IDataStore, OnDiskDataStore>();
 builder.Services.AddSingleton<IFileSource>(_ => new DefaultFileSource(builder.Configuration[ConfigKeys.MediaFolder] ?? throw new MissingConfigException(ConfigKeys.MediaFolder)));
 builder.Services.AddSingleton<ITagParser, DefaultTagParser>();
