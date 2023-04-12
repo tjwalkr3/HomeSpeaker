@@ -57,6 +57,7 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 
 builder.Services.AddRazorPages();
 builder.Services.AddGrpc();
+builder.Services.AddHostedService<MigrationApplier>();
 builder.Services.AddScoped<PlaylistService>();
 builder.Services.AddDbContext<MusicContext>(options => options.UseSqlite("data source=music.db"));
 builder.Services.AddSingleton<IDataStore, OnDiskDataStore>();

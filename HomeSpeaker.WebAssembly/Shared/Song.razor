@@ -34,7 +34,7 @@ else
                     <button class="btn btn-danger" @onclick=delete><span class="oi oi-delete"></span> Delete</button>
                 </div>
                 <div class="col">
-                    <button class="btn btn-success" disabled><span class="oi oi-list"></span> Add to Playlist</button>
+                    <button class="btn btn-success" @onclick=addToPlaylist><span class="oi oi-list"></span> Add to Playlist</button>
                 </div>
                 <div class="col">
                     <button class="btn btn-info" disabled><span class="oi oi-pencil"></span> Edit Artist/Album</button>
@@ -42,6 +42,11 @@ else
             </div>
         }
     </div>
+}
+
+@if (!isPlaylistModalHidden)
+{
+    <AddToPlaylistModal Song=SongViewModel />
 }
 
 
@@ -59,6 +64,7 @@ else
     public EventCallback<int> OnDeleted{ get; set; }
 
     private bool showDetails { get; set; }
+    private bool isPlaylistModalHidden = true;
 
     private void toggleDetailsView() => showDetails = !showDetails;
     private string toggleIcon => showDetails ? "oi oi-chevron-top" : "oi oi-chevron-bottom";
@@ -77,4 +83,6 @@ else
             showDetails = false;
         }
     }
+
+    void addToPlaylist() => isPlaylistModalHidden = false;
 }

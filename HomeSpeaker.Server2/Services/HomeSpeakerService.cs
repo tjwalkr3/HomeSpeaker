@@ -56,6 +56,12 @@ public class HomeSpeakerService : HomeSpeakerBase
         return new AddSongToPlaylistReply();
     }
 
+    public override async Task<RemoveSongFromPlaylistReply> RemoveSongFromPlaylist(RemoveSongFromPlaylistRequest request, ServerCallContext context)
+    {
+        await playlistService.RemoveSongFromPlaylistAsync(request.PlaylistName, request.SongPath);
+        return new RemoveSongFromPlaylistReply();
+    }
+
     public override async Task<GetPlaylistsReply> GetPlaylists(GetPlaylistsRequest request, ServerCallContext context)
     {
         var reply = new GetPlaylistsReply();
@@ -64,8 +70,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         {
             var playlistMessage = new PlaylistMessage
             {
-                PlaylistName = playlist.Name,
-                PlaylistDescription = playlist.Description,
+                PlaylistName = playlist.Name
             };
             playlistMessage.Songs.AddRange(translateSongs(playlist.Songs));
             reply.Playlists.Add(playlistMessage);

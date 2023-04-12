@@ -60,6 +60,23 @@ public class HomeSpeakerService
         return songs;
     }
 
+    public async Task<IEnumerable<Playlist>> GetPlaylistsAsync() => (await client.GetPlaylistsAsync(new GetPlaylistsRequest()))
+            .Playlists
+            .Select(p => new Playlist(
+                p.PlaylistName,
+                p.Songs.Select(s => s.ToSong())
+            ));
+
+    public async Task AddToPlaylistAsync(string playlistName, string songPath)
+    {
+        await client.AddSongToPlaylistAsync(new AddSongToPlaylistRequest { PlaylistName = playlistName, SongPath = songPath });
+    }
+
+    public async Task RemoveFromPlaylistAsync(string playlistName, string songPath)
+    {
+        await client.RemoveSongFromPlaylistAsync(new RemoveSongFromPlaylistRequest { PlaylistName = playlistName, SongPath = songPath });
+    }
+
     readonly char[] separators = new[] { '/', '\\' };
     private readonly ILogger<HomeSpeakerService> logger;
 

@@ -341,3 +341,4 @@ healthchecksdb
 /HomeSpeaker.Web/homespeaker.db
 /HomeSpeaker.Server2/HomeSpeakerMedia
 /HomeSpeaker.Server2/appsettings.Development.json
+/HomeSpeaker.Server2/music.db
