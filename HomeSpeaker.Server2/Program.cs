@@ -59,7 +59,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddGrpc();
 builder.Services.AddHostedService<MigrationApplier>();
 builder.Services.AddScoped<PlaylistService>();
-builder.Services.AddDbContext<MusicContext>(options => options.UseSqlite(builder.Configuration["DatabasePath"]));
+builder.Services.AddDbContext<MusicContext>(options => options.UseSqlite(builder.Configuration["SqliteConnectionString"]));
 builder.Services.AddSingleton<IDataStore, OnDiskDataStore>();
 builder.Services.AddSingleton<IFileSource>(_ => new DefaultFileSource(builder.Configuration[ConfigKeys.MediaFolder] ?? throw new MissingConfigException(ConfigKeys.MediaFolder)));
 builder.Services.AddSingleton<ITagParser, DefaultTagParser>();
