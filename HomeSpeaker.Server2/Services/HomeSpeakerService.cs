@@ -50,6 +50,12 @@ public class HomeSpeakerService : HomeSpeakerBase
         }
     }
 
+    public override async Task<PlayPlaylistReply> PlayPlaylist(PlayPlaylistRequest request, ServerCallContext context)
+    {
+        await playlistService.PlayPlaylistAsync(request.PlaylistName);
+        return new PlayPlaylistReply();
+    }
+
     public override async Task<AddSongToPlaylistReply> AddSongToPlaylist(AddSongToPlaylistRequest request, ServerCallContext context)
     {
         await playlistService.AppendSongToPlaylistAsync(request.PlaylistName, request.SongPath);
@@ -73,7 +79,7 @@ public class HomeSpeakerService : HomeSpeakerBase
                 PlaylistName = playlist.Name
             };
             var songs = playlist.Songs.Where(s => s != null);
-            if(songs.Any())
+            if (songs.Any())
                 playlistMessage.Songs.AddRange(translateSongs(songs));
             reply.Playlists.Add(playlistMessage);
         }

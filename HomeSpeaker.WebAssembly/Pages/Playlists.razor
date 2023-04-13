@@ -1,0 +1,25 @@
+﻿@page "/playlists"
+@inject HomeSpeakerService svc
+
+<h3>Playlists</h3>
+
+@if(playlists == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    foreach(var playlist in playlists)
+    {
+        <PlaylistItem Playlist=@playlist />
+    }
+}
+
+@code {
+    IEnumerable<Playlist> playlists;
+
+    protected override async Task OnInitializedAsync()
+    {
+        playlists = await svc.GetPlaylistsAsync();
+    }
+}

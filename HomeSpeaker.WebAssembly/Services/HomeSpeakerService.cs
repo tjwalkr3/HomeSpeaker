@@ -77,6 +77,11 @@ public class HomeSpeakerService
         await client.RemoveSongFromPlaylistAsync(new RemoveSongFromPlaylistRequest { PlaylistName = playlistName, SongPath = songPath });
     }
 
+    public async Task PlayPlaylistAsync(string playlistName)
+    {
+        await client.PlayPlaylistAsync(new PlayPlaylistRequest { PlaylistName = playlistName });
+    }
+
     readonly char[] separators = new[] { '/', '\\' };
     private readonly ILogger<HomeSpeakerService> logger;
 

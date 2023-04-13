@@ -9,12 +9,14 @@ public class PlaylistService
     private readonly MusicContext dbContext;
     private readonly Mp3Library mp3Library;
     private readonly ILogger<PlaylistService> logger;
+    private readonly IMusicPlayer player;
 
-    public PlaylistService(MusicContext dbContext, Mp3Library mp3Library, ILogger<PlaylistService> logger)
+    public PlaylistService(MusicContext dbContext, Mp3Library mp3Library, ILogger<PlaylistService> logger, IMusicPlayer player)
     {
         this.dbContext = dbContext;
         this.mp3Library = mp3Library;
         this.logger = logger;
+        this.player = player;
     }
     private Shared.Song? findSong(PlaylistItem item) => mp3Library.Songs.Where(s => s.Path == item.SongPath).FirstOrDefault();
 
@@ -67,5 +69,24 @@ public class PlaylistService
         logger.LogInformation("Removing {song} from {playlistName}", songPath, playlistName);
         dbContext.PlaylistItems.Remove(playlistItem);
         await dbContext.SaveChangesAsync();
+    }
+
+    public async Task PlayPlaylistAsync(string playlistName)
+    {
+        var playlist = await dbContext.Playlists.Include(p => p.Songs).FirstOrDefaultAsync(p => p.Name == playlistName);
+        if (playlist == null)
+        {
+            logger.LogWarning("Asked to play playlist {playlistName} but it doesn't exist.", playlistName);
+            return;
+        }
+
+        logger.LogInformation("Beginning to play playlist {playlistName}", playlistName);
+
+        player.Stop();
+        foreach (var playlistItem in playlist.Songs.OrderBy(s => s.Order))
+        {
+            var song = mp3Library.Songs.Single(s => s.Path == playlistItem.SongPath);
+            player.EnqueueSong(song);
+        }
     }
 }

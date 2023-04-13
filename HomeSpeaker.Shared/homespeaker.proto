@@ -25,8 +25,13 @@ service HomeSpeaker {
 	rpc AddSongToPlaylist(AddSongToPlaylistRequest) returns (AddSongToPlaylistReply);
 	rpc RemoveSongFromPlaylist(RemoveSongFromPlaylistRequest) returns (RemoveSongFromPlaylistReply);
 	rpc GetPlaylists(GetPlaylistsRequest) returns (GetPlaylistsReply);
+	rpc PlayPlaylist(PlayPlaylistRequest) returns (PlayPlaylistReply);
 }
 
+message PlayPlaylistRequest {
+	string PlaylistName=1;
+}
+message PlayPlaylistReply{}
 message AddSongToPlaylistRequest {
 	string PlaylistName=1;
 	string SongPath=2;

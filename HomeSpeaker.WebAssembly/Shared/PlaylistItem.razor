@@ -1,0 +1,36 @@
+﻿@inject HomeSpeakerService svc
+
+<div class="row mb-2">
+    <div class="col" @onclick=toggleShowDetails>
+        <div class="fs-4">@Playlist.Name</div>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary" @onclick=play><span class="oi oi-media-play"></span></button>
+    </div>
+</div>
+@if(showDetails)
+{
+    <div class="row ms-2">
+        @foreach(var song in Playlist.Songs)
+        {
+            <p>@song.Name</p>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public Playlist Playlist { get; set; }
+    bool showDetails = false;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+    void toggleShowDetails() => showDetails = !showDetails;
+
+    async Task play()
+    {
+        await svc.PlayPlaylistAsync(Playlist.Name);
+    }
+}

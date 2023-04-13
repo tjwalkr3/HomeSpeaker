@@ -29,15 +29,15 @@ else
         @if (showDetails)
         {
             <span class="fw-bold ms-2">Song Actions:</span>
-            <div class="row justify-content-around border-top mb-2 pt-2 ps-2 g-0">
+            <div class="row justify-content-between w-100 border-top mb-2 pt-2 ps-2 g-0">
                 <div class="col">
-                    <button class="btn btn-danger" @onclick=delete><span class="oi oi-delete"></span> Delete</button>
+                    <button class="btn btn-outline-danger" @onclick=delete><span class="oi oi-delete me-1"></span>Delete</button>
                 </div>
                 <div class="col">
-                    <button class="btn btn-success" @onclick=addToPlaylist><span class="oi oi-list"></span> Add to Playlist</button>
+                    <button class="btn btn-outline-success" @onclick=togglePlaylistModalVisibility><span class="oi oi-list me-1"></span>Playlists</button>
                 </div>
                 <div class="col">
-                    <button class="btn btn-info" disabled><span class="oi oi-pencil"></span> Edit Artist/Album</button>
+                    <button class="btn btn-outline-info" disabled><span class="oi oi-pencil me-1"></span>Edit</button>
                 </div>
             </div>
         }
@@ -46,7 +46,9 @@ else
 
 @if (!isPlaylistModalHidden)
 {
-    <AddToPlaylistModal Song=SongViewModel />
+    <FluentDialog Hidden=@isPlaylistModalHidden>
+        <AddToPlaylistModal Song=SongViewModel Closed=@togglePlaylistModalVisibility />
+    </FluentDialog>
 }
 
 
@@ -61,7 +63,7 @@ else
     public bool ShowBackground { get; set; }
 
     [Parameter]
-    public EventCallback<int> OnDeleted{ get; set; }
+    public EventCallback<int> OnDeleted { get; set; }
 
     private bool showDetails { get; set; }
     private bool isPlaylistModalHidden = true;
@@ -84,5 +86,5 @@ else
         }
     }
 
-    void addToPlaylist() => isPlaylistModalHidden = false;
+    void togglePlaylistModalVisibility() => isPlaylistModalHidden = !isPlaylistModalHidden;
 }
