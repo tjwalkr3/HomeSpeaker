@@ -21,6 +21,7 @@ services:
     environment:
     - MediaFolder=/music
     - ALSA_CARD=Headphones
+    - DatabasePath=/music/HomeSpeaker.db
     - ASPNETCORE_URLS=https://+443;http://+:8080
     #- ASPNETCORE_Kestrel__Certificates__Default__Password=ThisIsMySslCertPassword23
     - ASPNETCORE_Kestrel__Certificates__Default__Path=/certs/certificate.pfx
