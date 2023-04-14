@@ -38,6 +38,13 @@ public class HomeSpeakerService
         }
     }
 
+    public async Task UpdateQueueAsync(List<SongViewModel> songs)
+    {
+        var request = new UpdateQueueRequest();
+        request.Songs.AddRange(songs.Select(s => s.Path));
+        await client.UpdateQueueAsync(request);
+    }
+
     public async Task PlayStreamAsync(string streamUri) => await client.PlayStreamAsync(new PlayStreamRequest { StreamUrl = streamUri });
 
     public async Task<GetStatusReply> GetStatusAsync()

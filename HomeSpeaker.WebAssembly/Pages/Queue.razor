@@ -1,22 +1,32 @@
 ﻿@page "/Queue"
 @inject HomeSpeakerService svc
+@inject IJSRuntime JSRuntime
 
-<button @onclick=refresh class="btn btn-secondary position-absolute top-10 end-0 mx-3"><span class="oi oi-reload"></span></button>
+<button @onclick=refresh title="Refresh queue" class="btn btn-secondary position-absolute top-10 end-0 mx-3"><span class="oi oi-reload"></span></button>
 
 <div class="row">
-    <div class="col-auto">
-        <h3>Now Playing:</h3>
+    <div class="col-auto fs-6 fw-light">
+        Now Playing:
     </div>
-    <div class="col-12 col-lg h3">
+    <div class="col-12 col-lg h3 fw-bold">
         @currentSong
     </div>
 </div>
 
 
-<h4 class="mt-3">Playback Controls</h4>
-<PlayControls />
+<div class="d-flex flex-wrap align-items-start my-3 justify-content-center">
+    <div>
+        <PlayControls />
+    </div>
+</div>
 
-<h4 class="mt-3 mb-0">Queue</h4> <div class="fs-6 mt-0">(@queue?.Count().ToString("n0") songs in queue)</div>
+<div class="d-flex align-items-start">
+    <div class="flex-grow-1">
+        <h4 class="mb-0">Queue (drag & drop to reorder)</h4>
+        <div class="fs-6 mt-0">(@queue?.Count().ToString("n0") songs in queue)</div>
+    </div>
+    <button @onclick=saveQueueAsPlaylist title="Save queue as playlist" class="btn btn-link me-2">Save as Playlist</button>
+</div>
 
 @if (queue == null)
 {
@@ -24,16 +34,26 @@
 }
 else
 {
-
-    @foreach (var song in queue)
-    {
-        <QueueItem SongViewModel=song />
-    }
+    <ul ondragover="event.preventDefault();">
+        @foreach (var song in queue)
+        {
+            <li draggable="true"
+                style="list-style-type: none; touch-action: none;"
+                tabindex="1"
+                @key=(++listKey)
+                @ondrag=@(()=>StartDrag(song))
+                @ondrop=@(()=>Drop(song))>
+                <QueueItem SongViewModel=song Removed="removeFromQueue" />
+            </li>
+        }
+    </ul>
 }
 
 @code {
-    IEnumerable<SongViewModel> queue;
+    int listKey = 0;
+    List<SongViewModel> queue;
     string currentSong;
+    int currentIndex;
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,11 +61,49 @@ else
         svc.QueueChanged += async (_, _) => await refresh();
     }
 
+    async Task saveQueueAsPlaylist()
+    {
+        var newPlaylistName = String.Format("From Queue {0:ddd d MMM hh:mm tt}", DateTime.Now);
+        foreach (var song in queue)
+        {
+            await svc.AddToPlaylistAsync(newPlaylistName, song.Path);
+        }
+    }
+
+    async Task removeFromQueue(SongViewModel song)
+    {
+        queue.Remove(song);
+        await svc.UpdateQueueAsync(queue);
+    }
+
     async Task refresh()
     {
-        queue = await svc.GetPlayQueueAsync();
+        queue = (await svc.GetPlayQueueAsync()).ToList();
         var status = await svc.GetStatusAsync();
         currentSong = status?.CurrentSong?.Name ?? "[ Not playing anything ]";
         StateHasChanged();
+    }
+
+    void StartDrag(SongViewModel song)
+    {
+        currentIndex = getIndex(song);
+    }
+
+    int getIndex(SongViewModel song) => queue.FindIndex(s => s.SongId == song.SongId);
+
+    async Task Drop(SongViewModel song)
+    {
+        if (song == null)
+            return;
+        var newIndex = getIndex(song);
+        var current = queue[currentIndex];
+        queue.RemoveAt(currentIndex);
+        queue.Insert(newIndex, current);
+
+        currentIndex = newIndex;
+
+        StateHasChanged();
+
+        await svc.UpdateQueueAsync(queue);
     }
 }

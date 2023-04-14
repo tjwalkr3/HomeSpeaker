@@ -26,8 +26,13 @@ service HomeSpeaker {
 	rpc RemoveSongFromPlaylist(RemoveSongFromPlaylistRequest) returns (RemoveSongFromPlaylistReply);
 	rpc GetPlaylists(GetPlaylistsRequest) returns (GetPlaylistsReply);
 	rpc PlayPlaylist(PlayPlaylistRequest) returns (PlayPlaylistReply);
+	rpc UpdateQueue(UpdateQueueRequest) returns (UpdateQueueReply);
 }
 
+message UpdateQueueRequest {
+	repeated string Songs=1;
+}
+message UpdateQueueReply{}
 message PlayPlaylistRequest {
 	string PlaylistName=1;
 }

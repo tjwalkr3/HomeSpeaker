@@ -50,6 +50,12 @@ public class HomeSpeakerService : HomeSpeakerBase
         }
     }
 
+    public override Task<UpdateQueueReply> UpdateQueue(UpdateQueueRequest request, ServerCallContext context)
+    {
+        musicPlayer.UpdateQueue(request.Songs);
+        return Task.FromResult(new UpdateQueueReply());
+    }
+
     public override async Task<PlayPlaylistReply> PlayPlaylist(PlayPlaylistRequest request, ServerCallContext context)
     {
         await playlistService.PlayPlaylistAsync(request.PlaylistName);

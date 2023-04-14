@@ -16,5 +16,7 @@ public interface IMusicPlayer
     void Stop();
     void SetVolume(int level0to100);
     void ShuffleQueue();
+    void UpdateQueue(IEnumerable<string> songs);
+
     event EventHandler<string> PlayerEvent;
 }

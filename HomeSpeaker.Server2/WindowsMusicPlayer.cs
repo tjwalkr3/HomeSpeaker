@@ -243,6 +243,15 @@ public class WindowsMusicPlayer : IMusicPlayer
         }
     }
 
+    public void UpdateQueue(IEnumerable<string> songs)
+    {
+        songQueue.Clear();
+        foreach (var song in songs)
+        {
+            songQueue.Enqueue(library.Songs.Single(s => s.Path == song));
+        }
+    }
+
     public bool StillPlaying
     {
         get

@@ -1,11 +1,24 @@
-﻿<div class="row border-bottom">
-    <div class="col">
-        @SongViewModel.Name
-    </div>
+﻿@inject HomeSpeakerService svc
+
+<div class="d-flex align-items-center mt-2">
+    <div class="px-1 flex-grow-1 fs-5">@SongViewModel.Name</div>
+    <button class="btn btn-outline-warning" @onclick=remove title="Remove from queue"><span class="oi oi-ban"></span></button>
+</div>
+<div class="d-flex">
+    <div class="fs-6 mx-1">@SongViewModel.Artist</div>
+    &gt;
+    <div class="fs-6 mx-1">@SongViewModel.Album</div>
 </div>
 
 @code {
     [Parameter]
     public SongViewModel SongViewModel{ get; set; }
 
+    [Parameter]
+    public EventCallback<SongViewModel> Removed{ get; set; }
+
+    async Task remove()
+    {
+        await Removed.InvokeAsync(SongViewModel);
+    }
 }

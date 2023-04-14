@@ -69,4 +69,10 @@ public class ChattyMusicPlayer : IMusicPlayer
         actualPlayer.Stop();
         PlayerEvent?.Invoke(this, "Stopped playing.");
     }
+
+    public void UpdateQueue(IEnumerable<string> songs)
+    {
+        actualPlayer.UpdateQueue(songs);
+        PlayerEvent?.Invoke(this, "Updated queue.");
+    }
 }

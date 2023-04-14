@@ -1,10 +1,10 @@
 ﻿@inject HomeSpeakerService svc
 
-<button @onclick=Play class="btn btn-outline-primary"><span class="oi oi-media-play" /></button>
-<button @onclick=Stop class="btn btn-outline-primary"><span class="oi oi-media-stop"/></button>
-<button @onclick=Skip class="btn btn-outline-primary"><span class="oi oi-media-skip-forward" /></button>
-<button @onclick=Clear class="btn btn-outline-primary"><span class="oi oi-x" /></button>
-<button @onclick=Shuffle class="btn btn-outline-primary"><span class="oi oi-random" /></button>
+<button @onclick=Stop title="Stop playing" class="btn btn-outline-primary"><span class="oi oi-media-stop"/></button>
+<button @onclick=Play title="Resume playing" class="btn btn-outline-primary"><span class="oi oi-media-play" /></button>
+<button @onclick=Skip title="Skip to next song" class="btn btn-outline-primary"><span class="oi oi-media-skip-forward" /></button>
+<button @onclick=Clear title="Clear queue" class="btn btn-outline-primary"><span class="oi oi-x" /></button>
+<button @onclick=Shuffle title="Shuffle queue" class="btn btn-outline-primary"><span class="oi oi-random" /></button>
 
 @code {
     async Task Play() => await svc.ResumePlayAsync();
