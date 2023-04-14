@@ -1,14 +1,12 @@
 ﻿@inject HomeSpeakerService svc
 
 <div class="row gx-1 p-1">
-    <div class="row mb-1 gx-1 mx-1 py-1 bg-primary text-white rounded">
-        <div class="col">
-            <div class="h5 mb-2" @onclick=toggleExpanded>@(String.IsNullOrWhiteSpace(Content.Key) ? "[ No Artist ]" : Content.Key)</div>
+    <div class="d-flex align-items-center mb-1 gx-1 mx-1 py-1 bg-primary text-white rounded">
+        <div class="flex-grow-1 fs-5 ms-1" @onclick=toggleExpanded>
+            @(String.IsNullOrWhiteSpace(Content.Key) ? "[ No Artist ]" : Content.Key)
         </div>
-        <div class="col-auto text-white">
-            <button @onclick=play class="btn btn-secondary"><span class="oi oi-media-play" /></button>
-            <button @onclick=queue class="btn btn-secondary"><span class="oi oi-plus" /></button>
-        </div>
+        <button @onclick=play class="btn btn-secondary mx-1"><span class="oi oi-media-play" /></button>
+        <button @onclick=queue class="btn btn-secondary" style="margin-right: 2px"><span class="oi oi-plus" /></button>
     </div>
     @if (isExpanded)
     {
@@ -16,16 +14,12 @@
                               group song by song.Album into album
                               select album)
         {
-            <div class="row mb-1 gx-1 mx-1 py-1 bg-secondary text-white rounded">
-                <div class="col">
-                    <div class="h5">
+            <div class="d-flex align-items-center mb-1 gx-1 mx-1 py-1 bg-secondary text-white rounded">
+                <div class="flex-grow-1 ms-1 fs-6">
                     @(String.IsNullOrWhiteSpace(album.Key) ? "[ No Album ]" : album.Key)
-                    </div>
                 </div>
-                <div class="col-auto">
-                    <button @onclick=@(()=>playAlbum(album)) class="btn btn-primary"><span class="oi oi-media-play" /></button>
-                    <button @onclick=@(()=>queueAlbum(album)) class="btn btn-primary"><span class="oi oi-plus" /></button>
-                </div>
+                <button @onclick=@(()=>playAlbum(album)) class="btn btn-primary mx-1"><span class="oi oi-media-play" /></button>
+                <button @onclick=@(()=>queueAlbum(album)) class="btn btn-primary" style="margin-right: 2px"><span class="oi oi-plus" /></button>
             </div>
             <FolderDetails Name="@album.Key" Songs="@album" />
         }
