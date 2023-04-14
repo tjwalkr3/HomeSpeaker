@@ -1,6 +1,7 @@
 ﻿@page "/Queue"
 @inject HomeSpeakerService svc
 @inject IJSRuntime JSRuntime
+@inject ILogger<Queue> logger
 
 <button @onclick=refresh title="Refresh queue" class="btn btn-secondary position-absolute top-10 end-0 mx-3"><span class="oi oi-reload"></span></button>
 
@@ -28,13 +29,9 @@
     <button @onclick=saveQueueAsPlaylist title="Save queue as playlist" class="btn btn-link me-2">Save as Playlist</button>
 </div>
 
-@if (queue == null)
+@if (queue.Any())
 {
-    <div>Loading queue...</div>
-}
-else
-{
-    <ul ondragover="event.preventDefault();">
+    @*    <ul ondragover="event.preventDefault();">
         @foreach (var song in queue)
         {
             <li draggable="true"
@@ -46,19 +43,50 @@ else
                 <QueueItem SongViewModel=song Removed="removeFromQueue" />
             </li>
         }
-    </ul>
+    </ul>*@
+    <MudDropContainer T="SongViewModel"
+                  Items="queue"
+                  ItemsSelector="@((_,_) => true)"
+                  ItemDropped="ItemUpdated"
+                  Class="d-flex flex-wrap flex-grow-1">
+        <ChildContent>
+            <MudPaper Class="flex-grow-1">
+                <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
+                    <MudDropZone T="SongViewModel" Class="flex-grow-1" AllowReorder="true" />
+                </MudList>
+            </MudPaper>
+        </ChildContent>
+        <ItemRenderer>
+            <QueueItem SongViewModel="context" Removed="removeFromQueue" />
+        </ItemRenderer>
+    </MudDropContainer>
 }
 
 @code {
+    private async Task ItemUpdated(MudItemDropInfo<SongViewModel> dropItem)
+    {
+        queue.Remove(dropItem.Item);
+        queue.Insert(dropItem.IndexInZone, dropItem.Item);
+        await svc.UpdateQueueAsync(queue);
+    }
+
+
+
+
+
     int listKey = 0;
-    List<SongViewModel> queue;
+    List<SongViewModel> queue = new();
     string currentSong;
     int currentIndex;
 
     protected override async Task OnInitializedAsync()
     {
         await refresh();
-        svc.QueueChanged += async (_, _) => await refresh();
+        svc.QueueChanged += async (_, _) =>
+        {
+            logger.LogInformation("The QueueChanged event was raised.  Refreshing.");
+            await refresh();
+        };
     }
 
     async Task saveQueueAsPlaylist()
@@ -78,7 +106,8 @@ else
 
     async Task refresh()
     {
-        queue = (await svc.GetPlayQueueAsync()).ToList();
+        queue.Clear();
+        queue.AddRange(await svc.GetPlayQueueAsync());
         var status = await svc.GetStatusAsync();
         currentSong = status?.CurrentSong?.Name ?? "[ Not playing anything ]";
         StateHasChanged();
