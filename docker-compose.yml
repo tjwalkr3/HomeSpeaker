@@ -28,7 +28,8 @@ services:
     - FFMpegLocation=/usr/bin/ffmpeg
 
   jaeger:
-    image: jaegertracing/all-in-one:1.41
+    container_name: jaeger
+    image: jaegertracing/all-in-one:1.44
     environment:
     - COLLECTOR_ZIPKIN_HOST_PORT=:9411
     - COLLECTOR_OTLP_ENABLED=true
