@@ -50,14 +50,16 @@
                   ItemDropped="ItemUpdated"
                   Class="d-flex flex-wrap flex-grow-1">
         <ChildContent>
-            <MudPaper Class="flex-grow-1">
+            <div class="flex-grow-1">
                 <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
                     <MudDropZone T="SongViewModel" Class="flex-grow-1" AllowReorder="true" />
                 </MudList>
-            </MudPaper>
+            </div>
         </ChildContent>
         <ItemRenderer>
-            <QueueItem SongViewModel="context" Removed="removeFromQueue" />
+            <MudPaper Class="my-3">
+                <QueueItem SongViewModel="context" Removed="removeFromQueue" />
+            </MudPaper>
         </ItemRenderer>
     </MudDropContainer>
 }
