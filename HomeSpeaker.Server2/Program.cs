@@ -21,26 +21,17 @@ builder.Services.AddApplicationInsightsTelemetry();
 // Add services to the container.
 try
 {
-    var ping = new System.Net.NetworkInformation.Ping();
-    var response = ping.Send("http://jaeger");
-    if (response.Status == System.Net.NetworkInformation.IPStatus.Success)
-    {
-        builder.Services.AddOpenTelemetry()
-            .WithTracing(b =>
-            {
-                b.AddConsoleExporter()
-                .AddAspNetCoreInstrumentation()
-                .AddJaegerExporter(options => options.AgentHost = "jaeger");
-            })
-            .WithMetrics(b =>
-            {
+    builder.Services.AddOpenTelemetry()
+        .WithTracing(b =>
+        {
+            b.AddConsoleExporter()
+            .AddAspNetCoreInstrumentation()
+            .AddJaegerExporter(options => options.AgentHost = "jaeger");
+        })
+        .WithMetrics(b =>
+        {
 
-            });
-    }
-    else
-    {
-        Console.WriteLine("!!! Cannot contact jaeger ?!? ***********");
-    }
+        });
 }
 catch (Exception ex)
 {

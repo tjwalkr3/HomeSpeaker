@@ -26,6 +26,8 @@ services:
     #- ASPNETCORE_Kestrel__Certificates__Default__Password=ThisIsMySslCertPassword23
     - ASPNETCORE_Kestrel__Certificates__Default__Path=/certs/certificate.pfx
     - FFMpegLocation=/usr/bin/ffmpeg
+    networks:
+      jaegernet:
 
   jaeger:
     container_name: jaeger
@@ -44,5 +46,8 @@ services:
     - 14268:14268
     - 14269:14269
     - 9411:9411
+    networks:
+      jaegernet:
 
-
+networks:
+ jaegernet:
