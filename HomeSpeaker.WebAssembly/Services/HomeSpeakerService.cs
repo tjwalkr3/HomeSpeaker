@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using System.Diagnostics;
 using static HomeSpeaker.Shared.HomeSpeaker;
 
 namespace HomeSpeaker.WebAssembly.Services;
@@ -125,14 +126,22 @@ public class HomeSpeakerService
 
     public async Task<IEnumerable<SongViewModel>> GetAllSongsAsync()
     {
-        var songs = new List<SongViewModel>();
-        var getSongsReply = client.GetSongs(new GetSongsRequest { });
-        await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
+        using var source = new ActivitySource("BlazorUI");
+        using (var activity = source.StartActivity("GetAllSongs", ActivityKind.Client))
         {
-            songs.AddRange(reply.Songs.Select(s => s.ToSongViewModel()));
-        }
+            activity?.AddEvent(new ActivityEvent("Calling GetAllSongs()"));
+            activity?.SetTag("tag1", "value1");
+            logger.LogWarning("Trying to send otel trace!");
 
-        return songs;
+            var songs = new List<SongViewModel>();
+            var getSongsReply = client.GetSongs(new GetSongsRequest { });
+            await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
+            {
+                songs.AddRange(reply.Songs.Select(s => s.ToSongViewModel()));
+            }
+
+            return songs;
+        }
     }
 
     public async Task<Dictionary<string, List<SongViewModel>>> GetSongGroups()

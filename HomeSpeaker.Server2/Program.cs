@@ -4,6 +4,7 @@ using HomeSpeaker.Server2;
 using HomeSpeaker.Server2.Data;
 using HomeSpeaker.Server2.Services;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Exceptions;
@@ -13,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Logging.ClearProviders();
 //builder.Logging.AddJsonConsole();
 //builder.Logging.AddDebug();
-builder.Services.AddApplicationInsightsTelemetry();
+//builder.Services.AddApplicationInsightsTelemetry();
 
 // Additional configuration is required to successfully run gRPC on macOS.
 // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
@@ -21,12 +22,15 @@ builder.Services.AddApplicationInsightsTelemetry();
 // Add services to the container.
 try
 {
+    Console.WriteLine($"Trying to setup otel jaeger @ {builder.Configuration["OtlpExporter"]}");
     builder.Services.AddOpenTelemetry()
         .WithTracing(b =>
         {
-            b.AddConsoleExporter()
+            b.SetResourceBuilder(
+                ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName))
             .AddAspNetCoreInstrumentation()
-            .AddJaegerExporter(options => options.AgentHost = "jaeger");
+            .AddConsoleExporter()
+            .AddOtlpExporter(opts => opts.Endpoint = new Uri(builder.Configuration["OtlpExporter"]));
         })
         .WithMetrics(b =>
         {
