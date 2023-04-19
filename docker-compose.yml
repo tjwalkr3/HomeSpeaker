@@ -26,7 +26,7 @@ services:
     #- ASPNETCORE_Kestrel__Certificates__Default__Password=ThisIsMySslCertPassword23
     - ASPNETCORE_Kestrel__Certificates__Default__Path=/certs/certificate.pfx
     - FFMpegLocation=/usr/bin/ffmpeg
-    - OtlpExporter=http://jaeger
+    - OtlpExporter=http://jaeger:4317
     networks:
       jaegernet:
 
