@@ -84,7 +84,9 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
         playerProcess.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
         {
             if (e?.Data == null)
+            {
                 return;
+            }
 
             if (TryParsePlayerOutput(e.Data, out var status))
             {
@@ -98,7 +100,9 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
         playerProcess.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
         {
             if (e?.Data == null)
+            {
                 return;
+            }
 
             if (TryParsePlayerOutput(e.Data, out var status))
             {
@@ -124,10 +128,14 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
     private void stopPlaying()
     {
         if (playerProcess != null && playerProcess.HasExited is false)
+        {
             playerProcess.Exited -= PlayerProcess_Exited;//stop listening to when the process ends.
+        }
 
         foreach (var proc in Process.GetProcessesByName("play").Union(Process.GetProcessesByName("vlc")))
+        {
             proc.Kill();
+        }
     }
 
     private void PlayerProcess_Exited(object? sender, EventArgs e)
@@ -233,7 +241,7 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
         var newLevel = (actualMax - actualMin) * percent + actualMin;
         logger.LogInformation("Desired volume: {level0to100}; newLevel {newLevel} = (actualMax {actualMax} - actual Min {actualMin}) * percent {percent} + actualMin {actualMin}",
             level0to100, newLevel, actualMax, actualMin, percent, actualMin);
-        Process.Start("amixer", $"--card 0 sset Headphone,0 {newLevel}%");
+        Process.Start("amixer", $"sset PCM,0 {newLevel}%");
     }
 
     public void ShuffleQueue()
