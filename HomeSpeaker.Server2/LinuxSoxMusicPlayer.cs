@@ -234,23 +234,16 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
         stopPlaying();
     }
 
-    public async Task<int> GetVolume()
-    {
-        var result = await CliWrap.Cli.Wrap("amixer")
+    public async Task<int> GetVolume() => (await CliWrap.Cli.Wrap("amixer")
             .WithArguments("sget PCM,0")
-            .ExecuteBufferedAsync();
-        //var lines = result.StandardOutput.Split(Environment.NewLine);
-        //var parts = lines.First(l => l.Contains("Mono:")).Split('[', ']', '%');
-        //return int.Parse(parts[1]);
-
-        return result.StandardOutput
+            .ExecuteBufferedAsync())
+            .StandardOutput
             .Split(Environment.NewLine)
             .First(l => l.Contains("Mono:"))
             .Split('[', ']', '%')
             .Skip(1)
             .Select(p => int.Parse(p))
             .First();
-    }
 
     public void SetVolume(int level0to100)
     {
