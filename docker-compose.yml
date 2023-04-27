@@ -28,7 +28,7 @@ services:
     - ASPNETCORE_Kestrel__Certificates__Default__Path=/certs/certificate.pfx
     - FFMpegLocation=/usr/bin/ffmpeg
     - OtlpExporter=http://jaeger:4317
-    - SeqAddress=http://seq:5431
+    - SeqAddress=http://seq:5341
     networks:
       jaegernet:
 
@@ -62,7 +62,7 @@ services:
     - /home/piuser/seqdata:/data
     ports:
     - 3000:80
-    - 5431:5431
+    - 5341:5341
    # docker run --name seq -d --restart unless-stopped -e ACCEPT_EULA=Y -v seqdata:/data -p 80:80 -p 5341:5341 datalust/seq
 
 
