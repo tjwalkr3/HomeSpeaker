@@ -240,39 +240,13 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
             .WithArguments("sget PCM,0")
             .ExecuteBufferedAsync();
         var lines = result.StandardOutput.Split(Environment.NewLine);
-        for (int i = 0; i < lines.Length; i++)
+        var parts = lines.First(l => l.Contains("Mono:")).Split('[', ']', '%');
+        foreach (var part in parts)
         {
-            logger.LogInformation("Output line {lineNum}: {line}", i, lines[i]);
+            logger.LogInformation("part: {part}", part);
         }
 
-
-
-        logger.LogInformation("Trying the old school way to run the process... ************************");
-        // Start the child process.
-        Process p = new Process();
-        // Redirect the output stream of the child process.
-        p.StartInfo.UseShellExecute = false;
-        p.StartInfo.RedirectStandardOutput = true;
-        p.StartInfo.FileName = "amixer";
-        p.StartInfo.Arguments = "sget PCM,0";
-        p.Start();
-        // Do not wait for the child process to exit before
-        // reading to the end of its redirected stream.
-        // p.WaitForExit();
-        // Read the output stream first and then wait.
-        lines = p.StandardOutput.ReadToEnd().Split(Environment.NewLine);
-        p.WaitForExit();
-        for (int i = 0; i < lines.Length; i++)
-        {
-            logger.LogInformation("Output line {lineNum}: {line}", i, lines[i]);
-        }
-
-
-
-
-        var parts = lines.Last().Split('[', ']', '%');
-        logger.LogInformation("{parts}", parts);
-        return int.Parse(parts.FirstOrDefault());
+        return int.Parse(parts[1]);
     }
 
     public void SetVolume(int level0to100)
