@@ -86,7 +86,10 @@ public class HomeSpeakerService : HomeSpeakerBase
             };
             var songs = playlist.Songs.Where(s => s != null);
             if (songs.Any())
+            {
                 playlistMessage.Songs.AddRange(translateSongs(songs));
+            }
+
             reply.Playlists.Add(playlistMessage);
         }
         return reply;
@@ -192,17 +195,19 @@ public class HomeSpeakerService : HomeSpeakerBase
         return Task.FromResult(reply);
     }
 
-    public override Task<GetStatusReply> GetPlayerStatus(GetStatusRequest request, ServerCallContext context)
+    public override async Task<GetStatusReply> GetPlayerStatus(GetStatusRequest request, ServerCallContext context)
     {
-        var status = musicPlayer?.Status ?? new Shared.PlayerStatus();
-        return Task.FromResult(new GetStatusReply
+        var status = musicPlayer.Status ?? new Shared.PlayerStatus();
+        var currentVolume = await musicPlayer.GetVolume();
+        return new GetStatusReply
         {
             Elapsed = Duration.FromTimeSpan(status.Elapsed),
             PercentComplete = (double)status.PercentComplete,
             Remaining = Duration.FromTimeSpan(status.Remaining),
             StilPlaying = status.StillPlaying,
-            CurrentSong = status.CurrentSong != null ? translateSong(status.CurrentSong) : null
-        });
+            CurrentSong = status.CurrentSong != null ? translateSong(status.CurrentSong) : null,
+            Volume = currentVolume
+        };
     }
 
     public override async Task GetPlayQueue(GetSongsRequest request, IServerStreamWriter<GetSongsReply> responseStream, ServerCallContext context)

@@ -74,6 +74,7 @@ message GetStatusReply {
 	bool StilPlaying=3;
 	double PercentComplete=4;
 	SongMessage CurrentSong=5;
+	int32 Volume=6;
 }
 message GetSongsRequest {
 	string Folder=1;

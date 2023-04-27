@@ -39,10 +39,16 @@ public class HomeSpeakerService
         }
     }
 
-    public async Task SetVolume(int volume0to100)
+    public async Task SetVolumeAsync(int volume0to100)
     {
         var request = new PlayerControlRequest { SetVolume = true, VolumeLevel = volume0to100 };
         await client.PlayerControlAsync(request);
+    }
+
+    public async Task<int> GetVolumeAsync()
+    {
+        var status = await GetStatusAsync();
+        return status.Volume;
     }
 
     public async Task UpdateQueueAsync(List<SongViewModel> songs)
