@@ -235,8 +235,11 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
     }
 
     public async Task<int> GetVolume() =>
-        (await CliWrap.Cli.Wrap("amixer").WithArguments("sget PCM,0").ExecuteBufferedAsync())
-        .StandardOutput
+        (
+            await CliWrap.Cli.Wrap("amixer")
+                             .WithArguments("sget PCM,0")
+                             .ExecuteBufferedAsync()
+        ).StandardOutput
         .Split(Environment.NewLine)
         .First(l => l.Contains("Mono:"))
         .Split('[', ']', '%')
