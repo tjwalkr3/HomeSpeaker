@@ -34,13 +34,21 @@ catch (Exception ex)
     Console.WriteLine("!!! Trouble contacting jaeger: " + ex.ToString());
 }
 
-builder.Host.UseSerilog((context, loggerConfig) =>
+try
 {
-    loggerConfig
-        .WriteTo.Console()
-        .Enrich.WithExceptionDetails()
-        .WriteTo.Seq(builder.Configuration["SeqAddress"]);
-});
+    Console.WriteLine($"Trying to setup seq @ {builder.Configuration["SeqAddress"]}");
+    builder.Host.UseSerilog((context, loggerConfig) =>
+    {
+        loggerConfig
+            .WriteTo.Console()
+            .Enrich.WithExceptionDetails()
+            .WriteTo.Seq(builder.Configuration["SeqAddress"]);
+    });
+}
+catch (Exception ex)
+{
+    Console.WriteLine("!!! Trouble contacting seq: " + ex.ToString());
+}
 
 builder.Services.AddRazorPages();
 builder.Services.AddGrpc();
