@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.Client.Console"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.WebAssembly", "HomeSpeaker.WebAssembly\HomeSpeaker.WebAssembly.csproj", "{72E636EC-4188-479E-9FCE-6B7EC1EF9339}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeSpeakerProxy", "HomeSpeakerProxy\HomeSpeakerProxy.csproj", "{1D268809-6B90-446D-BE6C-D9F6245C11AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{72E636EC-4188-479E-9FCE-6B7EC1EF9339}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72E636EC-4188-479E-9FCE-6B7EC1EF9339}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72E636EC-4188-479E-9FCE-6B7EC1EF9339}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D268809-6B90-446D-BE6C-D9F6245C11AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D268809-6B90-446D-BE6C-D9F6245C11AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D268809-6B90-446D-BE6C-D9F6245C11AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D268809-6B90-446D-BE6C-D9F6245C11AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

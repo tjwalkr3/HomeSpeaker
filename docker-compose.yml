@@ -1,16 +1,28 @@
 version: '3.4'
 
 services:
+  yarp:
+    container_name: yarp
+    build:
+      context: .
+      dockerfile: HomeSpeakerProxy/Dockerfile
+    restart: unless-stopped
+    ports:
+    - 80:80
+    - 443:443
+    networks:
+      speakernet:
+
   homespeaker.server2:
-    container_name: homespeaker.server2
+    container_name: homespeaker
     image: ${DOCKER_REGISTRY-}homespeakerserver2
     build:
       context: .
       dockerfile: HomeSpeaker.Server2/Dockerfile
     restart: unless-stopped
     ports:
-    - 80:80
-    - 443:443
+    - 8080:80
+    - 80443:443
     devices:
     - /dev/snd:/dev/snd
     volumes:
