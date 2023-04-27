@@ -239,14 +239,17 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
         var result = await CliWrap.Cli.Wrap("amixer")
             .WithArguments("sget PCM,0")
             .ExecuteBufferedAsync();
-        var lines = result.StandardOutput.Split(Environment.NewLine);
-        var parts = lines.First(l => l.Contains("Mono:")).Split('[', ']', '%');
-        foreach (var part in parts)
-        {
-            logger.LogInformation("part: {part}", part);
-        }
+        //var lines = result.StandardOutput.Split(Environment.NewLine);
+        //var parts = lines.First(l => l.Contains("Mono:")).Split('[', ']', '%');
+        //return int.Parse(parts[1]);
 
-        return int.Parse(parts[1]);
+        return result.StandardOutput
+            .Split(Environment.NewLine)
+            .First(l => l.Contains("Mono:"))
+            .Split('[', ']', '%')
+            .Skip(1)
+            .Select(p => int.Parse(p))
+            .First();
     }
 
     public void SetVolume(int level0to100)
