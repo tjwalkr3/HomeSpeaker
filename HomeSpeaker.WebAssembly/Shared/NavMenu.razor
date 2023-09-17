@@ -2,7 +2,10 @@
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
+        <div class="navbar-brand">
         <a class="navbar-brand" href="">Home Speaker</a>
+        <NavLink href="nightscout"><img src="/OIP.png" width="32" alt="nightscout" /></NavLink>
+        </div>
         <button class="btn btn-dark d-block d-sm-none" @onclick=stopAsync><span class="oi oi-media-stop top-0"></span></button>
         <button class="btn btn-dark d-block d-sm-none" @onclick=skipAsync><span class="oi oi-media-skip-forward top-0"></span></button>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
