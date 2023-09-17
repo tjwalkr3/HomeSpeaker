@@ -1,17 +1,19 @@
 version: '3.4'
 
 services:
-  yarp:
-    container_name: yarp
-    build:
-      context: .
-      dockerfile: HomeSpeakerProxy/Dockerfile
-    restart: unless-stopped
-    ports:
-    - 80:80
-    - 443:443
-    networks:
-      speakernet:
+  # yarp:
+  #   container_name: yarp
+  #   build:
+  #     context: .
+  #     dockerfile: HomeSpeakerProxy/Dockerfile
+  #   restart: unless-stopped
+  #   environment:
+  #   - ASPNETCORE_URLS=https://+443;http://+:80
+  #   ports:
+  #   - 80:80
+  #   - 443:443
+  #   networks:
+  #     speakernet:
 
   homespeaker.server2:
     container_name: homespeaker
