@@ -18,8 +18,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+  
+    - name: Docker compose pull
+      run: docker-compose pull
+
     - name: Docker compose down
       run: docker-compose down
+
     - name: Docker compose up
       env:
         COMPOSE_DOCKER_CLI_BUILD: 1
