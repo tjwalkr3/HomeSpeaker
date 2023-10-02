@@ -30,3 +30,6 @@ jobs:
         COMPOSE_DOCKER_CLI_BUILD: 1
         DOCKER_BUILDKIT: 1
       run: docker-compose up -d --build
+
+    - name: Start up brightness api
+      run: start dotnet run brightness_api
