@@ -1,6 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 @inject HomeSpeakerService svc
-@inject HttpClient httpClient
 @inject IWebAssemblyHostEnvironment hostEnv
 @inject ILogger<NavMenu> logger
 
@@ -69,6 +68,7 @@
 @code {
     private bool collapseNavMenu = true;
     private bool nightMode = false;
+    private HttpClient httpClient = new();
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
