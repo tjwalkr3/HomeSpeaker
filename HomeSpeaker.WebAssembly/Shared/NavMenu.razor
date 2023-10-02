@@ -68,7 +68,6 @@
 @code {
     private bool collapseNavMenu = true;
     private bool nightMode = false;
-    private HttpClient httpClient = new();
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -85,6 +84,7 @@
     {
         int brightness = nightMode ? 15 : 255;
         nightMode = !nightMode;
+        var httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri(hostEnv.BaseAddress);
         try
         {
