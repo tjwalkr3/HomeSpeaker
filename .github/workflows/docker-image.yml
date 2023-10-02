@@ -11,6 +11,18 @@ on:
   # Then a new version will be deployed on the self-hosted runner.
 
 jobs:
+  brightness:
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v3
+    - name: publish
+      run: |
+          cd brightness_api
+          dotnet publish -c Release -o publish
+    - name: run
+      run: |
+          cd publish
+          nohup dotnet brightness_api.dll --urls http://0.0.0.0:5000 > app.log 2>&1 &
 
   build:
 
@@ -30,11 +42,3 @@ jobs:
         COMPOSE_DOCKER_CLI_BUILD: 1
         DOCKER_BUILDKIT: 1
       run: docker-compose up -d --build
-
-    - name: Start up brightness api
-      run: |
-          cd brightness_api
-          dotnet publish -c Release -o publish
-          cd publish
-          nohup dotnet brightness_api.dll --urls http://0.0.0.0:5000 > app.log 2>&1 &
-          start dotnet run brightness_api
