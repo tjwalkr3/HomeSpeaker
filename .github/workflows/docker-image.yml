@@ -2,8 +2,8 @@ name: Docker Image CI
 
 on:
   push:
-    tags:
-    - '*'
+    #tags:
+    #- '*'
   # To have GitHub Actions deploy a new version, create a new tag
   # git tag -a yyyy.m.d -m yyyy.m.d
   # Then push those tags
@@ -11,25 +11,21 @@ on:
   # Then a new version will be deployed on the self-hosted runner.
 
 jobs:
-  brightness:
-    runs-on: self-hosted
-    steps:
-    - uses: actions/checkout@v3
-    - name: publish
-      run: |
-          cd brightness_api
-          dotnet publish -c Release -o publish
-    - name: run
-      run: |
-          cd publish
-          nohup dotnet brightness_api.dll --urls http://0.0.0.0:5000 > app.log 2>&1 &
-
   build:
 
     runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: publish brightness api
+      run: |
+          cd brightness_api
+          dotnet publish -c Release -o publish
+    - name: run brightness api
+      run: |
+          cd brightness_api/publish
+          nohup dotnet brightness_api.dll --urls http://0.0.0.0:5000 > app.log 2>&1 &
   
     - name: Docker compose pull
       run: docker-compose pull
