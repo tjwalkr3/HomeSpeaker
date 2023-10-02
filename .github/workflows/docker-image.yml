@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: kill any running brightness api
-      run: pkill -f brightness_api.dll && echo "Process killed successfully"
+      run: pkill -f brightness_api.dll || true
 
     - name: publish brightness api
       run: |
