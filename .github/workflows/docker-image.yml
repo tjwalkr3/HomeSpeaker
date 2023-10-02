@@ -32,4 +32,9 @@ jobs:
       run: docker-compose up -d --build
 
     - name: Start up brightness api
-      run: start dotnet run brightness_api
+      run: |
+          cd brightness_api
+          dotnet publish -c Release -o publish
+          cd publish
+          nohup dotnet brightness_api.dll --urls http://0.0.0.0:5000 > app.log 2>&1 &
+          start dotnet run brightness_api
