@@ -2,6 +2,7 @@
 @inject HomeSpeakerService svc
 @inject HttpClient httpClient
 @inject IWebAssemblyHostEnvironment hostEnv
+@inject ILogger<NavMenu> logger
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -85,6 +86,14 @@
         int brightness = nightMode ? 15 : 255;
         nightMode = !nightMode;
         httpClient.BaseAddress = new Uri(hostEnv.BaseAddress);
-        await httpClient.GetAsync($"/set?brightness={brightness}");
+        try
+        {
+            logger.LogInformation("Trying to set brightness to {brightness}", brightness);
+            await httpClient.GetAsync($"/set?brightness={brightness}");
+        }
+        catch(Exception ex)
+        {
+            logger.LogError("Trouble setting brightness", ex);
+        }
     }
 }
