@@ -20,6 +20,7 @@ RUN dotnet publish "HomeSpeaker.Server2.csproj" -c Release -o /app/publish /p:Us
 FROM base AS final
 RUN useradd -ms /bin/bash homespeakeruser
 RUN usermod -aG audio homespeakeruser
+RUN usermod -aG video homespeakeruser
 USER homespeakeruser
 WORKDIR /app
 COPY --from=publish /app/publish .
