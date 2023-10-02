@@ -1,6 +1,7 @@
-﻿@inject HomeSpeakerService svc
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+@inject HomeSpeakerService svc
 @inject HttpClient httpClient
-@inject IConfiguration config
+@inject IWebAssemblyHostEnvironment hostEnv
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -83,7 +84,7 @@
     {
         int brightness = nightMode ? 15 : 255;
         nightMode = !nightMode;
-        httpClient.BaseAddress = new Uri(config["brightnessApiHost"]);
+        httpClient.BaseAddress = new Uri(hostEnv.BaseAddress);
         await httpClient.GetAsync($"/set?brightness={brightness}");
     }
 }
