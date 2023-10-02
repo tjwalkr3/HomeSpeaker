@@ -85,11 +85,11 @@
         int brightness = nightMode ? 15 : 255;
         nightMode = !nightMode;
         var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri(hostEnv.BaseAddress);
         try
         {
             logger.LogInformation("Trying to set brightness to {brightness}", brightness);
-            await httpClient.GetAsync($"/set?brightness={brightness}");
+            var response = await httpClient.GetAsync($"https://192.168.1.111:5001/set?brightness={brightness}");
+            logger.LogInformation("response: {response}", response);
         }
         catch(Exception ex)
         {
