@@ -16,6 +16,7 @@ services:
     volumes:
     - "/home/piuser/music:/music"
     - "/home/piuser/cert:/certs"
+    - "/sys/class/backlight/10-0045:/sys/class/backlight/10-0045"
     depends_on:
     - jaeger
     environment:
@@ -26,7 +27,7 @@ services:
     #- ASPNETCORE_Kestrel__Certificates__Default__Password=ThisIsMySslCertPassword23
     - ASPNETCORE_Kestrel__Certificates__Default__Path=/certs/certificate.pfx
     - FFMpegLocation=/usr/bin/ffmpeg
-    - OtlpExporter=http://jaeger:4317
+    - OtlpExporter=http://otelcollector:4317
     networks:
       jaegernet:
 
@@ -51,7 +52,58 @@ services:
       jaegernet:
 
     #  docker rm -f jaeger ; docker run -d --name jaeger -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 -e COLLECTOR_ZIPKIN_ALLOWED_ORIGINS=* -p 13133:13133 -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp -p 5778:5778 -p 16686:16686 -p 14268:14268 -p 14250:14250 -p 9411:9411 -p 4317:4317 --restart=unless-stopped jaegertracing/opentelemetry-all-in-one
+  loki:
+    image: grafana/loki:2.8.0
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - jaegernet
 
+  otel-collector:
+    container_name: otelcollector
+    image: otel/opentelemetry-collector
+    command: [--config=/etc/otel-collector-config.yaml]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - 1888:1888 # pprof extension
+      - 8888:8888 # Prometheus metrics exposed by the collector
+      - 8889:8889 # Prometheus exporter metrics
+      - 13133:13133 # health_check extension
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP http receiver
+      - 55679:55679 # zpages extension
+
+  grafana:
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        mkdir -p /etc/grafana/provisioning/datasources
+        cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
+        apiVersion: 1
+        datasources:
+        - name: Loki
+          type: loki
+          access: proxy
+          orgId: 1
+          url: http://loki:3100
+          basicAuth: false
+          isDefault: true
+          version: 1
+          editable: false
+        EOF
+        /run.sh
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - jaegernet
 
 networks:
  jaegernet:

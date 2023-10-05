@@ -50,6 +50,7 @@ builder.Host.UseSerilog((context, loggerConfig) =>
         .WriteTo.Seq("http://localhost:5341");
 });
 
+builder.Services.AddResponseCompression(o => o.EnableForHttps = true);
 builder.Services.AddRazorPages();
 builder.Services.AddGrpc();
 builder.Services.AddHostedService<MigrationApplier>();
@@ -90,6 +91,7 @@ else
     app.UseExceptionHandler("/Error");
 }
 
+app.UseResponseCompression();
 app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
