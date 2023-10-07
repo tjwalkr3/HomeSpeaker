@@ -319,7 +319,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         var currentBrightness = int.Parse(await client.GetStringAsync("/get"));
         var newBrightness = currentBrightness switch
         {
-            > 200 => 5,
+            > 200 => 20,
             _ => 255
         };
         logger.LogInformation("Trying to set brightness to {brightness}", newBrightness);
