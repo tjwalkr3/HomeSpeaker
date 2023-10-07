@@ -1,35 +1,51 @@
 version: '3.4'
 
 services:
+  # yarp:
+  #   container_name: yarp
+  #   build:
+  #     context: .
+  #     dockerfile: HomeSpeakerProxy/Dockerfile
+  #   restart: unless-stopped
+  #   environment:
+  #   - ASPNETCORE_URLS=https://+443;http://+:80
+  #   ports:
+  #   - 80:80
+  #   - 443:443
+  #   networks:
+  #     speakernet:
+
   homespeaker.server2:
-    container_name: homespeaker.server2
+    container_name: homespeaker
     image: ${DOCKER_REGISTRY-}homespeakerserver2
     build:
       context: .
       dockerfile: HomeSpeaker.Server2/Dockerfile
     restart: unless-stopped
+    devices:
+    - /dev/snd:/dev/snd
     ports:
     - 80:80
     - 443:443
-    devices:
-    - /dev/snd:/dev/snd
     volumes:
     - "/home/piuser/music:/music"
     - "/home/piuser/cert:/certs"
     - "/sys/class/backlight/10-0045:/sys/class/backlight/10-0045"
     depends_on:
     - jaeger
+    - seq
     environment:
     - MediaFolder=/music
     - ALSA_CARD=Headphones
     - SqliteConnectionString=Data Source=/music/HomeSpeaker.db
-    - ASPNETCORE_URLS=https://+443;http://+:8080
+    - ASPNETCORE_URLS=https://+443;http://+:80
     #- ASPNETCORE_Kestrel__Certificates__Default__Password=ThisIsMySslCertPassword23
     - ASPNETCORE_Kestrel__Certificates__Default__Path=/certs/certificate.pfx
     - FFMpegLocation=/usr/bin/ffmpeg
-    - OtlpExporter=http://otelcollector:4317
+    - OtlpExporter=http://jaeger:4317
+    - SeqAddress=http://seq:5341
     networks:
-      jaegernet:
+      speakernet:
 
   jaeger:
     container_name: jaeger
@@ -49,8 +65,7 @@ services:
     - 14269:14269
     - 9411:9411
     networks:
-      jaegernet:
-
+      speakernet:
     #  docker rm -f jaeger ; docker run -d --name jaeger -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 -e COLLECTOR_ZIPKIN_ALLOWED_ORIGINS=* -p 13133:13133 -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp -p 5778:5778 -p 16686:16686 -p 14268:14268 -p 14250:14250 -p 9411:9411 -p 4317:4317 --restart=unless-stopped jaegertracing/opentelemetry-all-in-one
   loki:
     image: grafana/loki:2.8.0
@@ -106,4 +121,4 @@ services:
       - jaegernet
 
 networks:
- jaegernet:
+ speakernet:

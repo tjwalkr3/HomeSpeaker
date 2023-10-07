@@ -27,6 +27,7 @@ service HomeSpeaker {
 	rpc GetPlaylists(GetPlaylistsRequest) returns (GetPlaylistsReply);
 	rpc PlayPlaylist(PlayPlaylistRequest) returns (PlayPlaylistReply);
 	rpc UpdateQueue(UpdateQueueRequest) returns (UpdateQueueReply);
+	rpc ToggleBacklight(google.protobuf.Empty) returns (google.protobuf.Empty);
 }
 
 message UpdateQueueRequest {
@@ -74,6 +75,7 @@ message GetStatusReply {
 	bool StilPlaying=3;
 	double PercentComplete=4;
 	SongMessage CurrentSong=5;
+	int32 Volume=6;
 }
 message GetSongsRequest {
 	string Folder=1;

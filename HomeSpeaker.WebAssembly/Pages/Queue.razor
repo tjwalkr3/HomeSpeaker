@@ -23,7 +23,8 @@
 
 <div class="align-content-center w-100">
     <div class="mb-2">Volume Level: @volumeLevel</div>
-    <FluentSlider Min="0" Max="100" ValueExpression=@(()=>volumeLevel) ValueChanged=volumeChanged />
+    @*<FluentSlider Min="0" Max="100" ValueExpression=@(()=>volumeLevel) ValueChanged=volumeChanged />*@
+        <input type="range" @bind-value="@VolumeLevel" class="w-100" />
 </div>
 
 <div class="d-flex align-items-start">
@@ -78,6 +79,17 @@
     }
 
     int volumeLevel = 40;
+    public int VolumeLevel
+    {
+        get => volumeLevel;
+        set
+        {
+            volumeLevel = value;
+            logger.LogInformation("Setting volume to {volume}", volumeLevel);
+            svc.SetVolumeAsync(volumeLevel);
+        }
+    }
+
     int listKey = 0;
     List<SongViewModel> queue = new();
     string currentSong;
@@ -91,13 +103,15 @@
             logger.LogInformation("The QueueChanged event was raised.  Refreshing.");
             await refresh();
         };
+
+        VolumeLevel = await svc.GetVolumeAsync();
     }
 
     async Task volumeChanged(int volume)
     {
         volumeLevel = volume;
         logger.LogInformation("Setting volume to {volumeLevel}", volumeLevel);
-        await svc.SetVolume(volumeLevel);
+        await svc.SetVolumeAsync(volumeLevel);
     }
 
     async Task saveQueueAsPlaylist()

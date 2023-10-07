@@ -1,3 +1,4 @@
+using CliWrap.Buffered;
 using HomeSpeaker.Shared;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -232,6 +233,19 @@ public class LinuxSoxMusicPlayer : IMusicPlayer
         stoppedSong = currentSong;
         stopPlaying();
     }
+
+    public async Task<int> GetVolume() =>
+        (
+            await CliWrap.Cli.Wrap("amixer")
+                             .WithArguments("sget PCM,0")
+                             .ExecuteBufferedAsync()
+        ).StandardOutput
+        .Split(Environment.NewLine)
+        .First(l => l.Contains("Mono:"))
+        .Split('[', ']', '%')
+        .Skip(1)
+        .Select(p => int.Parse(p))
+        .First();
 
     public void SetVolume(int level0to100)
     {

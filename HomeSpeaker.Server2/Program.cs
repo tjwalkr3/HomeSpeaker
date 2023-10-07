@@ -10,16 +10,10 @@ using Serilog;
 using Serilog.Exceptions;
 using System.Runtime.InteropServices;
 
+const string LocalCorsPolicy = nameof(LocalCorsPolicy);
+
 var builder = WebApplication.CreateBuilder(args);
-//builder.Logging.ClearProviders();
-//builder.Logging.AddJsonConsole();
-//builder.Logging.AddDebug();
-//builder.Services.AddApplicationInsightsTelemetry();
 
-// Additional configuration is required to successfully run gRPC on macOS.
-// For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
-
-// Add services to the container.
 try
 {
     Console.WriteLine($"Trying to setup otel jaeger @ {builder.Configuration["OtlpExporter"]}");
@@ -42,15 +36,32 @@ catch (Exception ex)
     Console.WriteLine("!!! Trouble contacting jaeger: " + ex.ToString());
 }
 
-builder.Host.UseSerilog((context, loggerConfig) =>
+try
 {
-    loggerConfig
-        .WriteTo.Console()
-        .Enrich.WithExceptionDetails()
-        .WriteTo.Seq("http://localhost:5341");
-});
+    Console.WriteLine($"Trying to setup seq @ {builder.Configuration["SeqAddress"]}");
+    builder.Host.UseSerilog((context, loggerConfig) =>
+    {
+        loggerConfig
+            .WriteTo.Console()
+            .Enrich.WithExceptionDetails()
+            .WriteTo.Seq(builder.Configuration["SeqAddress"]);
+    });
+}
+catch (Exception ex)
+{
+    Console.WriteLine("!!! Trouble contacting seq: " + ex.ToString());
+}
 
 builder.Services.AddResponseCompression(o => o.EnableForHttps = true);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: LocalCorsPolicy,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://example.com",
+                                              "http://www.contoso.com");
+                      });
+});
 builder.Services.AddRazorPages();
 builder.Services.AddGrpc();
 builder.Services.AddHostedService<MigrationApplier>();
@@ -97,6 +108,7 @@ app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors(LocalCorsPolicy);
 app.MapRazorPages();
 
 // Configure the HTTP request pipeline.

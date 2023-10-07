@@ -32,6 +32,11 @@ public class ChattyMusicPlayer : IMusicPlayer
         PlayerEvent?.Invoke(this, "Queued up: " + song.Name);
     }
 
+    public Task<int> GetVolume()
+    {
+        return actualPlayer.GetVolume();
+    }
+
     public void PlaySong(Song song)
     {
         actualPlayer.PlaySong(song);

@@ -86,7 +86,10 @@ public class HomeSpeakerService : HomeSpeakerBase
             };
             var songs = playlist.Songs.Where(s => s != null);
             if (songs.Any())
+            {
                 playlistMessage.Songs.AddRange(translateSongs(songs));
+            }
+
             reply.Playlists.Add(playlistMessage);
         }
         return reply;
@@ -192,17 +195,19 @@ public class HomeSpeakerService : HomeSpeakerBase
         return Task.FromResult(reply);
     }
 
-    public override Task<GetStatusReply> GetPlayerStatus(GetStatusRequest request, ServerCallContext context)
+    public override async Task<GetStatusReply> GetPlayerStatus(GetStatusRequest request, ServerCallContext context)
     {
-        var status = musicPlayer?.Status ?? new Shared.PlayerStatus();
-        return Task.FromResult(new GetStatusReply
+        var status = musicPlayer.Status ?? new Shared.PlayerStatus();
+        var currentVolume = await musicPlayer.GetVolume();
+        return new GetStatusReply
         {
             Elapsed = Duration.FromTimeSpan(status.Elapsed),
             PercentComplete = (double)status.PercentComplete,
             Remaining = Duration.FromTimeSpan(status.Remaining),
             StilPlaying = status.StillPlaying,
-            CurrentSong = status.CurrentSong != null ? translateSong(status.CurrentSong) : null
-        });
+            CurrentSong = status.CurrentSong != null ? translateSong(status.CurrentSong) : null,
+            Volume = currentVolume
+        };
     }
 
     public override async Task GetPlayQueue(GetSongsRequest request, IServerStreamWriter<GetSongsReply> responseStream, ServerCallContext context)
@@ -298,5 +303,29 @@ public class HomeSpeakerService : HomeSpeakerBase
         eventClients.Add(responseStream);
         await responseStream.WriteAsync(new StreamServerEvent { Message = "Client connected." });
         await Task.Delay(TimeSpan.FromMinutes(180));
+    }
+
+    public override async Task<Empty> ToggleBacklight(Empty request, ServerCallContext context)
+    {
+        var handler = new HttpClientHandler();
+        handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+        handler.ServerCertificateCustomValidationCallback =
+            (httpRequestMessage, cert, cetChain, policyErrors) =>
+            {
+                return true;
+            };
+
+        var client = new HttpClient(handler) { BaseAddress = new Uri("https://192.168.1.111:5001") };
+        var currentBrightness = int.Parse(await client.GetStringAsync("/get"));
+        var newBrightness = currentBrightness switch
+        {
+            > 200 => 20,
+            _ => 255
+        };
+        logger.LogInformation("Trying to set brightness to {brightness}", newBrightness);
+        var response = await client.GetAsync($"/set?brightness={newBrightness}");
+        logger.LogInformation("response: {response}", response);
+
+        return new Empty();
     }
 }

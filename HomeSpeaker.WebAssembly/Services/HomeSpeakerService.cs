@@ -16,7 +16,7 @@ public class HomeSpeakerService
         string address = config["ServerAddress"] ?? throw new MissingConfigException("ServerAddress");
         logger.LogInformation($"I was about to use {address}");
         address = hostEnvironment.BaseAddress;
-        logger.LogInformation("Bug instead I'll use {address}", address);
+        logger.LogInformation("But instead I'll use {address}", address);
         var channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions
         {
             HttpHandler = new GrpcWebHandler(new HttpClientHandler())
@@ -39,10 +39,21 @@ public class HomeSpeakerService
         }
     }
 
-    public async Task SetVolume(int volume0to100)
+    public async Task ToggleBrightness()
+    {
+        await client.ToggleBacklightAsync(new Google.Protobuf.WellKnownTypes.Empty());
+    }
+
+    public async Task SetVolumeAsync(int volume0to100)
     {
         var request = new PlayerControlRequest { SetVolume = true, VolumeLevel = volume0to100 };
         await client.PlayerControlAsync(request);
+    }
+
+    public async Task<int> GetVolumeAsync()
+    {
+        var status = await GetStatusAsync();
+        return status.Volume;
     }
 
     public async Task UpdateQueueAsync(List<SongViewModel> songs)
