@@ -68,8 +68,21 @@
 @code {
     private bool collapseNavMenu = true;
     private bool nightMode = false;
-
+    private HttpClient? allowUntrustedCertHttpClient;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override void OnInitialized()
+    {
+        var handler = new HttpClientHandler();
+        handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+        handler.ServerCertificateCustomValidationCallback =
+            (httpRequestMessage, cert, cetChain, policyErrors) =>
+        {
+            return true;
+        };
+
+        allowUntrustedCertHttpClient = new HttpClient(handler);
+    }
 
     private void ToggleNavMenu()
     {
@@ -84,11 +97,10 @@
     {
         int brightness = nightMode ? 15 : 255;
         nightMode = !nightMode;
-        var httpClient = new HttpClient();
         try
         {
             logger.LogInformation("Trying to set brightness to {brightness}", brightness);
-            var response = await httpClient.GetAsync($"https://192.168.1.111:5001/set?brightness={brightness}");
+            var response = await allowUntrustedCertHttpClient.GetAsync($"https://192.168.1.111:5001/set?brightness={brightness}");
             logger.LogInformation("response: {response}", response);
         }
         catch(Exception ex)
