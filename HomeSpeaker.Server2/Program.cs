@@ -10,6 +10,8 @@ using Serilog;
 using Serilog.Exceptions;
 using System.Runtime.InteropServices;
 
+const string LocalCorsPolicy = nameof(LocalCorsPolicy);
+
 var builder = WebApplication.CreateBuilder(args);
 
 try
@@ -50,6 +52,15 @@ catch (Exception ex)
     Console.WriteLine("!!! Trouble contacting seq: " + ex.ToString());
 }
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: LocalCorsPolicy,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://example.com",
+                                              "http://www.contoso.com");
+                      });
+});
 builder.Services.AddRazorPages();
 builder.Services.AddGrpc();
 builder.Services.AddHostedService<MigrationApplier>();
@@ -95,6 +106,7 @@ app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors(LocalCorsPolicy);
 app.MapRazorPages();
 
 // Configure the HTTP request pipeline.

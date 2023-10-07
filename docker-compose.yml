@@ -30,6 +30,7 @@ services:
     volumes:
     - "/home/piuser/music:/music"
     - "/home/piuser/cert:/certs"
+    - /sys/class/backlight:/sys/class/backlight
     depends_on:
     - jaeger
     - seq
