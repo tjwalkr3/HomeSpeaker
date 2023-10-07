@@ -93,7 +93,8 @@
         }
         catch(Exception ex)
         {
-            logger.LogError("Trouble setting brightness", ex);
+            logger.LogError("Trouble setting brightness {ex}", ex);
+            logger.LogError(ex.ToString);
         }
     }
 }
