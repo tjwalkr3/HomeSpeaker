@@ -39,6 +39,11 @@ public class HomeSpeakerService
         }
     }
 
+    public async Task ToggleBrightness()
+    {
+        await client.ToggleBacklightAsync(new Google.Protobuf.WellKnownTypes.Empty());
+    }
+
     public async Task SetVolumeAsync(int volume0to100)
     {
         var request = new PlayerControlRequest { SetVolume = true, VolumeLevel = volume0to100 };

@@ -27,6 +27,7 @@ service HomeSpeaker {
 	rpc GetPlaylists(GetPlaylistsRequest) returns (GetPlaylistsReply);
 	rpc PlayPlaylist(PlayPlaylistRequest) returns (PlayPlaylistReply);
 	rpc UpdateQueue(UpdateQueueRequest) returns (UpdateQueueReply);
+	rpc ToggleBacklight(google.protobuf.Empty) returns (google.protobuf.Empty);
 }
 
 message UpdateQueueRequest {

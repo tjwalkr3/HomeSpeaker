@@ -304,4 +304,28 @@ public class HomeSpeakerService : HomeSpeakerBase
         await responseStream.WriteAsync(new StreamServerEvent { Message = "Client connected." });
         await Task.Delay(TimeSpan.FromMinutes(180));
     }
+
+    public override async Task<Empty> ToggleBacklight(Empty request, ServerCallContext context)
+    {
+        var handler = new HttpClientHandler();
+        handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+        handler.ServerCertificateCustomValidationCallback =
+            (httpRequestMessage, cert, cetChain, policyErrors) =>
+            {
+                return true;
+            };
+
+        var client = new HttpClient(handler) { BaseAddress = new Uri("https://192.168.1.111:5001") };
+        var currentBrightness = int.Parse(await client.GetStringAsync("/get"));
+        var newBrightness = currentBrightness switch
+        {
+            > 200 => 5,
+            _ => 255
+        };
+        logger.LogInformation("Trying to set brightness to {brightness}", newBrightness);
+        var response = await client.GetAsync($"/set?brightness={newBrightness}");
+        logger.LogInformation("response: {response}", response);
+
+        return new Empty();
+    }
 }

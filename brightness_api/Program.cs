@@ -7,6 +7,8 @@ app.UseHttpsRedirection();
 
 app.MapGet("/", () => "Brightness API.");
 
+app.MapGet("/get", () => File.ReadAllText("/sys/class/backlight/10-0045/brightness"));
+
 app.MapGet("/set", (int brightness, ILogger<Program> logger) =>
 {
     if(brightness < 0 || brightness > 255)
