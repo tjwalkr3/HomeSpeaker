@@ -4,7 +4,7 @@ Description=Brightness API Service
 [Service]
 # systemd will run this executable to start the service
 # if /usr/bin/dotnet doesn't work, use `which dotnet` to find correct dotnet executable path
-ExecStart=/home/github/actions-runner/_work/HomeSpeaker/HomeSpeaker/brightness_api/bin/Release/net7.0/brightness_api
+ExecStart=/home/piuser/actions-runner/_work/HomeSpeaker/HomeSpeaker/brightness_api/bin/Release/net7.0/brightness_api
 # to query logs using journalctl, set a logical name here
 SyslogIdentifier=brightness_api
 
@@ -15,7 +15,7 @@ RestartSec=5
 # If you pick a different user, make sure dotnet and all permissions are set correctly to run the app
 # To update permissions, use 'chown yourusername -R /srv/HelloWorld' to take ownership of the folder and files,
 #       Use 'chmod +x /srv/HelloWorld/HelloWorld' to allow execution of the executable file
-User=github
+User=piuser
 
 # This environment variable is necessary when dotnet isn't loaded for the specified user.
 # To figure out this value, run 'env | grep DOTNET_ROOT' when dotnet has been loaded into your shell.
