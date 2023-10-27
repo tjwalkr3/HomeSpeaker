@@ -52,6 +52,7 @@ catch (Exception ex)
     Console.WriteLine("!!! Trouble contacting seq: " + ex.ToString());
 }
 
+builder.Services.AddResponseCompression(o => o.EnableForHttps = true);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: LocalCorsPolicy,
@@ -101,6 +102,7 @@ else
     app.UseExceptionHandler("/Error");
 }
 
+app.UseResponseCompression();
 app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
