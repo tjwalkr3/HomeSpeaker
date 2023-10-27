@@ -28,7 +28,9 @@ jobs:
     - name: run brightness api
       run: |
           cd brightness_api
-          nohup dotnet publish/brightness_api.dll --urls "http://0.0.0.0:5000;https://0.0.0.0:5001" > app.log 2>&1 &
+          sudo cp brightness_api.service /etc/systemd/system/brightness_api.service
+          sudo systemctl daemon-reload
+          sudo systemctl start brightness_api
   
     - name: Docker compose pull
       run: docker-compose pull
