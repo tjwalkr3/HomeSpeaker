@@ -5,7 +5,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapGet("/", () => "Brightness API.");
+app.MapGet("/", () => "Brightness API. As a service. BAAAS.");
 
 app.MapGet("/get", () => File.ReadAllText("/sys/class/backlight/10-0045/brightness"));
 
