@@ -3,12 +3,12 @@
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 RUN apt update && apt install --yes sox libsox-fmt-mp3 alsa-utils vlc ffmpeg
-USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 RUN useradd -ms /bin/bash homespeakeruser
 RUN usermod -aG audio homespeakeruser
+USER $APP_UID
 
 
 # This stage is used to build the service project
