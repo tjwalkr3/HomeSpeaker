@@ -6,10 +6,6 @@ RUN apt update && apt install --yes sox libsox-fmt-mp3 alsa-utils vlc ffmpeg
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
-RUN useradd -ms /bin/bash homespeakeruser
-RUN usermod -aG audio homespeakeruser
-USER $APP_UID
-
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
@@ -30,6 +26,8 @@ RUN dotnet publish "./HomeSpeaker.Server2.csproj" -c $BUILD_CONFIGURATION -o /ap
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
+RUN useradd -ms /bin/bash homespeakeruser
+RUN usermod -aG audio homespeakeruser
 USER homespeakeruser
 WORKDIR /app
 COPY --from=publish /app/publish .
