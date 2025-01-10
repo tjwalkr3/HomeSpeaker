@@ -39,6 +39,6 @@ services:
     - 4317:18889  # OTLP
     networks:
       speakernet:
-   
+
 networks:
  speakernet:

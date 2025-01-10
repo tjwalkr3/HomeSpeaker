@@ -6,8 +6,6 @@ using HomeSpeaker.Server2.Services;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Serilog;
-using Serilog.Exceptions;
 using System.Runtime.InteropServices;
 
 const string LocalCorsPolicy = nameof(LocalCorsPolicy);
@@ -16,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 try
 {
-    Console.WriteLine($"Trying to setup otel jaeger @ {builder.Configuration["OtlpExporter"]}");
+    Console.WriteLine($"Trying to setup otel @ {builder.Configuration["OtlpExporter"]}");
     builder.Services.AddOpenTelemetry()
         .WithTracing(b =>
         {
@@ -29,28 +27,19 @@ try
         .WithMetrics(b =>
         {
 
-        });
+        })
+        .WithLogging();
 }
 catch (Exception ex)
 {
-    Console.WriteLine("!!! Trouble contacting jaeger: " + ex.ToString());
+    Console.WriteLine("!!! Trouble contacting otel: " + ex.ToString());
 }
 
-try
+builder.Logging.AddOpenTelemetry(logging =>
 {
-    Console.WriteLine($"Trying to setup seq @ {builder.Configuration["SeqAddress"]}");
-    builder.Host.UseSerilog((context, loggerConfig) =>
-    {
-        loggerConfig
-            .WriteTo.Console()
-            .Enrich.WithExceptionDetails()
-            .WriteTo.Seq(builder.Configuration["SeqAddress"]);
-    });
-}
-catch (Exception ex)
-{
-    Console.WriteLine("!!! Trouble contacting seq: " + ex.ToString());
-}
+    logging.IncludeFormattedMessage = true;
+    logging.IncludeScopes = true;
+});
 
 builder.Services.AddResponseCompression(o => o.EnableForHttps = true);
 builder.Services.AddCors(options =>
