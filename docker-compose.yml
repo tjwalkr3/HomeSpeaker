@@ -24,8 +24,7 @@ services:
     - ASPNETCORE_URLS=https://+443;http://+:80
     - ASPNETCORE_Kestrel__Certificates__Default__Path=/certs/certificate.pfx
     - FFMpegLocation=/usr/bin/ffmpeg
-    - OtlpExporter=http://jaeger:4317
-    - SeqAddress=http://seq:5341
+    - OtlpExporter=http://aspire:4317
     networks:
       speakernet:
 
