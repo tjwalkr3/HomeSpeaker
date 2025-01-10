@@ -1,7 +1,7 @@
 services:
   homespeaker.server2:
     container_name: homespeaker
-    image: ${DOCKER_REGISTRY-}homespeakerserver2
+    image: homespeakerserver2
     build:
       context: .
       dockerfile: HomeSpeaker.Server2/Dockerfile
