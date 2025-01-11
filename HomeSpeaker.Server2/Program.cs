@@ -62,9 +62,11 @@ else
     app.UseExceptionHandler("/Error");
 }
 
+app.Logger.LogInformation("Starting HomeSpeaker.Server2");
+
 app.UseResponseCompression();
 app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseRouting();
