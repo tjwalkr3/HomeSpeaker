@@ -25,9 +25,9 @@ services:
     - ASPNETCORE_URLS=https://+443;http://+:80
     - ASPNETCORE_Kestrel__Certificates__Default__Path=/certs/certificate.pfx
     - FFMpegLocation=/usr/bin/ffmpeg
-    - OtlpExporter=http://aspire:4317
     - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire:4317
+    - OTEL_SERVICE_NAME=HomeSpeaker
     networks:
       speakernet:
 
