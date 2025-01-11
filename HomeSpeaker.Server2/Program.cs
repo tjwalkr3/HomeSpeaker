@@ -4,7 +4,7 @@ using HomeSpeaker.Server2;
 using HomeSpeaker.Server2.Data;
 using HomeSpeaker.Server2.Services;
 using Microsoft.EntityFrameworkCore;
-using OpenTelemetry.Resources;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Trace;
 using System.Runtime.InteropServices;
 
@@ -14,32 +14,38 @@ var builder = WebApplication.CreateBuilder(args);
 
 try
 {
-    Console.WriteLine($"Trying to setup otel @ {builder.Configuration["OtlpExporter"]}");
+    var otelEndpoint = builder.Configuration["OtlpExporter"];
+    Console.WriteLine($"Trying to setup otel @ {otelEndpoint}");
     builder.Services.AddOpenTelemetry()
-        .WithTracing(b =>
-        {
-            b.SetResourceBuilder(
-                ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName))
+    .WithTracing(tracerProviderBuilder =>
+    {
+        tracerProviderBuilder
             .AddAspNetCoreInstrumentation()
-            .AddConsoleExporter()
-            .AddOtlpExporter(opts => opts.Endpoint = new Uri(builder.Configuration["OtlpExporter"]));
-        })
-        .WithMetrics(b =>
-        {
+            .AddHttpClientInstrumentation()
+            .AddOtlpExporter(options =>
+            {
+                options.Endpoint = new Uri(otelEndpoint + "/v1/traces"); // Aspire endpoint
+                options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+            });
+    });
 
-        })
-        .WithLogging();
+    // Setup OpenTelemetry Logging
+    builder.Services.AddLogging(builder =>
+    {
+        builder.AddOpenTelemetry(options =>
+        {
+            options.AddOtlpExporter(o =>
+            {
+                o.Endpoint = new Uri(otelEndpoint + "/v1/logs"); // Aspire endpoint
+                o.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+            });
+        });
+    });
 }
 catch (Exception ex)
 {
     Console.WriteLine("!!! Trouble contacting otel: " + ex.ToString());
 }
-
-builder.Logging.AddOpenTelemetry(logging =>
-{
-    logging.IncludeFormattedMessage = true;
-    logging.IncludeScopes = true;
-});
 
 builder.Services.AddResponseCompression(o => o.EnableForHttps = true);
 builder.Services.AddCors(options =>
