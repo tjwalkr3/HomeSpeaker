@@ -33,4 +33,5 @@ RUN usermod -aG audio homespeakeruser
 USER homespeakeruser
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN apt-get install -y curl iputils-ping
 ENTRYPOINT ["dotnet", "HomeSpeaker.Server2.dll"]
