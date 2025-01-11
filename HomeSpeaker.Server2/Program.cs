@@ -4,48 +4,13 @@ using HomeSpeaker.Server2;
 using HomeSpeaker.Server2.Data;
 using HomeSpeaker.Server2.Services;
 using Microsoft.EntityFrameworkCore;
-using OpenTelemetry.Logs;
-using OpenTelemetry.Trace;
 using System.Runtime.InteropServices;
 
 const string LocalCorsPolicy = nameof(LocalCorsPolicy);
 
 var builder = WebApplication.CreateBuilder(args);
 
-try
-{
-    var otelEndpoint = builder.Configuration["OtlpExporter"];
-    Console.WriteLine($"Trying to setup otel @ {otelEndpoint}");
-    builder.Services.AddOpenTelemetry()
-    .WithTracing(tracerProviderBuilder =>
-    {
-        tracerProviderBuilder
-            .AddAspNetCoreInstrumentation()
-            .AddHttpClientInstrumentation()
-            .AddOtlpExporter(options =>
-            {
-                options.Endpoint = new Uri(otelEndpoint + "/v1/traces"); // Aspire endpoint
-                options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
-            });
-    });
-
-    // Setup OpenTelemetry Logging
-    builder.Services.AddLogging(builder =>
-    {
-        builder.AddOpenTelemetry(options =>
-        {
-            options.AddOtlpExporter(o =>
-            {
-                o.Endpoint = new Uri(otelEndpoint + "/v1/logs"); // Aspire endpoint
-                o.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
-            });
-        });
-    });
-}
-catch (Exception ex)
-{
-    Console.WriteLine("!!! Trouble contacting otel: " + ex.ToString());
-}
+builder.AddServiceDefaults();
 
 builder.Services.AddResponseCompression(o => o.EnableForHttps = true);
 builder.Services.AddCors(options =>
