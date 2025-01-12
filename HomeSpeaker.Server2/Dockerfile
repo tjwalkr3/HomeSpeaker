@@ -26,6 +26,7 @@ RUN dotnet publish "./HomeSpeaker.Server2.csproj" -c $BUILD_CONFIGURATION -o /ap
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
+RUN apt-get install -y curl iputils-ping
 RUN groupadd -g 1000 mygroup
 RUN useradd -u 1000 -g mygroup -s /bin/bash -m homespeakeruser
 #RUN useradd -ms /bin/bash homespeakeruser
@@ -33,5 +34,4 @@ RUN usermod -aG audio homespeakeruser
 USER homespeakeruser
 WORKDIR /app
 COPY --from=publish /app/publish .
-RUN apt-get install -y curl iputils-ping
 ENTRYPOINT ["dotnet", "HomeSpeaker.Server2.dll"]
