@@ -18,24 +18,21 @@ builder.Services.AddMudServices();
 
 try
 {
-    Console.WriteLine($"Trying to setup otel tracing @ {builder.Configuration["OtlpExporter"]}");
-    builder.Services.AddOpenTelemetry()
-        .WithTracing(b =>
-        {
-            b.SetResourceBuilder(
-                ResourceBuilder.CreateDefault().AddService("HomeSpeaker.WebAssembly"))
-            .AddSource("BlazorUI")
-            //.AddOtlpExporter(opts => opts.Endpoint = new Uri(builder.Configuration["OtlpExporter"]));
-            .AddZipkinExporter(o =>
+    var endpoint = "http://localhost:4318";// builder.Configuration["OtlpExporter"];
+    Console.WriteLine($"Trying to setup otel tracing @ {endpoint}");
+    builder.Services.AddOpenTelemetry();
+    builder.Services.ConfigureOpenTelemetryTracerProvider(tracerProviderBuilder =>
+    {
+        tracerProviderBuilder
+            .SetResourceBuilder(ResourceBuilder.CreateDefault()
+                .AddService("BlazorWasmApp"))
+            .AddOtlpExporter(options =>
             {
-                o.Endpoint = new Uri(builder.Configuration["OtlpExporter"]);
-                o.ExportProcessorType = OpenTelemetry.ExportProcessorType.Simple;
-            });
-        })
-        .WithMetrics(b =>
-        {
-
-        });
+                options.Endpoint = new Uri(endpoint); // Aspire container OTLP endpoint
+                options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf;
+            })
+            ;
+    });
 }
 catch (Exception ex)
 {
