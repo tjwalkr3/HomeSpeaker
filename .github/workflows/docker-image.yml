@@ -16,18 +16,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
-    - name: publish brightness api
-      run: |
-          cd brightness_api
-          dotnet publish -c Release -o publish
-    - name: run brightness api
-      run: |
-          cd brightness_api
-          sudo systemctl stop brightness_api
-          sudo cp brightness_api.service /etc/systemd/system/brightness_api.service
-          sudo systemctl daemon-reload
-          sudo systemctl start brightness_api
   
     - name: Docker compose pull
       run: docker-compose pull

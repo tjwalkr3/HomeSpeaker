@@ -3,22 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{034A99B3-490D-4EBA-AEEA-7F1E7F1E0ACA}"
-	ProjectSection(SolutionItems) = preProject
-		scripts\default.conf = scripts\default.conf
-		scripts\localdeploy.ps1 = scripts\localdeploy.ps1
-		scripts\restart.ps1 = scripts\restart.ps1
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.Server2", "HomeSpeaker.Server2\HomeSpeaker.Server2.csproj", "{780896E7-A682-4743-9DCC-702553FCD574}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.Shared", "HomeSpeaker.Shared\HomeSpeaker.Shared.csproj", "{09073304-AFBF-4134-83F7-E67A37257266}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeaker.WebAssembly", "HomeSpeaker.WebAssembly\HomeSpeaker.WebAssembly.csproj", "{72E636EC-4188-479E-9FCE-6B7EC1EF9339}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeSpeakerProxy", "HomeSpeakerProxy\HomeSpeakerProxy.csproj", "{1D268809-6B90-446D-BE6C-D9F6245C11AF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "brightness_api", "brightness_api\brightness_api.csproj", "{D5DCC495-9AC9-4193-96C6-001FB6011861}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{222B7504-4E8F-4A08-9F7D-4D135F0BB7DA}"
 	ProjectSection(SolutionItems) = preProject
@@ -43,14 +32,6 @@ Global
 		{72E636EC-4188-479E-9FCE-6B7EC1EF9339}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72E636EC-4188-479E-9FCE-6B7EC1EF9339}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72E636EC-4188-479E-9FCE-6B7EC1EF9339}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D268809-6B90-446D-BE6C-D9F6245C11AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D268809-6B90-446D-BE6C-D9F6245C11AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D268809-6B90-446D-BE6C-D9F6245C11AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D268809-6B90-446D-BE6C-D9F6245C11AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D5DCC495-9AC9-4193-96C6-001FB6011861}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5DCC495-9AC9-4193-96C6-001FB6011861}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5DCC495-9AC9-4193-96C6-001FB6011861}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5DCC495-9AC9-4193-96C6-001FB6011861}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

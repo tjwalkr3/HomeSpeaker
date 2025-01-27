@@ -1,6 +1,7 @@
 ﻿@page "/nightscout"
 @layout NoTopLayout
+@inject IConfiguration config
 
 <div class="col px-0">
-    <iframe title="NightScout" src="https://janedoe.azurewebsites.net" frameborder="0" allowfullscreen></iframe>
+    <iframe title="NightScout" src=@config["NIGHTSCOUT_ADDRESS"] frameborder="0" allowfullscreen></iframe>
 </div>
