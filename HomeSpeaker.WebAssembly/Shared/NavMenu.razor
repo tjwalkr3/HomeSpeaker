@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <div class="navbar-brand">
             <a class="navbar-brand" href="">Home Speaker</a>
-            @if (config["NIGHTSCOUT_ADDRESS"]?.Length > 0)
+            @if (nightscoutUrl?.Length > 0)
             {
                 <NavLink href="nightscout"><img src="/OIP.png" width="24" alt="nightscout" /></NavLink>
             }
@@ -65,9 +65,15 @@
     private bool collapseNavMenu = true;
     private bool nightMode = false;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private static string? nightscoutUrl = null;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        if (nightscoutUrl == null)
+        {
+            var httpClient = new HttpClient();
+            nightscoutUrl = await httpClient.GetStringAsync($"{hostEnv.BaseAddress}nightscout") ?? string.Empty;
+        }
     }
 
     private void ToggleNavMenu()
