@@ -72,7 +72,7 @@
         if (nightscoutUrl == null)
         {
             var httpClient = new HttpClient();
-            nightscoutUrl = await httpClient.GetStringAsync($"{hostEnv.BaseAddress}nightscout") ?? string.Empty;
+            nightscoutUrl = await httpClient.GetStringAsync($"{hostEnv.BaseAddress}ns") ?? string.Empty;
         }
     }
 
