@@ -5,8 +5,16 @@
 @inject IConfiguration config
 
 <div class="col px-0">
-    <iframe title="NightScout" src=@nightscoutUrl frameborder="0" allowfullscreen></iframe>
+    <iframe id="nsFrame" title="NightScout" src=@nightscoutUrl frameborder="0" allowfullscreen></iframe>
 </div>
+
+<script>
+    function refreshIFrame() {
+        var x = document.getElementById("nsFrame");
+        x.contentWindow.location.reload();
+        var t = setTimeout(refreshIFrame, 5 * 60 * 1000);
+    }
+</script>
 
 @code
 {
@@ -14,10 +22,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (nightscoutUrl == null)
-        {
-            var httpClient = new HttpClient();
-            nightscoutUrl = await httpClient.GetStringAsync($"{hostEnv.BaseAddress}ns") ?? string.Empty;
-        }
+        var httpClient = new HttpClient();
+        nightscoutUrl = await httpClient.GetStringAsync($"{hostEnv.BaseAddress}ns") ?? string.Empty;
     }
 }
