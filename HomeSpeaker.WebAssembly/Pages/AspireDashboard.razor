@@ -1,0 +1,27 @@
+﻿@page "/aspire"
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@layout NoTopLayout
+@inject IWebAssemblyHostEnvironment hostEnv
+@inject IConfiguration config
+
+<div class="col px-0">
+    <iframe id="frame" title="Aspire Dashboard" src=@destUrl frameborder="0" allowfullscreen></iframe>
+</div>
+
+@* <script> *@
+@*     function refreshIFrame() { *@
+@*     var x = document.getElementById("frame"); *@
+@*     x.contentWindow.location.reload(); *@
+@*     var t = setTimeout(refreshIFrame, 5 * 60 * 1000); *@
+@*     } *@
+@* </script> *@
+
+@code
+{
+    private static string? destUrl = null;
+
+    override protected void OnInitialized()
+    {
+        destUrl = config["OTEL_EXPORTER_OTLP_ENDPOINT"];
+    }
+}

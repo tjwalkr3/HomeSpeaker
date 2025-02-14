@@ -12,6 +12,10 @@
             {
                 <NavLink href="nightscout"><img src="/OIP.png" width="24" alt="nightscout" /></NavLink>
             }
+            @if (showLogs ?? false)
+            {
+                <NavLink href="aspire"><img src="/aspire-logo-256.png" width="24" alt="aspire" /></NavLink>
+            }
         </div>
         <button class="btn btn-dark d-block d-sm-none" @onclick=stopAsync><span class="oi oi-media-stop top-0"></span></button>
         <button class="btn btn-dark d-block d-sm-none" @onclick=skipAsync><span class="oi oi-media-skip-forward top-0"></span></button>
@@ -62,6 +66,8 @@
 </div>
 
 @code {
+    private Uri? aspireUrl = null;
+    private bool? showLogs = false;
     private bool collapseNavMenu = true;
     private bool nightMode = false;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -69,10 +75,26 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (nightscoutUrl == null)
+        if (nightscoutUrl is null)
         {
             var httpClient = new HttpClient();
             nightscoutUrl = await httpClient.GetStringAsync($"{hostEnv.BaseAddress}ns") ?? string.Empty;
+        }
+
+        if (aspireUrl is null)
+        {
+            UriBuilder uriBuilder = new UriBuilder(hostEnv.BaseAddress)
+            {
+                Port = 18888
+            };
+            aspireUrl = uriBuilder.Uri;
+        }
+
+        if (showLogs is null)
+        {
+            var httpClient = new HttpClient() { BaseAddress = aspireUrl };
+            var req = await httpClient.GetAsync("");
+            showLogs = req.IsSuccessStatusCode;
         }
     }
 
@@ -92,7 +114,7 @@
         {
             await svc.ToggleBrightness();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             logger.LogError("Trouble setting brightness {ex}", ex);
             logger.LogError(ex.ToString());
