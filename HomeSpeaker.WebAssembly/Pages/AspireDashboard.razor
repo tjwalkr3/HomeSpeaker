@@ -5,7 +5,7 @@
 @inject IConfiguration config
 
 <div class="col px-0">
-    <iframe id="frame" title="Aspire Dashboard" src=@destUrl frameborder="0" allowfullscreen></iframe>
+    <iframe id="frame" title="Aspire Dashboard" src=@aspireUrl?.AbsoluteUri frameborder="0" allowfullscreen></iframe>
 </div>
 
 @* <script> *@
@@ -18,10 +18,17 @@
 
 @code
 {
-    private static string? destUrl = null;
+    private Uri? aspireUrl = null;
 
-    override protected void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        destUrl = config["OTEL_EXPORTER_OTLP_ENDPOINT"];
+        if (aspireUrl is null)
+        {
+            UriBuilder uriBuilder = new UriBuilder(hostEnv.BaseAddress)
+                {
+                    Port = 18888
+                };
+            aspireUrl = uriBuilder.Uri;
+        }
     }
 }
