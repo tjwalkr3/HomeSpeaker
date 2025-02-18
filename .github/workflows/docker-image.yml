@@ -11,8 +11,9 @@ on:
   # Then a new version will be deployed on the self-hosted runner.
 
 jobs:
-  build:
+  rpi4:
     runs-on: self-hosted
+    labels: [rpi4]
 
     steps:
     - uses: actions/checkout@v3
@@ -28,3 +29,22 @@ jobs:
         COMPOSE_DOCKER_CLI_BUILD: 1
         DOCKER_BUILDKIT: 1
       run: docker-compose up -d --build --remove-orphans
+
+  rpi42:
+    runs-on: self-hosted
+    labels: [rpi42]
+
+    steps:
+    - uses: actions/checkout@v3
+  
+    - name: Docker compose pull
+      run: docker-compose pull
+
+    - name: Docker compose down
+      run: docker-compose down
+
+    - name: Docker compose up
+      env:
+        COMPOSE_DOCKER_CLI_BUILD: 1
+        DOCKER_BUILDKIT: 1
+      run: docker-compose up -d --build --remove-orphans      
