@@ -34,6 +34,7 @@ namespace HomeSpeaker.Maui.Services
         Task SkipToNextAsync();
         Task StopPlayingAsync();
         Task ToggleBrightness();
+        Task UpdateMetadataAsync(SongMessage song);
         Task UpdateQueueAsync(List<SongModel> songs);
     }
 }

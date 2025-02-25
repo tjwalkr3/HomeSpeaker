@@ -28,6 +28,8 @@ service HomeSpeaker {
 	rpc PlayPlaylist(PlayPlaylistRequest) returns (PlayPlaylistReply);
 	rpc UpdateQueue(UpdateQueueRequest) returns (UpdateQueueReply);
 	rpc ToggleBacklight(google.protobuf.Empty) returns (google.protobuf.Empty);
+	rpc UpdateMetadata(UpdateMetadataRequest) returns (UpdateMetadataReply);
+
 }
 
 message UpdateQueueRequest {
@@ -135,3 +137,14 @@ message DeleteSongRequest{
 	int32 SongId=1;
 }
 message DeleteSongReply{}
+
+message UpdateMetadataRequest {
+    int32 SongId = 1;
+    string Name = 2;
+    string Artist = 3;
+    string Album = 4;
+}
+
+message UpdateMetadataReply {
+    bool Success = 1;
+}

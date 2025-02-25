@@ -70,4 +70,10 @@
 	  <ProjectReference Include="..\HomeSpeaker.Shared\HomeSpeaker.Shared.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="Views\ChangeMetadata.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>

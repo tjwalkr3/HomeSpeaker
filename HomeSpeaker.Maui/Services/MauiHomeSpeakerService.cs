@@ -228,4 +228,22 @@ public class MauiHomeSpeakerService : IMauiHomeSpeakerService
         await client.ShuffleQueueAsync(new ShuffleQueueRequest());
         QueueChanged?.Invoke(this, EventArgs.Empty);
     }
+
+    public async Task UpdateMetadataAsync(SongMessage song)
+    {
+        var request = new UpdateMetadataRequest
+        {
+            SongId = song.SongId,
+            Name = song.Name,
+            Artist = song.Artist,
+            Album = song.Album
+        };
+
+        var response = await client.UpdateMetadataAsync(request);
+        if (!response.Success)
+        {
+            throw new Exception("Failed to update metadata.");
+        }
+    }
+
 }
