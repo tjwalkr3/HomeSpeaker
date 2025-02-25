@@ -16,7 +16,9 @@ internal class MissingConfigException : Exception
     {
     }
 
-    protected MissingConfigException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
+    // The compiler said that this constructor is obsolete. 
+
+    //protected MissingConfigException(SerializationInfo info, StreamingContext context) : base(info, context)
+    //{
+    //}
 }

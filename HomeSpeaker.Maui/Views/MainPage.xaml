@@ -15,6 +15,33 @@
             <Button Command="{Binding GetAllSongsCommand}" 
                     Text="Get All Songs" />
 
+            <VerticalStackLayout>
+                <Label Text="List of Songs:"
+                       FontAttributes="Bold"
+                       FontSize="24" />
+
+                <CollectionView ItemsSource="{Binding AllSongsList}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Name}"
+                                       Margin="15,0,0,0"
+                                       FontSize="20" />
+                                <Label Text="{Binding Artist, StringFormat='Artist: {0}'}"
+                                       Margin="15,0,0,0"
+                                       FontSize="16" />
+                                <Label Text="{Binding Album, StringFormat='Album: {0}'}"
+                                       Margin="15,0,0,0"
+                                       FontSize="16" />
+                                <Label Text="{Binding Path, StringFormat='Path: {0}'}"
+                                       Margin="15,0,0,0"
+                                       FontSize="16" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
         </VerticalStackLayout>
     </ScrollView>
 

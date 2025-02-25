@@ -9,12 +9,12 @@ using System.Diagnostics;
 using static HomeSpeaker.Shared.HomeSpeaker;
 namespace HomeSpeaker.Maui.Services;
 
-public class MauiHomeSpeakerService
+public class MauiHomeSpeakerService : IMauiHomeSpeakerService
 {
     private HomeSpeakerClient client;
     private List<SongMessage> songs = new();
     public IEnumerable<SongMessage> Songs => songs;
-    public event EventHandler QueueChanged;
+    public event EventHandler? QueueChanged;
     public event EventHandler<string>? StatusChanged;
     private readonly ILogger<MauiHomeSpeakerService> logger;
     readonly char[] separators = ['/', '\\'];
