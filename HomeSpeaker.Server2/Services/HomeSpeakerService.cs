@@ -328,4 +328,50 @@ public class HomeSpeakerService : HomeSpeakerBase
 
         return new Empty();
     }
+    public override async Task<UpdateMetadataReply> UpdateMetadata(UpdateMetadataRequest request, ServerCallContext context)
+    {
+        logger.LogInformation("Updating metadata for SongId: {SongId}", request.SongId);
+
+        var song = library.Songs.FirstOrDefault(s => s.SongId == request.SongId);
+        if (song == null)
+        {
+            logger.LogWarning("Song with ID {SongId} not found.", request.SongId);
+            return new UpdateMetadataReply { Success = false };
+        }
+
+        // Find the song file in the specified folder
+        var folderPath = "./HomeSpeakerMedia"; // Need to add to give this folder through app settings
+        var songFilePath = Directory.GetFiles(folderPath, "*.mp3", SearchOption.AllDirectories)
+         .FirstOrDefault(file => Path.GetFileNameWithoutExtension(file).Equals(song.Name, StringComparison.OrdinalIgnoreCase));
+
+        if (songFilePath == null)
+        {
+            logger.LogWarning("Song file '{SongName}' not found in folder '{FolderPath}'.", song.Name, folderPath);
+            return new UpdateMetadataReply { Success = false };
+        }
+
+        try
+        {
+            var file = TagLib.File.Create(songFilePath);
+            file.Tag.Title = request.Name;
+            file.Tag.Performers = new[] { request.Artist };
+            file.Tag.Album = request.Album;
+            file.Save();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to update metadata for file: {FilePath}", songFilePath);
+            return new UpdateMetadataReply { Success = false };
+        }
+
+        // Update the song metadata in the library
+        song.Name = request.Name;
+        song.Artist = request.Artist;
+        song.Album = request.Album;
+        library.IsDirty = true;
+
+        logger.LogInformation("Metadata updated successfully for SongId: {SongId}", request.SongId);
+
+        return new UpdateMetadataReply { Success = true };
+    }
 }

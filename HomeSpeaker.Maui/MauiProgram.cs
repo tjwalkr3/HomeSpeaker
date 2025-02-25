@@ -31,12 +31,14 @@ namespace HomeSpeaker.Maui
         private static MauiAppBuilder RegisterViews(this MauiAppBuilder builder)
         {
             builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<ChangeMetadata>();
             return builder;
         }
 
         private static MauiAppBuilder RegisterViewModels(this MauiAppBuilder builder)
         {
             builder.Services.AddTransient<MainPageViewModel>();
+            builder.Services.AddTransient<ChangeMetadataViewModel>();
             return builder;
         }
 
