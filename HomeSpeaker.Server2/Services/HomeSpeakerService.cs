@@ -339,14 +339,15 @@ public class HomeSpeakerService : HomeSpeakerBase
             return new UpdateMetadataReply { Success = false };
         }
 
+        var songFileName = Path.GetFileNameWithoutExtension(song.Path);
         // Find the song file in the specified folder
-        var folderPath = "./HomeSpeakerMedia"; // Need to add to give this folder through app settings
+        var folderPath = "./HomeSpeakerMedia"; // Should be configurable
         var songFilePath = Directory.GetFiles(folderPath, "*.mp3", SearchOption.AllDirectories)
-         .FirstOrDefault(file => Path.GetFileNameWithoutExtension(file).Equals(song.Name, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(file => Path.GetFileNameWithoutExtension(file).Equals(songFileName, StringComparison.OrdinalIgnoreCase));
 
         if (songFilePath == null)
         {
-            logger.LogWarning("Song file '{SongName}' not found in folder '{FolderPath}'.", song.Name, folderPath);
+            logger.LogWarning("Song file '{SongName}' not found in folder '{FolderPath}'.", songFileName, folderPath);
             return new UpdateMetadataReply { Success = false };
         }
 
@@ -364,6 +365,32 @@ public class HomeSpeakerService : HomeSpeakerBase
             return new UpdateMetadataReply { Success = false };
         }
 
+        // Define new file path
+        string newFileName = $"{request.Name}.mp3";
+        string newFilePath = Path.Combine(Path.GetDirectoryName(songFilePath)!, newFileName);
+
+        // Rename the file if the name has changed
+        if (!songFilePath.Equals(newFilePath, StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                if (File.Exists(newFilePath))
+                {
+                    logger.LogWarning("File with name '{NewFileName}' already exists. Skipping rename.", newFileName);
+                }
+                else
+                {
+                    File.Move(songFilePath, newFilePath);
+                    logger.LogInformation("Renamed file '{OldFilePath}' to '{NewFilePath}'.", songFilePath, newFilePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to rename file from '{OldFilePath}' to '{NewFilePath}'.", songFilePath, newFilePath);
+                return new UpdateMetadataReply { Success = false };
+            }
+        }
+
         // Update the song metadata in the library
         song.Name = request.Name;
         song.Artist = request.Artist;
@@ -371,7 +398,7 @@ public class HomeSpeakerService : HomeSpeakerBase
         library.IsDirty = true;
 
         logger.LogInformation("Metadata updated successfully for SongId: {SongId}", request.SongId);
-
         return new UpdateMetadataReply { Success = true };
     }
+
 }
