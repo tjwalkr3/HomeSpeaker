@@ -30,8 +30,7 @@ try
             {
                 options.Endpoint = new Uri(endpoint); // Aspire container OTLP endpoint
                 options.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf;
-            })
-            ;
+            });
     });
 }
 catch (Exception ex)

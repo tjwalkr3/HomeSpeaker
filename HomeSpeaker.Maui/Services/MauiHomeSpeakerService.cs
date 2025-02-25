@@ -1,22 +1,27 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using System.Diagnostics;
+﻿using Grpc.Core;
+using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
+using HomeSpeaker.Maui.Models;
+using HomeSpeaker.Shared;
+using Microsoft.Extensions.Logging;
 using static HomeSpeaker.Shared.HomeSpeaker;
+namespace HomeSpeaker.Maui.Services;
 
-namespace HomeSpeaker.WebAssembly.Services;
-
-public class HomeSpeakerService
+public class MauiHomeSpeakerService : IMauiHomeSpeakerService
 {
     private HomeSpeakerClient client;
     private List<SongMessage> songs = new();
     public IEnumerable<SongMessage> Songs => songs;
     public event EventHandler? QueueChanged;
+    public event EventHandler<string>? StatusChanged;
+    private readonly ILogger<MauiHomeSpeakerService> logger;
+    readonly char[] separators = ['/', '\\'];
 
-    public HomeSpeakerService(IConfiguration config, ILogger<HomeSpeakerService> logger, IWebAssemblyHostEnvironment hostEnvironment)
+    public MauiHomeSpeakerService(ILogger<MauiHomeSpeakerService> logger)
     {
-        string address = config["ServerAddress"] ?? throw new MissingConfigException("ServerAddress");
-        logger.LogInformation($"I was about to use {address}");
-        address = hostEnvironment.BaseAddress;
-        logger.LogInformation("But instead I'll use {address}", address);
+        string address = "https://localhost:7238";
+        logger.LogInformation("I'll use this address: {address}", address);
+
         var channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions
         {
             HttpHandler = new GrpcWebHandler(new HttpClientHandler())
@@ -26,8 +31,6 @@ public class HomeSpeakerService
         this.logger = logger;
         _ = listenForEvents();
     }
-
-    public HomeSpeakerClient HomeSpeakerClient => client;
 
     private async Task listenForEvents()
     {
@@ -55,30 +58,35 @@ public class HomeSpeakerService
         return status.Volume;
     }
 
-    public async Task UpdateQueueAsync(List<SongViewModel> songs)
+    public async Task<GetStatusReply> GetStatusAsync()
+    {
+        return await client.GetPlayerStatusAsync(new GetStatusRequest());
+    }
+
+    public async Task UpdateQueueAsync(List<SongModel> songs)
     {
         var request = new UpdateQueueRequest();
         request.Songs.AddRange(songs.Select(s => s.Path));
         await client.UpdateQueueAsync(request);
     }
 
-    public async Task PlayStreamAsync(string streamUri) => await client.PlayStreamAsync(new PlayStreamRequest { StreamUrl = streamUri });
-
-    public async Task<GetStatusReply> GetStatusAsync()
+    public async Task PlayStreamAsync(string streamUri)
     {
-        return await client.GetPlayerStatusAsync(new GetStatusRequest());
+        await client.PlayStreamAsync(new PlayStreamRequest { StreamUrl = streamUri });
     }
 
-    public async Task EnqueueFolderAsync(SongGroup songs) => await client.EnqueueFolderAsync(new EnqueueFolderRequest { FolderPath = songs.FolderPath });
-
-
-    public async Task<IEnumerable<SongViewModel>> GetSongsInFolder(string folder)
+    public async Task EnqueueFolderAsync(SongGroup songs)
     {
-        var songs = new List<SongViewModel>();
+        await client.EnqueueFolderAsync(new EnqueueFolderRequest { FolderPath = songs.FolderPath });
+    }
+
+    public async Task<IEnumerable<SongModel>> GetSongsInFolder(string folder)
+    {
+        var songs = new List<SongModel>();
         var getSongsReply = client.GetSongs(new GetSongsRequest { Folder = folder });
         await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
         {
-            songs.AddRange(reply.Songs.Select(s => s.ToSongViewModel()));
+            songs.AddRange(reply.Songs.Select(s => s.ToSongModel()));
         }
 
         return songs;
@@ -105,9 +113,6 @@ public class HomeSpeakerService
     {
         await client.PlayPlaylistAsync(new PlayPlaylistRequest { PlaylistName = playlistName });
     }
-
-    readonly char[] separators = new[] { '/', '\\' };
-    private readonly ILogger<HomeSpeakerService> logger;
 
     public async Task<IEnumerable<string>> GetFolders()
     {
@@ -140,36 +145,28 @@ public class HomeSpeakerService
         return folders;
     }
 
-    public async Task<IEnumerable<SongViewModel>> GetAllSongsAsync()
+    public async Task<IEnumerable<SongModel>> GetAllSongsAsync()
     {
-        using var source = new ActivitySource("BlazorUI");
-        using (var activity = source.StartActivity("GetAllSongs", ActivityKind.Client))
+        var songs = new List<SongModel>();
+        var getSongsReply = client.GetSongs(new GetSongsRequest { });
+        await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
         {
-            activity?.AddEvent(new ActivityEvent("Calling GetAllSongs()"));
-            activity?.SetTag("tag1", "value1");
-            logger.LogWarning("Trying to send otel trace!");
-
-            var songs = new List<SongViewModel>();
-            var getSongsReply = client.GetSongs(new GetSongsRequest { });
-            await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
-            {
-                songs.AddRange(reply.Songs.Select(s => s.ToSongViewModel()));
-            }
-
-            return songs;
+            songs.AddRange(reply.Songs.Select(s => s.ToSongModel()));
         }
+
+        return songs;
     }
 
-    public async Task<Dictionary<string, List<SongViewModel>>> GetSongGroups()
+    public async Task<Dictionary<string, List<SongModel>>> GetSongGroups()
     {
-        var groups = new Dictionary<string, List<SongViewModel>>();
+        var groups = new Dictionary<string, List<SongModel>>();
         var getSongsReply = client.GetSongs(new GetSongsRequest { });
         //var starredSongs = (await database.GetStarredSongsAsync()).Select(s => s.Path).ToList();
         await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
         {
             foreach (var s in reply.Songs/*.Where(s => starredSongs.Contains(s.Path) == false)*/)
             {
-                var song = s.ToSongViewModel();
+                var song = s.ToSongModel();
                 if (song.Folder == null)
                 {
                     continue;
@@ -177,7 +174,7 @@ public class HomeSpeakerService
 
                 if (groups.ContainsKey(song.Folder) is false)
                 {
-                    groups[song.Folder] = new List<SongViewModel>();
+                    groups[song.Folder] = new List<SongModel>();
                 }
 
                 groups[song.Folder].Add(song);
@@ -193,13 +190,13 @@ public class HomeSpeakerService
         await client.EnqueueSongAsync(new PlaySongRequest { SongId = songId });
     }
 
-    public async Task<IEnumerable<SongViewModel>> GetPlayQueueAsync()
+    public async Task<IEnumerable<SongModel>> GetPlayQueueAsync()
     {
-        var queue = new List<SongViewModel>();
+        var queue = new List<SongModel>();
         var queueResponse = client.GetPlayQueue(new GetSongsRequest());
         await foreach (var reply in queueResponse.ResponseStream.ReadAllAsync())
         {
-            queue.AddRange(reply.Songs.Select(s => s.ToSongViewModel()));
+            queue.AddRange(reply.Songs.Select(s => s.ToSongModel()));
         }
         return queue;
     }
@@ -231,6 +228,4 @@ public class HomeSpeakerService
         await client.ShuffleQueueAsync(new ShuffleQueueRequest());
         QueueChanged?.Invoke(this, EventArgs.Empty);
     }
-
-    public event EventHandler<string>? StatusChanged;
 }

@@ -17,8 +17,8 @@ namespace HomeSpeaker.WebAssembly.Services
         {
         }
 
-        protected MissingConfigException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        //protected MissingConfigException(SerializationInfo info, StreamingContext context) : base(info, context)
+        //{
+        //}
     }
 }

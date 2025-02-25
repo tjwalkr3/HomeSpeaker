@@ -3,6 +3,7 @@ using HomeSpeaker.Server.Data;
 using HomeSpeaker.Server2;
 using HomeSpeaker.Server2.Data;
 using HomeSpeaker.Server2.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
 
@@ -22,6 +23,7 @@ builder.Services.AddCors(options =>
                                               "http://www.contoso.com");
                       });
 });
+
 builder.Services.AddRazorPages();
 builder.Services.AddGrpc();
 builder.Services.AddHostedService<MigrationApplier>();
