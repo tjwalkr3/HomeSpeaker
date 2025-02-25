@@ -8,13 +8,7 @@ namespace HomeSpeaker.Server;
 
 public class WindowsMusicPlayer : IMusicPlayer
 {
-    public WindowsMusicPlayer(ILogger<WindowsMusicPlayer> logger, Mp3Library library)
-    {
-        this.logger = logger;
-        this.library = library;
-    }
-
-    const string vlc = @"C:\Program Files(x86)\VideoLAN\VLC\vlc.exe";
+    const string vlc = @"C:\Program Files (x86)\VideoLAN\VLC\vlc.exe";
     private readonly ILogger<WindowsMusicPlayer> logger;
     private readonly Mp3Library library;
     private Process? playerProcess;
@@ -22,8 +16,30 @@ public class WindowsMusicPlayer : IMusicPlayer
     private Song? currentSong;
     private Song? stoppedSong;
     public PlayerStatus Status => (status ?? new PlayerStatus()) with { CurrentSong = currentSong };
-
+    private ConcurrentQueue<Song> songQueue = new ConcurrentQueue<Song>();
+    public event EventHandler<string>? PlayerEvent;
+    public IEnumerable<Song> SongQueue => songQueue.ToArray();
     private bool startedPlaying = false;
+
+    public bool StillPlaying
+    {
+        get
+        {
+            try
+            {
+                var stillPlaying = startedPlaying || (playerProcess?.HasExited ?? true) == false;
+                logger.LogInformation("startedPlaying {startedPlaying}, playerProcess {playerProcess}, stillPlaying {stillPlaying}", startedPlaying, playerProcess, stillPlaying);
+                return stillPlaying;
+            }
+            catch { return false; }
+        }
+    }
+
+    public WindowsMusicPlayer(ILogger<WindowsMusicPlayer> logger, Mp3Library library)
+    {
+        this.logger = logger;
+        this.library = library;
+    }
 
     public void PlaySong(Song song)
     {
@@ -56,6 +72,7 @@ public class WindowsMusicPlayer : IMusicPlayer
                 this.status = new PlayerStatus();
             }
         });
+
         playerProcess.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
         {
             if (e?.Data == null)
@@ -85,6 +102,7 @@ public class WindowsMusicPlayer : IMusicPlayer
         playerProcess.BeginErrorReadLine();
         startedPlaying = false;
     }
+
     private void stopPlaying()
     {
         if (playerProcess != null && playerProcess.HasExited is false)
@@ -112,6 +130,7 @@ public class WindowsMusicPlayer : IMusicPlayer
             status = new PlayerStatus();
         }
     }
+
     private void playNextSongInQueue()
     {
         logger.LogInformation($"There are still {songQueue.Count} songs in the queue, so I'll play the next one:");
@@ -241,7 +260,6 @@ public class WindowsMusicPlayer : IMusicPlayer
         playerProcess.BeginErrorReadLine();
     }
 
-
     public void ShuffleQueue()
     {
         var oldQueue = songQueue.ToList();
@@ -266,25 +284,6 @@ public class WindowsMusicPlayer : IMusicPlayer
         return Task.FromResult((int)(Audio.Volume * 100));
     }
 
-    public bool StillPlaying
-    {
-        get
-        {
-            try
-            {
-                var stillPlaying = startedPlaying || (playerProcess?.HasExited ?? true) == false;
-                logger.LogInformation("startedPlaying {startedPlaying}, playerProcess {playerProcess}, stillPlaying {stillPlaying}", startedPlaying, playerProcess, stillPlaying);
-                return stillPlaying;
-            }
-            catch { return false; }
-        }
-    }
-
-    private ConcurrentQueue<Song> songQueue = new ConcurrentQueue<Song>();
-
-    public event EventHandler<string>? PlayerEvent;
-
-    public IEnumerable<Song> SongQueue => songQueue.ToArray();
 }
 
 [Guid("5CDF2C82-841E-4546-9722-0CF74078229A"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -299,17 +298,20 @@ interface IAudioEndpointVolume
     int SetMute([MarshalAs(UnmanagedType.Bool)] bool bMute, System.Guid pguidEventContext);
     int GetMute(out bool pbMute);
 }
+
 [Guid("D666063F-1587-4E43-81F1-B948E807363F"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 interface IMMDevice
 {
     int Activate(ref System.Guid id, int clsCtx, int activationParams, out IAudioEndpointVolume aev);
 }
+
 [Guid("A95664D2-9614-4F35-A746-DE8DB63617E6"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 interface IMMDeviceEnumerator
 {
     int f(); // Unused
     int GetDefaultAudioEndpoint(int dataFlow, int role, out IMMDevice endpoint);
 }
+
 [ComImport, Guid("BCDE0395-E52F-467C-8E3D-C4579291692E")] class MMDeviceEnumeratorComObject { }
 public class Audio
 {
@@ -323,11 +325,13 @@ public class Audio
         Marshal.ThrowExceptionForHR(dev.Activate(ref epvid, /*CLSCTX_ALL*/ 23, 0, out epv));
         return epv;
     }
+
     public static float Volume
     {
         get { float v = -1; Marshal.ThrowExceptionForHR(Vol().GetMasterVolumeLevelScalar(out v)); return v; }
         set { Marshal.ThrowExceptionForHR(Vol().SetMasterVolumeLevelScalar(value, System.Guid.Empty)); }
     }
+
     public static bool Mute
     {
         get { bool mute; Marshal.ThrowExceptionForHR(Vol().GetMute(out mute)); return mute; }

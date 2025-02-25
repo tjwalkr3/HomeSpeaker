@@ -19,4 +19,10 @@ public partial class MainPageViewModel(IMauiHomeSpeakerService hsService) : Obse
             AllSongsList.Add(song);
         }
     }
+
+    [RelayCommand]
+    public async Task PlaySong(int songId)
+    {
+        await hsService.PlaySongAsync(songId);
+    }
 }

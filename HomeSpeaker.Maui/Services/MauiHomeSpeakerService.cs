@@ -245,5 +245,4 @@ public class MauiHomeSpeakerService : IMauiHomeSpeakerService
             throw new Exception("Failed to update metadata.");
         }
     }
-
 }
