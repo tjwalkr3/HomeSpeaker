@@ -9,7 +9,7 @@ public class HomeSpeakerService
     private HomeSpeakerClient client;
     private List<SongMessage> songs = new();
     public IEnumerable<SongMessage> Songs => songs;
-    public event EventHandler QueueChanged;
+    public event EventHandler? QueueChanged;
 
     public HomeSpeakerService(IConfiguration config, ILogger<HomeSpeakerService> logger, IWebAssemblyHostEnvironment hostEnvironment)
     {

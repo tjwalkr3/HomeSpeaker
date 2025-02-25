@@ -3,9 +3,7 @@ using Grpc.Net.Client;
 using Grpc.Net.Client.Web;
 using HomeSpeaker.Maui.Models;
 using HomeSpeaker.Shared;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using static HomeSpeaker.Shared.HomeSpeaker;
 namespace HomeSpeaker.Maui.Services;
 
@@ -19,10 +17,11 @@ public class MauiHomeSpeakerService : IMauiHomeSpeakerService
     private readonly ILogger<MauiHomeSpeakerService> logger;
     readonly char[] separators = ['/', '\\'];
 
-    public MauiHomeSpeakerService(IConfiguration config, ILogger<MauiHomeSpeakerService> logger)
+    public MauiHomeSpeakerService(ILogger<MauiHomeSpeakerService> logger)
     {
-        string address = config["ServerAddress"] ?? throw new MissingConfigException("ServerAddress");
+        string address = "https://localhost:7238";
         logger.LogInformation("I'll use this address: {address}", address);
+
         var channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions
         {
             HttpHandler = new GrpcWebHandler(new HttpClientHandler())
@@ -148,22 +147,14 @@ public class MauiHomeSpeakerService : IMauiHomeSpeakerService
 
     public async Task<IEnumerable<SongModel>> GetAllSongsAsync()
     {
-        using var source = new ActivitySource("BlazorUI");
-        using (var activity = source.StartActivity("GetAllSongs", ActivityKind.Client))
+        var songs = new List<SongModel>();
+        var getSongsReply = client.GetSongs(new GetSongsRequest { });
+        await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
         {
-            activity?.AddEvent(new ActivityEvent("Calling GetAllSongs()"));
-            activity?.SetTag("tag1", "value1");
-            logger.LogWarning("Trying to send otel trace!");
-
-            var songs = new List<SongModel>();
-            var getSongsReply = client.GetSongs(new GetSongsRequest { });
-            await foreach (var reply in getSongsReply.ResponseStream.ReadAllAsync())
-            {
-                songs.AddRange(reply.Songs.Select(s => s.ToSongModel()));
-            }
-
-            return songs;
+            songs.AddRange(reply.Songs.Select(s => s.ToSongModel()));
         }
+
+        return songs;
     }
 
     public async Task<Dictionary<string, List<SongModel>>> GetSongGroups()

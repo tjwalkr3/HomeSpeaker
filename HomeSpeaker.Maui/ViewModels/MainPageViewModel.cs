@@ -7,12 +7,16 @@ namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class MainPageViewModel(IMauiHomeSpeakerService hsService) : ObservableObject
 {
-    public ObservableCollection<SongModel> AllSongsList { get; private set; } = [];
+    public ObservableCollection<SongModel> AllSongsList { get; set; } = [];
 
     [RelayCommand]
-    public async Task GetAllSongsCommand()
+    public async Task GetAllSongs()
     {
         List<SongModel> newSongsList = (await hsService.GetAllSongsAsync()).ToList();
-        AllSongsList = new(newSongsList);
+        AllSongsList.Clear();
+        foreach (var song in newSongsList)
+        {
+            AllSongsList.Add(song);
+        }
     }
 }

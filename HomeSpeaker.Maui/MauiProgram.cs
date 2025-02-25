@@ -23,6 +23,7 @@ namespace HomeSpeaker.Maui
 
 #if DEBUG
     		builder.Logging.AddDebug();
+            builder.Logging.SetMinimumLevel(LogLevel.Debug);
 #endif
 
             return builder.Build();
