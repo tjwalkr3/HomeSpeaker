@@ -14,7 +14,7 @@ public class WindowsMusicPlayer : IMusicPlayer
         this.library = library;
     }
 
-    const string vlc = @"c:\program files\videolan\vlc\vlc.exe";
+    const string vlc = @"C:\Program Files(x86)\VideoLAN\VLC\vlc.exe";
     private readonly ILogger<WindowsMusicPlayer> logger;
     private readonly Mp3Library library;
     private Process? playerProcess;
