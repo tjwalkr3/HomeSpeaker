@@ -45,4 +45,7 @@
     <ProjectReference Include="..\HomeSpeaker.Shared\HomeSpeaker.Shared.csproj" />
     <ProjectReference Include="..\HomeSpeaker.WebAssembly\HomeSpeaker.WebAssembly.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HomeSpeakerMedia\" />
+  </ItemGroup>
 </Project>
