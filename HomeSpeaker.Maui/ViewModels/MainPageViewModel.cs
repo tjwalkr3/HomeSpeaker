@@ -7,7 +7,7 @@ namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class MainPageViewModel(IMauiHomeSpeakerService hsService) : ObservableObject
 {
-    public ObservableCollection<SongModel> AllSongsList { get; set; } = [];
+    public ObservableCollection<SongModel> AllSongsList { get; } = [];
 
     [RelayCommand]
     public async Task GetAllSongs()
