@@ -15,5 +15,9 @@
     Title="Change Metadata"
     ContentTemplate="{DataTemplate local:ChangeMetadata}"
     Route="ChangeMetadata" />
+    <ShellContent
+    Title="Playlists"
+    ContentTemplate="{DataTemplate local:PlaylistPage}"
+    Route="PlaylistPage" />
 
 </Shell>

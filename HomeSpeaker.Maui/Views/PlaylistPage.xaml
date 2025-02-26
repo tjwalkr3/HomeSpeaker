@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:HomeSpeaker.Maui.ViewModels"
+             x:Class="HomeSpeaker.Maui.Views.PlaylistPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <Button Command="{Binding GetAllPlaylistsCommand}"
+                    Text="Get All Playlists"/>
+
+            <VerticalStackLayout>
+                <Label Text="Playlists:"
+            FontAttributes="Bold"
+            FontSize="24" />
+
+                <CollectionView ItemsSource="{Binding Playlists}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout>
+                                <Button Text="{Binding Name}"
+                                        FontSize="20"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:PlaylistPageViewModel}}, Path=ToggleExpandCommand}"
+                                        CommandParameter="{Binding}" />
+
+                                <StackLayout IsVisible="{Binding IsExpanded}">
+                                    <VerticalStackLayout>
+                                        <CollectionView ItemsSource="{Binding Songs}">
+                                            <CollectionView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <VerticalStackLayout>
+                                                        <Label Text="{Binding Name}" Margin="15,0,0,0" FontSize="20" />
+                                                        <Label Text="{Binding Artist, StringFormat='Artist: {0}'}" Margin="15,0,0,0" FontSize="16" />
+                                                        <Label Text="{Binding Album, StringFormat='Album: {0}'}" Margin="15,0,0,0" FontSize="16" />
+                                                        <Label Text="{Binding Path, StringFormat='Path: {0}'}" Margin="15,0,0,0" FontSize="16" />
+                                                    </VerticalStackLayout>
+                                                </DataTemplate>
+                                            </CollectionView.ItemTemplate>
+                                        </CollectionView>
+
+                                        <Button Command="{Binding PlayPlaylistCommand, Source={RelativeSource AncestorType={x:Type local:PlaylistPageViewModel}}}"
+                                                CommandParameter="{Binding}"
+                                                Text="▶ Play"
+                                                HorizontalOptions="Start"
+                                                Padding="10" />
+                                    </VerticalStackLayout>
+                                </StackLayout>
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
