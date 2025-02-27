@@ -13,15 +13,13 @@ public partial class MainPageViewModel : ObservableObject
     public MainPageViewModel(IPlayerContext playerContext)
     {
         _context = playerContext;
+        LoadSongs();
     }
 
-    [RelayCommand]
-    public async Task GetAllSongs()
+    private void LoadSongs()
     {
         AllSongsList.Clear();
-        if (_context.CurrentService == null) return;
-        List<SongModel> newSongsList = (await _context.CurrentService.GetAllSongsAsync()).ToList();
-        foreach (var song in newSongsList)
+        foreach (var song in _context.Songs)
         {
             AllSongsList.Add(song);
         }
@@ -32,5 +30,23 @@ public partial class MainPageViewModel : ObservableObject
     {
         if (_context.CurrentService == null) return;
         await _context.CurrentService.PlaySongAsync(songId);
+    }
+
+    [RelayCommand]
+    public async Task NavigateToStart()
+    {
+        await Shell.Current.GoToAsync("///StartPage");
+    }
+
+    [RelayCommand]
+    public async Task NavigateToEditor()
+    {
+        await Shell.Current.GoToAsync("///ChangeMetadata");
+    }
+
+    [RelayCommand]
+    public async Task NavigateToPlaylist()
+    {
+        await Shell.Current.GoToAsync("///PlaylistPage");
     }
 }

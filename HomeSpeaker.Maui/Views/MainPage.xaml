@@ -5,16 +5,29 @@
              x:Class="HomeSpeaker.Maui.Views.MainPage">
 
     <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
+        <VerticalStackLayout Padding="12"
+                             MaximumWidthRequest="500"
+                             Spacing="12">
+
+            <HorizontalStackLayout Spacing="10"
+                                   HorizontalOptions="Start">
+                <Button Text="Home"
+                        Command="{Binding NavigateToStartCommand}"
+                        HorizontalOptions="Start"
+                        Padding="10,5,10,5" />
+                <Button Text="Edit"
+                        Command="{Binding NavigateToEditorCommand}"
+                        HorizontalOptions="Start"
+                        Padding="10,5,10,5" />
+                <Button Text="Playlists"
+                        Command="{Binding NavigateToPlaylistCommand}"
+                        HorizontalOptions="Start"
+                        Padding="10,5,10,5" />
+            </HorizontalStackLayout>
 
             <Label Text="HomeSpeaker Music Player" 
                    FontSize="30" 
                    HorizontalOptions="Center" />
-
-            <Button Command="{Binding GetAllSongsCommand}" 
-                    Text="Get All Songs" />
 
             <VerticalStackLayout>
                 <Label Text="List of Songs:"
@@ -43,7 +56,8 @@
                                         CommandParameter="{Binding SongId}"
                                         Text="▶ Play"
                                         HorizontalOptions="Start"
-                                        Padding="10" />
+                                        FontSize="16"
+                                        Padding="15,5,10,5" />
 
                             </VerticalStackLayout>
                         </DataTemplate>

@@ -5,11 +5,21 @@
              x:Class="HomeSpeaker.Maui.Views.PlaylistPage">
 
     <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <Button Command="{Binding GetAllPlaylistsCommand}"
-                    Text="Get All Playlists"/>
+        <VerticalStackLayout Padding="12"
+                             MaximumWidthRequest="500"
+                             Spacing="12">
+
+            <HorizontalStackLayout Spacing="10"
+                                   HorizontalOptions="Start">
+                <Button Text="MainPage"
+                        Command="{Binding NavigateToMainPageCommand}"
+                        HorizontalOptions="Start"
+                        Padding="10,5,10,5" />
+                <Button Text="Get Playlists"
+                        Command="{Binding GetAllPlaylistsCommand}"
+                        HorizontalOptions="Start"
+                        Padding="10,5,10,5" />
+            </HorizontalStackLayout>
 
             <VerticalStackLayout>
                 <Label Text="Playlists:"

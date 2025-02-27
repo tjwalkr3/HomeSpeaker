@@ -1,23 +1,31 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using HomeSpeaker.Maui.Models;
 using HomeSpeaker.Maui.Services;
-using System.Buffers.Text;
+using HomeSpeaker.Shared;
 using System.Collections.ObjectModel;
-using System.Xml.Linq;
 namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class StartPageViewModel : ObservableObject
 {
     [ObservableProperty]
-    private string _baseUrl = string.Empty;
-    
+    private string _baseUrl = "https://localhost:7238";
+
     public ObservableCollection<string> Servers { get; } = [];
 
     private readonly IPlayerContext _context;
     public StartPageViewModel(IPlayerContext playerContext)
     {
         _context = playerContext;
+        LoadServers();
+    }
+
+    private void LoadServers()
+    {
+        Servers.Clear();
+        foreach (var server in _context.Services)
+        {
+            Servers.Add(server.ServerAddress);
+        }
     }
 
     public bool NewServerValid()
@@ -47,5 +55,10 @@ public partial class StartPageViewModel : ObservableObject
     {
         await _context.SetCurrentService(baseURL);
         await Shell.Current.GoToAsync("///MainPage");
+    }
+
+    private void ResetValue()
+    {
+        BaseUrl = string.Empty;
     }
 }

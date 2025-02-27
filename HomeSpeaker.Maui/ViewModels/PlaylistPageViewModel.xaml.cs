@@ -44,4 +44,10 @@ public partial class PlaylistPageViewModel : ObservableObject
             playlist.IsExpanded = !playlist.IsExpanded;
         }
     }
+
+    [RelayCommand]
+    public async Task NavigateToMainPage()
+    {
+        await Shell.Current.GoToAsync("///MainPage");
+    }
 }

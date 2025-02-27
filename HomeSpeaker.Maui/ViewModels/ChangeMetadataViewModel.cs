@@ -28,15 +28,13 @@ public partial class ChangeMetadataViewModel : ObservableObject
     public ChangeMetadataViewModel(IPlayerContext playerContext)
     {
         _context = playerContext;
+        LoadSongs();
     }
 
-    [RelayCommand]
-    public async Task GetAllSongs()
+    private void LoadSongs()
     {
         AllSongsList.Clear();
-        if (_context.CurrentService == null) return;
-        List<SongModel> newSongsList = (await _context.CurrentService.GetAllSongsAsync()).ToList();
-        foreach (var song in newSongsList)
+        foreach (var song in _context.Songs)
         {
             AllSongsList.Add(song);
         }
@@ -66,5 +64,11 @@ public partial class ChangeMetadataViewModel : ObservableObject
         SongName = string.Empty;
         Artist = string.Empty;
         Album = string.Empty;
+    }
+
+    [RelayCommand]
+    public async Task NavigateToMainPage()
+    {
+        await Shell.Current.GoToAsync("///MainPage");
     }
 }
