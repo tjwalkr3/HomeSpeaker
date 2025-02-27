@@ -4,20 +4,23 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:HomeSpeaker.Maui.Views"
-    Shell.FlyoutBehavior="Flyout"
-    Title="HomeSpeaker.Maui">
+    Shell.FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="False" >
 
     <ShellContent
-        Title="Home"
+        Title="Start Page"
+        ContentTemplate="{DataTemplate local:StartPage}"
+        Route="StartPage" />
+    <ShellContent
+        Title="Main Page"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
     <ShellContent
-    Title="Change Metadata"
-    ContentTemplate="{DataTemplate local:ChangeMetadata}"
-    Route="ChangeMetadata" />
+        Title="Change Metadata"
+        ContentTemplate="{DataTemplate local:ChangeMetadata}"
+        Route="ChangeMetadata" />
     <ShellContent
-    Title="Playlists"
-    ContentTemplate="{DataTemplate local:PlaylistPage}"
-    Route="PlaylistPage" />
-
+        Title="Edit Playlists"
+        ContentTemplate="{DataTemplate local:PlaylistPage}"
+        Route="PlaylistPage" />
 </Shell>

@@ -30,6 +30,7 @@ namespace HomeSpeaker.Maui
 
         private static MauiAppBuilder RegisterViews(this MauiAppBuilder builder)
         {
+            builder.Services.AddTransient<StartPage>();
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<ChangeMetadata>();
             builder.Services.AddTransient<PlaylistPage>();
@@ -38,6 +39,7 @@ namespace HomeSpeaker.Maui
 
         private static MauiAppBuilder RegisterViewModels(this MauiAppBuilder builder)
         {
+            builder.Services.AddTransient<StartPageViewModel>();
             builder.Services.AddTransient<MainPageViewModel>();
             builder.Services.AddTransient<ChangeMetadataViewModel>();
             builder.Services.AddTransient<PlaylistPageViewModel>();
@@ -46,7 +48,7 @@ namespace HomeSpeaker.Maui
 
         private static MauiAppBuilder RegisterServices(this MauiAppBuilder builder)
         {
-            builder.Services.AddSingleton<IMauiHomeSpeakerService, MauiHomeSpeakerService>();
+            builder.Services.AddSingleton<IPlayerContext, PlayerContext>();
             return builder;
         }
     }

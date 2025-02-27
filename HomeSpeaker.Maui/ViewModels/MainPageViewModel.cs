@@ -5,16 +5,21 @@ using HomeSpeaker.Maui.Models;
 using System.Collections.ObjectModel;
 namespace HomeSpeaker.Maui.ViewModels;
 
-public partial class MainPageViewModel(IMauiHomeSpeakerService hsService) : ObservableObject
+public partial class MainPageViewModel : ObservableObject
 {
     public ObservableCollection<SongModel> AllSongsList { get; } = [];
 
-    [RelayCommand]
-    public async Task GetAllSongs()
+    private readonly IPlayerContext _context;
+    public MainPageViewModel(IPlayerContext playerContext)
     {
-        List<SongModel> newSongsList = (await hsService.GetAllSongsAsync()).ToList();
+        _context = playerContext;
+        LoadSongs();
+    }
+
+    private void LoadSongs()
+    {
         AllSongsList.Clear();
-        foreach (var song in newSongsList)
+        foreach (var song in _context.Songs)
         {
             AllSongsList.Add(song);
         }
@@ -23,6 +28,25 @@ public partial class MainPageViewModel(IMauiHomeSpeakerService hsService) : Obse
     [RelayCommand]
     public async Task PlaySong(int songId)
     {
-        await hsService.PlaySongAsync(songId);
+        if (_context.CurrentService == null) return;
+        await _context.CurrentService.PlaySongAsync(songId);
+    }
+
+    [RelayCommand]
+    public async Task NavigateToStart()
+    {
+        await Shell.Current.GoToAsync("///StartPage");
+    }
+
+    [RelayCommand]
+    public async Task NavigateToEditor()
+    {
+        await Shell.Current.GoToAsync("///ChangeMetadata");
+    }
+
+    [RelayCommand]
+    public async Task NavigateToPlaylist()
+    {
+        await Shell.Current.GoToAsync("///PlaylistPage");
     }
 }
