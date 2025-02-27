@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:HomeSpeaker.Maui.ViewModels"
+             x:Class="HomeSpeaker.Maui.Views.StartPage"
+             Title="StartPage">
+    <VerticalStackLayout>
+        <Label Text="HomeSpeaker"
+               HorizontalOptions="Center" 
+               FontAttributes="Bold"
+               FontSize="36" />
+
+        <VerticalStackLayout Spacing="10">
+            <Label Text="Base Url:"
+                       FontSize="24" 
+                       FontAttributes="Bold"/>
+            <Entry Text="{Binding BaseUrl}"
+                       Placeholder="https://localhost:7238"
+                       FontSize="20" />
+        </VerticalStackLayout>
+
+        <Button Text="Add New Server"
+                    Command="{Binding AddNewServerCommand}"
+                    FontSize="24" 
+                    FontAttributes="Bold" />
+
+        <VerticalStackLayout>
+            <Label Text="List of Servers:"
+                       FontAttributes="Bold"
+                       FontSize="24" />
+
+            <CollectionView ItemsSource="{Binding Servers}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Button Command="{Binding StartControllingCommand, 
+                                                  Source={RelativeSource AncestorType={x:Type local:StartPageViewModel}}}"
+                                CommandParameter="{Binding .}"
+                                Text="{Binding .}"
+                                HorizontalOptions="Start"
+                                Padding="10" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

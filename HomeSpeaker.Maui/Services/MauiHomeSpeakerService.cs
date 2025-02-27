@@ -16,19 +16,23 @@ public class MauiHomeSpeakerService : IMauiHomeSpeakerService
     public event EventHandler<string>? StatusChanged;
     private readonly ILogger<MauiHomeSpeakerService> logger;
     readonly char[] separators = ['/', '\\'];
+    public string ServerAddress { get; private set; }
 
-    public MauiHomeSpeakerService(ILogger<MauiHomeSpeakerService> logger)
+    public MauiHomeSpeakerService(string serverAddress = "https://localhost:7238")
     {
-        string address = "https://localhost:7238";
-        logger.LogInformation("I'll use this address: {address}", address);
+        ServerAddress = serverAddress;
+        logger = LoggerFactory
+            .Create(builder => builder.AddConsole())
+            .CreateLogger<MauiHomeSpeakerService>();
 
-        var channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions
+        logger.LogInformation("I'll use this address: {address}", ServerAddress);
+
+        var channel = GrpcChannel.ForAddress(ServerAddress, new GrpcChannelOptions
         {
             HttpHandler = new GrpcWebHandler(new HttpClientHandler())
         });
 
         client = new HomeSpeakerClient(channel);
-        this.logger = logger;
         _ = listenForEvents();
     }
 
