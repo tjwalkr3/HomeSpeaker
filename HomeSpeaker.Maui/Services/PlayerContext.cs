@@ -4,7 +4,7 @@ namespace HomeSpeaker.Maui.Services;
 
 public class PlayerContext : IPlayerContext
 {
-    public List<MauiHomeSpeakerService> Services { get; private set; } = [];
+    public List<IMauiHomeSpeakerService> Services { get; private set; } = [];
     public IMauiHomeSpeakerService? CurrentService { get; private set; }
     public List<SongModel> Songs { get; private set; } = [];
 
@@ -16,9 +16,17 @@ public class PlayerContext : IPlayerContext
         await SyncSongs();
     }
 
+    // Use this method for testing purposes
+    public async Task AddService(IMauiHomeSpeakerService newService)
+    {
+        Services.Add(newService);
+        CurrentService = newService;
+        await SyncSongs();
+    }
+
     public async Task SetCurrentService(string serverAddress)
     {
-        MauiHomeSpeakerService? service = Services.FirstOrDefault(s => s.ServerAddress == serverAddress);
+        IMauiHomeSpeakerService? service = Services.FirstOrDefault(s => s.ServerAddress == serverAddress);
         if (service is null)
         {
             throw new Exception("Service not found");

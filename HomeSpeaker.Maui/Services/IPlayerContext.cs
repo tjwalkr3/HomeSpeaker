@@ -5,7 +5,7 @@ namespace HomeSpeaker.Maui.Services
     public interface IPlayerContext
     {
         IMauiHomeSpeakerService? CurrentService { get; }
-        List<MauiHomeSpeakerService> Services { get; }
+        List<IMauiHomeSpeakerService> Services { get; }
         List<SongModel> Songs { get; }
 
         Task AddService(string serverAddress);

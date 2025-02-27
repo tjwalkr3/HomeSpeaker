@@ -5,9 +5,10 @@ namespace HomeSpeaker.Maui.Services
 {
     public interface IMauiHomeSpeakerService
     {
+        string ServerAddress { get; }
         IEnumerable<SongMessage> Songs { get; }
 
-        event EventHandler QueueChanged;
+        event EventHandler? QueueChanged;
         event EventHandler<string>? StatusChanged;
 
         Task AddToPlaylistAsync(string playlistName, string songPath);
