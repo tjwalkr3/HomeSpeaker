@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeSpeaker.Maui\HomeSpeaker.Maui.csproj" />
+    <ProjectReference Include="..\HomeSpeaker.Shared\HomeSpeaker.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

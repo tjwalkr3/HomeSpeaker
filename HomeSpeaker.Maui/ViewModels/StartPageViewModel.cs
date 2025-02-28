@@ -42,6 +42,11 @@ public partial class StartPageViewModel : ObservableObject
         }
     }
 
+    private void OnBaseUrlChanged()
+    {
+        AddNewServerCommand.NotifyCanExecuteChanged();
+    }
+
     [RelayCommand(CanExecute = nameof(NewServerValid))]
     public async Task AddNewServer()
     {
