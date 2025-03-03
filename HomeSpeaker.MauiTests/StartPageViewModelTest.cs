@@ -6,13 +6,15 @@ namespace HomeSpeaker.MauiTests;
 public class StartPageViewModelTests
 {
     [Fact]
-    public void CreateViewModel()
+    public void TestCreateViewModel()
     {
         // Arrange
-        PlayerContext context = new();
+        var context = Substitute.For<IPlayerContext>();
+        context.Services.Returns([]);
+        var navigationService = Substitute.For<INavigationService>();
 
         // Act
-        var viewModel = new StartPageViewModel(context);
+        var viewModel = new StartPageViewModel(context, navigationService);
 
         // Assert
         Assert.NotNull(viewModel);
@@ -24,7 +26,8 @@ public class StartPageViewModelTests
         // Arrange
         int eventFiredCount = 0;
         PlayerContext context = new();
-        var viewModel = new StartPageViewModel(context);
+        var navigationService = Substitute.For<INavigationService>();
+        var viewModel = new StartPageViewModel(context, navigationService);
         viewModel.BaseUrl = "";
 
         viewModel.PropertyChanged += (sender, args) =>
@@ -41,5 +44,58 @@ public class StartPageViewModelTests
 
         // Assert
         Assert.Equal(1, eventFiredCount);
+    }
+
+    [Fact]
+    public void TestNewServerValid()
+    {
+        // Arrange
+        var context = Substitute.For<IPlayerContext>();
+        context.Services.Returns([]);
+        var navigationService = Substitute.For<INavigationService>();
+        var viewModel = new StartPageViewModel(context, navigationService);
+
+        // Act
+        viewModel.BaseUrl = "https://testURL.com:8085";
+
+        // Assert
+        Assert.True(viewModel.NewServerValid());
+    }
+
+    [Fact]
+    public async Task TestAddServer()
+    {
+        // Arrange
+        var context = Substitute.For<IPlayerContext>();
+        context.Services.Returns([]);
+        var navigationService = Substitute.For<INavigationService>();
+        var viewModel = new StartPageViewModel(context, navigationService);
+        viewModel.BaseUrl = "https://testURL.com:8085";
+
+        // Act
+        await viewModel.AddNewServerCommand.ExecuteAsync(null);
+
+        // Assert
+        await context.Received().AddService(Arg.Is<string>(x => x == "https://testURL.com:8085"));
+        Assert.Contains("https://testURL.com:8085", viewModel.Servers);
+    }
+
+    [Fact]
+    public async Task StartControlling()
+    {
+        // Arrange
+        var context = Substitute.For<IPlayerContext>();
+        context.Services.Returns([]);
+        var navigationService = Substitute.For<INavigationService>();
+        var viewModel = new StartPageViewModel(context, navigationService);
+        viewModel.BaseUrl = "https://testURL.com:8085";
+
+        // Act
+        await viewModel.AddNewServerCommand.ExecuteAsync(null);
+        await viewModel.StartControlling("https://testURL.com:8085");
+
+        // Assert
+        await context.Received().SetCurrentService(Arg.Is<string>(x => x == "https://testURL.com:8085"));
+        await navigationService.Received().GoToAsync(Arg.Is<string>(x => x == "///MainPage"));
     }
 }

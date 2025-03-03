@@ -10,13 +10,16 @@ public partial class MainPageViewModel : ObservableObject
     public ObservableCollection<SongModel> AllSongsList { get; } = [];
 
     private readonly IPlayerContext _context;
-    public MainPageViewModel(IPlayerContext playerContext)
+    private readonly INavigationService _navigationService;
+    
+    public MainPageViewModel(IPlayerContext playerContext, INavigationService navigationService)
     {
-        _context = playerContext;
+        _context = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
         LoadSongs();
     }
 
-    private void LoadSongs()
+    public void LoadSongs()
     {
         AllSongsList.Clear();
         foreach (var song in _context.Songs)
@@ -26,27 +29,27 @@ public partial class MainPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task PlaySong(int songId)
+    private async Task PlaySong(int songId)
     {
         if (_context.CurrentService == null) return;
         await _context.CurrentService.PlaySongAsync(songId);
     }
 
     [RelayCommand]
-    public async Task NavigateToStart()
+    private async Task NavigateToStart()
     {
-        await Shell.Current.GoToAsync("///StartPage");
+        await _navigationService.GoToAsync("///StartPage");
     }
 
     [RelayCommand]
-    public async Task NavigateToEditor()
+    private async Task NavigateToEditor()
     {
-        await Shell.Current.GoToAsync("///ChangeMetadata");
+        await _navigationService.GoToAsync("///ChangeMetadata");
     }
 
     [RelayCommand]
-    public async Task NavigateToPlaylist()
+    private async Task NavigateToPlaylist()
     {
-        await Shell.Current.GoToAsync("///PlaylistPage");
+        await _navigationService.GoToAsync("///PlaylistPage");
     }
 }

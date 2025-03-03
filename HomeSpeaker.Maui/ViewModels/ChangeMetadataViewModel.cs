@@ -25,13 +25,16 @@ public partial class ChangeMetadataViewModel : ObservableObject
     string album = string.Empty;
 
     private readonly IPlayerContext _context;
-    public ChangeMetadataViewModel(IPlayerContext playerContext)
+    private readonly INavigationService _navigationService;
+
+    public ChangeMetadataViewModel(IPlayerContext playerContext, INavigationService navigationService)
     {
-        _context = playerContext;
+        _context = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
         LoadSongs();
     }
 
-    private void LoadSongs()
+    public void LoadSongs()
     {
         AllSongsList.Clear();
         foreach (var song in _context.Songs)
@@ -41,7 +44,7 @@ public partial class ChangeMetadataViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task UpdateMetadata()
+    private async Task UpdateMetadata()
     {
         if (SelectedSong == null || _context.CurrentService == null)
             return;
@@ -67,8 +70,8 @@ public partial class ChangeMetadataViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task NavigateToMainPage()
+    private async Task NavigateToMainPage()
     {
-        await Shell.Current.GoToAsync("///MainPage");
+        await _navigationService.GoToAsync("///MainPage");
     }
 }

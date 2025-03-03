@@ -49,6 +49,7 @@ namespace HomeSpeaker.Maui
         private static MauiAppBuilder RegisterServices(this MauiAppBuilder builder)
         {
             builder.Services.AddSingleton<IPlayerContext, PlayerContext>();
+            builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
             return builder;
         }
     }
