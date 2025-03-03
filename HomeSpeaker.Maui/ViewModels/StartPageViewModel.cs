@@ -13,9 +13,12 @@ public partial class StartPageViewModel : ObservableObject
     public ObservableCollection<string> Servers { get; } = [];
 
     private readonly IPlayerContext _context;
-    public StartPageViewModel(IPlayerContext playerContext)
+    private readonly INavigationService _navigationService;
+
+    public StartPageViewModel(IPlayerContext playerContext, INavigationService navigationService)
     {
-        _context = playerContext;
+        _context = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
         LoadServers();
     }
 
@@ -31,7 +34,7 @@ public partial class StartPageViewModel : ObservableObject
     public bool NewServerValid()
     {
         Uri? uriResult;
-        if (Uri.TryCreate(BaseUrl, UriKind.Absolute, out uriResult) && uriResult != null &&
+        if (Uri.TryCreate(BaseUrl, UriKind.Absolute, out uriResult) && uriResult is not null &&
            (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
         {
             return true;
@@ -59,7 +62,7 @@ public partial class StartPageViewModel : ObservableObject
     public async Task StartControlling(string baseURL)
     {
         await _context.SetCurrentService(baseURL);
-        await Shell.Current.GoToAsync("///MainPage");
+        await _navigationService.GoToAsync("///MainPage");
     }
 
     private void ResetValue()

@@ -11,13 +11,16 @@ public partial class PlaylistPageViewModel : ObservableObject
     public ObservableCollection<Playlist> Playlists { get; private set; } = new();
 
     private readonly IPlayerContext _context;
-    public PlaylistPageViewModel(IPlayerContext playerContext)
+    private readonly INavigationService _navigationService;
+
+    public PlaylistPageViewModel(IPlayerContext playerContext, INavigationService navigationService)
     {
-        _context = playerContext;
+        _context = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
     }
 
     [RelayCommand]
-    public async Task GetAllPlaylists()
+    private async Task GetAllPlaylists()
     {
         Playlists.Clear();
         if (_context.CurrentService == null) return;
@@ -30,7 +33,7 @@ public partial class PlaylistPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task PlayPlaylist(Playlist playlist)
+    private async Task PlayPlaylist(Playlist playlist)
     {
         if (_context.CurrentService == null) return;
         await _context.CurrentService!.PlayPlaylistAsync(playlist.Name);
@@ -46,8 +49,8 @@ public partial class PlaylistPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task NavigateToMainPage()
+    private async Task NavigateToMainPage()
     {
-        await Shell.Current.GoToAsync("///MainPage");
+        await _navigationService.GoToAsync("///MainPage");
     }
 }
