@@ -9,7 +9,10 @@ public partial class Playlist : ObservableObject
     public IEnumerable<Song> Songs { get; }
 
     [ObservableProperty]
-    private bool isExpanded;
+    private bool _isExpanded;
+
+    [ObservableProperty]
+    private bool _isExpanded2;
 
     public Playlist(string name, IEnumerable<Song> songs)
     {
