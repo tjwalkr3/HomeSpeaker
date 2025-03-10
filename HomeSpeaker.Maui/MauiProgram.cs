@@ -2,6 +2,7 @@
 using HomeSpeaker.Maui.Views;
 using HomeSpeaker.Maui.ViewModels;
 using HomeSpeaker.Maui.Services;
+using CommunityToolkit.Maui;
 
 namespace HomeSpeaker.Maui
 {
@@ -11,6 +12,7 @@ namespace HomeSpeaker.Maui
         {
             var builder = MauiApp.CreateBuilder();
             builder
+                .UseMauiCommunityToolkit()
                 .UseMauiApp<App>()
                 .RegisterServices()
                 .RegisterViewModels()
