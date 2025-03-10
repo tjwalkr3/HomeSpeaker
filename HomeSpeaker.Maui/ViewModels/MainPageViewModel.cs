@@ -3,20 +3,28 @@ using CommunityToolkit.Mvvm.Input;
 using HomeSpeaker.Maui.Services;
 using HomeSpeaker.Maui.Models;
 using System.Collections.ObjectModel;
+using System.Linq;
+
 namespace HomeSpeaker.Maui.ViewModels;
 
 public partial class MainPageViewModel : ObservableObject
 {
-    public ObservableCollection<SongModel> AllSongsList { get; } = [];
+    public ObservableCollection<SongModel> AllSongsList { get; } = new();
+    public ObservableCollection<SongModel> FilteredSongsList { get; } = new();
 
     private readonly IPlayerContext _context;
     private readonly INavigationService _navigationService;
-    
+
+    [ObservableProperty]
+    private string searchQuery = string.Empty;
+
     public MainPageViewModel(IPlayerContext playerContext, INavigationService navigationService)
     {
         _context = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
         _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+
         LoadSongs();
+        FilterSongs();
     }
 
     public void LoadSongs()
@@ -25,6 +33,28 @@ public partial class MainPageViewModel : ObservableObject
         foreach (var song in _context.Songs)
         {
             AllSongsList.Add(song);
+        }
+        FilterSongs();
+    }
+
+    partial void OnSearchQueryChanged(string value)
+    {
+        FilterSongs();
+    }
+
+    private void FilterSongs()
+    {
+        FilteredSongsList.Clear();
+
+        var filtered = string.IsNullOrWhiteSpace(SearchQuery)
+            ? AllSongsList.ToList()
+            : AllSongsList
+                .Where(song => song.Name.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+        foreach (var song in filtered)
+        {
+            FilteredSongsList.Add(song);
         }
     }
 

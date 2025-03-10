@@ -13,15 +13,12 @@
                                    HorizontalOptions="Start">
                 <Button Text="Home"
                         Command="{Binding NavigateToStartCommand}"
-                        HorizontalOptions="Start"
                         Padding="10,5,10,5" />
                 <Button Text="Edit"
                         Command="{Binding NavigateToEditorCommand}"
-                        HorizontalOptions="Start"
                         Padding="10,5,10,5" />
                 <Button Text="Playlists"
                         Command="{Binding NavigateToPlaylistCommand}"
-                        HorizontalOptions="Start"
                         Padding="10,5,10,5" />
             </HorizontalStackLayout>
 
@@ -29,12 +26,18 @@
                    FontSize="30" 
                    HorizontalOptions="Center" />
 
+            <!-- Search Bar for filtering songs -->
+            <SearchBar Placeholder="Search songs..."
+                       Text="{Binding SearchQuery, Mode=TwoWay}"
+                       FontSize="18"
+                       Margin="0,10" />
+
             <VerticalStackLayout>
                 <Label Text="List of Songs:"
                        FontAttributes="Bold"
                        FontSize="24" />
 
-                <CollectionView ItemsSource="{Binding AllSongsList}">
+                <CollectionView ItemsSource="{Binding FilteredSongsList}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <VerticalStackLayout>
@@ -50,7 +53,6 @@
                                 <Label Text="{Binding Path, StringFormat='Path: {0}'}"
                                        Margin="15,0,0,0"
                                        FontSize="16" />
-
                                 <Button Command="{Binding PlaySongCommand, 
                                                           Source={RelativeSource AncestorType={x:Type local:MainPageViewModel}}}"
                                         CommandParameter="{Binding SongId}"
@@ -58,7 +60,6 @@
                                         HorizontalOptions="Start"
                                         FontSize="16"
                                         Padding="15,5,10,5" />
-
                             </VerticalStackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
