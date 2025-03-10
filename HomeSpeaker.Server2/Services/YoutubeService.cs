@@ -4,6 +4,7 @@ using TagLib;
 using YoutubeExplode;
 using YoutubeExplode.Common;
 using YoutubeExplode.Converter;
+using YoutubeExplode.Playlists;
 using YoutubeExplode.Search;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
@@ -81,6 +82,8 @@ public class YoutubeService
         logger.LogInformation("Finished caching {title}.  Saved to {destination}", title, destinationPath);
     }
 }
+
+
 
 public record VideoDto(string Title, string Id, string Url, string? Thumbnail, string? Author, TimeSpan? Duration);
 

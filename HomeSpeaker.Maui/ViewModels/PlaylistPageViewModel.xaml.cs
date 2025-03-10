@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HomeSpeaker.Maui.Services;
@@ -12,6 +13,7 @@ public partial class PlaylistPageViewModel : ObservableObject
 
     private readonly IPlayerContext _context;
     private readonly INavigationService _navigationService;
+
 
     public PlaylistPageViewModel(IPlayerContext playerContext, INavigationService navigationService)
     {
@@ -28,6 +30,7 @@ public partial class PlaylistPageViewModel : ObservableObject
         var playlists = await _context.CurrentService!.GetPlaylistsAsync();
         foreach (var playlist in playlists)
         {
+            playlist.IsExpanded = true;
             Playlists.Add(playlist);
         }
     }
@@ -42,9 +45,26 @@ public partial class PlaylistPageViewModel : ObservableObject
     [RelayCommand]
     private void ToggleExpand(Playlist playlist)
     {
-        if (playlist != null && _context.CurrentService != null)
+        if (playlist.IsExpanded2)
         {
-            playlist.IsExpanded = !playlist.IsExpanded;
+            playlist.IsExpanded2 = false;
+
+            foreach (var p in Playlists)
+            {
+                p.IsExpanded = true;
+            }
+        }
+        else
+        {
+            foreach (var p in Playlists)
+            {
+                if (p != playlist)
+                {
+                    p.IsExpanded = false;
+                }
+            }
+
+            playlist.IsExpanded2 = true;
         }
     }
 
