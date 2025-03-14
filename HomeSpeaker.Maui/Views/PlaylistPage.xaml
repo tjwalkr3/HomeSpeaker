@@ -72,6 +72,10 @@
                                                                    FontSize="16"
                                                                    LineBreakMode="WordWrap"
                                                                    HorizontalOptions="FillAndExpand" />
+                                                        <Button Text="❌ Remove"
+                                                                Command="{Binding RemoveFromPlaylistCommand, Source={RelativeSource AncestorType={x:Type local:PlaylistPageViewModel}}}"
+                                                                WidthRequest="150"
+                                                                HeightRequest="50"/>
                                                     </VerticalStackLayout>
                                                 </DataTemplate>
                                             </CollectionView.ItemTemplate>

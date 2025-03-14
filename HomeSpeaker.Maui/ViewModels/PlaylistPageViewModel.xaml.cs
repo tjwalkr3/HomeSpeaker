@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HomeSpeaker.Maui.Services;
@@ -67,6 +68,28 @@ public partial class PlaylistPageViewModel : ObservableObject
             playlist.IsExpanded2 = true;
         }
     }
+
+    //[RelayCommand]
+    //private void AddSongToPlaylist(Playlist playlist)
+    //{
+    //    if (playlist == null) return;
+
+    //    var newSong = new Song { Name = "New Song", Artist = "Unknown", Album = "Unknown", Path = "Path/to/song.mp3" };
+    //    playlist.Songs.Add(newSong);
+    //}
+
+    [RelayCommand]
+    private async Task RemoveFromPlaylist(Playlist playlist)
+    {
+        if (_context.CurrentService == null || playlist == null) return;
+
+        var songToRemove = playlist.Songs.FirstOrDefault();
+        if (songToRemove == null) return;
+
+        await _context.CurrentService.RemoveFromPlaylistAsync(playlist.Name, songToRemove.Path);
+        playlist.Songs.Remove(songToRemove);
+    }
+
 
     [RelayCommand]
     private async Task NavigateToMainPage()
