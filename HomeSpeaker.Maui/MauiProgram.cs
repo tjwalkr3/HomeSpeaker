@@ -36,6 +36,7 @@ namespace HomeSpeaker.Maui
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<ChangeMetadata>();
             builder.Services.AddTransient<PlaylistPage>();
+            builder.Services.AddTransient<StreamPage>();
             return builder;
         }
 
@@ -45,6 +46,7 @@ namespace HomeSpeaker.Maui
             builder.Services.AddTransient<MainPageViewModel>();
             builder.Services.AddTransient<ChangeMetadataViewModel>();
             builder.Services.AddTransient<PlaylistPageViewModel>();
+            builder.Services.AddTransient<StreamPageViewModel>();
             return builder;
         }
 
