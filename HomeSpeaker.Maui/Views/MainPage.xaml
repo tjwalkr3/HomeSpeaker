@@ -20,6 +20,9 @@
                 <Button Text="Playlists"
                         Command="{Binding NavigateToPlaylistCommand}"
                         Padding="10,5,10,5" />
+                <Button Text="Streams"
+                        Command="{Binding NavigateToStreamCommand}"
+                        Padding="10,5,10,5" />
             </HorizontalStackLayout>
 
             <Label Text="HomeSpeaker Music Player" 

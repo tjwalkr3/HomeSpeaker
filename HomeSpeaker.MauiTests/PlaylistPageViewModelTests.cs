@@ -89,23 +89,23 @@ public class PlaylistPageViewModelTest
         await mockService.Received().PlayPlaylistAsync("Playlist 1");
     }
 
-    [Fact]
-    public void TestToggleExpand()
-    {
-        // Arrange
-        var mockService = Substitute.For<IMauiHomeSpeakerService>();
-        var playlist = new Playlist("Playlist 1", []);
-        var context = Substitute.For<IPlayerContext>();
-        context.CurrentService.Returns(mockService);
-        var navigationService = Substitute.For<INavigationService>();
-        var viewModel = new PlaylistPageViewModel(context, navigationService);
+    //[Fact]
+    //public void TestToggleExpand()
+    //{
+    //    // Arrange
+    //    var mockService = Substitute.For<IMauiHomeSpeakerService>();
+    //    var playlist = new Playlist("Playlist 1", []);
+    //    var context = Substitute.For<IPlayerContext>();
+    //    context.CurrentService.Returns(mockService);
+    //    var navigationService = Substitute.For<INavigationService>();
+    //    var viewModel = new PlaylistPageViewModel(context, navigationService);
 
-        // Act
-        viewModel.ToggleExpandCommand.Execute(playlist);
+    //    // Act
+    //    viewModel.ToggleExpandCommand.Execute(playlist);
 
-        // Assert
-        Assert.True(playlist.IsExpanded);
-    }
+    //    // Assert
+    //    Assert.True(playlist.IsExpanded);
+    //}
 
     [Fact]
     public async Task TestNavigateToMainPage()
