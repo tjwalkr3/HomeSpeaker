@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HomeSpeaker.Maui.Services;
 using HomeSpeaker.Shared;
+using Mopups.Services;
 
 namespace HomeSpeaker.Maui.ViewModels;
 
@@ -69,27 +70,17 @@ public partial class PlaylistPageViewModel : ObservableObject
         }
     }
 
-    //[RelayCommand]
-    //private void AddSongToPlaylist(Playlist playlist)
-    //{
-    //    if (playlist == null) return;
-
-    //    var newSong = new Song { Name = "New Song", Artist = "Unknown", Album = "Unknown", Path = "Path/to/song.mp3" };
-    //    playlist.Songs.Add(newSong);
-    //}
-
     [RelayCommand]
-    private async Task RemoveFromPlaylist(Playlist playlist)
+    private async Task RemoveFromPlaylist(Song song)
     {
-        if (_context.CurrentService == null || playlist == null) return;
+        if (_context.CurrentService == null || song == null) return;
 
-        var songToRemove = playlist.Songs.FirstOrDefault();
-        if (songToRemove == null) return;
+        var playlist = Playlists.FirstOrDefault(p => p.Songs.Contains(song));
+        if (playlist == null) return;
 
-        await _context.CurrentService.RemoveFromPlaylistAsync(playlist.Name, songToRemove.Path);
-        playlist.Songs.Remove(songToRemove);
+        await _context.CurrentService.RemoveFromPlaylistAsync(playlist.Name, song.Path);
+        playlist.Songs.Remove(song);
     }
-
 
     [RelayCommand]
     private async Task NavigateToMainPage()

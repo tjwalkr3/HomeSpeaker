@@ -3,6 +3,7 @@ using HomeSpeaker.Maui.Views;
 using HomeSpeaker.Maui.ViewModels;
 using HomeSpeaker.Maui.Services;
 using CommunityToolkit.Maui;
+using Mopups.Hosting;
 
 namespace HomeSpeaker.Maui
 {
@@ -26,7 +27,7 @@ namespace HomeSpeaker.Maui
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-
+            builder.UseMauiApp<App>().ConfigureMopups();
             return builder.Build();
         }
 
