@@ -44,6 +44,9 @@
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type local:PlaylistPageViewModel}}, Path=ToggleExpandCommand}"
                                             CommandParameter="{Binding}"
                                             IsVisible="{Binding IsExpanded}" />
+                                    <Button Text="➕ Add Song"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:PlaylistPageViewModel}}, Path=OpenSongSelectionPopupCommand}"
+                                            CommandParameter="{Binding}" />
                                 </HorizontalStackLayout>
 
                                 <StackLayout IsVisible="{Binding IsExpanded2}" Grid.Row="1" Grid.Column="0">
@@ -73,7 +76,8 @@
                                                                    LineBreakMode="WordWrap"
                                                                    HorizontalOptions="FillAndExpand" />
                                                         <Button Text="❌ Remove"
-                                                                Command="{Binding RemoveFromPlaylistCommand, Source={RelativeSource AncestorType={x:Type local:PlaylistPageViewModel}}}"
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:PlaylistPageViewModel}}, Path=RemoveFromPlaylistCommand}"
+                                                                CommandParameter="{Binding .}"
                                                                 WidthRequest="150"
                                                                 HeightRequest="50"/>
                                                     </VerticalStackLayout>
