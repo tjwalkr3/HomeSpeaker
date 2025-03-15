@@ -15,13 +15,13 @@
                         Padding="10,5,10,5" />
             </HorizontalStackLayout>
 
-            <Label Text="HomeSpeaker Music Player" 
+            <Label Text="Music Streams" 
                    FontSize="30" 
                    HorizontalOptions="Center" />
 
-            <!-- Search Bar for filtering songs -->
-            <SearchBar Placeholder="Search songs..."
+            <SearchBar Placeholder="Search streams..."
                        Text="{Binding SearchQuery, Mode=TwoWay}"
+                       SearchCommand="{Binding SearchStreamsCommand}"
                        FontSize="18"
                        Margin="0,10" />
 

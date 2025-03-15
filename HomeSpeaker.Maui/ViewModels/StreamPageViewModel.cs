@@ -23,12 +23,7 @@ public partial class StreamPageViewModel : ObservableObject
         _musicStreamService = musicStreamService;
     }
 
-    partial void OnSearchQueryChanged(string value)
-    {
-        SearchStreamsCommand.NotifyCanExecuteChanged();
-    }
-
-    [RelayCommand(CanExecute = nameof(SearchQueryValid))]
+    [RelayCommand]
     private async Task SearchStreams()
     {
         AllStreamsList.Clear();
