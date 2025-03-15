@@ -1,16 +1,16 @@
 ﻿namespace HomeSpeaker.Maui.Services;
 
-public class MusicStreamService
+public class MusicStreamService : IMusicStreamService
 {
-    public Dictionary<string, string> _streams { get; private set; }
+    public Dictionary<string, string> Streams { get; private set; }
 
     public MusicStreamService()
     {
-        _streams = new Dictionary<string, string>
+        Streams = new Dictionary<string, string>
         {
-            {"Church Music Stream", "https://nmcdn-lds.msvdn.net/icecastRelay/101156/GvaVK70/icecast?rnd=637109878513586401"},
-            {"Tabernacle Choir Stream", "https://nmcdn-lds.msvdn.net/icecastRelay/101158/3nGepF3/icecast?rnd=637109879815090752"},
-            {"Canal Espanol", "https://nmcdn-lds.msvdn.net/icecastRelay/101157/V2Pm3WE/icecast?rnd=637109879429639917"},
+            { "Church Music Stream", "https://nmcdn-lds.msvdn.net/icecastRelay/101156/GvaVK70/icecast?rnd=637109878513586401" },
+            { "Tabernacle Choir Stream", "https://nmcdn-lds.msvdn.net/icecastRelay/101158/3nGepF3/icecast?rnd=637109879815090752" },
+            { "Canal Espanol", "https://nmcdn-lds.msvdn.net/icecastRelay/101157/V2Pm3WE/icecast?rnd=637109879429639917" },
             { "KBAQ", "https://kbaq.streamguys1.com/kbaq_mp3_128" },
             { "Your Classical Radio", "https://ycradio.stream.publicradio.org/ycradio.aac" },
             { "YourClassical MPR", "https://cms.stream.publicradio.org/cms.aac" },
@@ -36,11 +36,11 @@ public class MusicStreamService
 
     public bool AddStream(string key, string value)
     {
-        return _streams.TryAdd(key, value);
+        return Streams.TryAdd(key, value);
     }
 
     public bool RemoveStream(string key)
     {
-        return _streams.Remove(key);
+        return Streams.Remove(key);
     }
 }
