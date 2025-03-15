@@ -16,6 +16,8 @@ public class MusicStreamService : IMusicStreamService
         };
     }
 
+    // Copied from the radio browser api examples
+    // https://api.radio-browser.info/examples/serverlist.cs
     private static string GetRadioBrowserApiUrl()
     {
         // Get fastest ip of dns
