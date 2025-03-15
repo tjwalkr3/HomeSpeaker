@@ -2,6 +2,7 @@
 using HomeSpeaker.Maui.Services;
 using NSubstitute;
 using System.Security.Cryptography.X509Certificates;
+using HomeSpeaker.Maui.Models;
 namespace HomeSpeaker.MauiTests;
 
 
@@ -14,7 +15,6 @@ public class StreamPageViewModelTests
         var context = Substitute.For<IPlayerContext>();
         var navigationService = Substitute.For<INavigationService>();
         var musicStreamService = Substitute.For<IMusicStreamService>();
-        musicStreamService.Streams.Returns([]);
 
         // Act
         StreamPageViewModel viewModel = new(context, navigationService, musicStreamService);
@@ -24,70 +24,50 @@ public class StreamPageViewModelTests
     }
 
     [Fact]
-    public void TestSearchStreams_NoPromptReturnsAll()
+    public async Task TestSearchStreams_NoPromptReturnsNothing()
     {
         // Arrange
+        List<StreamModel> listToReturn = [
+            new() { Name = "KBAQ", Url = "https://kbaq.streamguys1.com/kbaq_mp3_128" }
+        ];
         var context = Substitute.For<IPlayerContext>();
         var navigationService = Substitute.For<INavigationService>();
         var musicStreamService = Substitute.For<IMusicStreamService>();
-        musicStreamService.Streams.Returns(
-            new Dictionary<string, string> 
-            { 
-                { "KBAQ", "https://kbaq.streamguys1.com/kbaq_mp3_128" } 
-            });
+        musicStreamService.Search(Arg.Any<string>()).Returns(Task.FromResult(listToReturn));
 
         // Act
         StreamPageViewModel viewModel = new(context, navigationService, musicStreamService);
+        viewModel.SearchQuery = "";
+        await viewModel.SearchStreamsCommand.ExecuteAsync(null);
 
         // Assert
-        Assert.Single(viewModel.FilteredStreamsList);
-        Assert.Equal("KBAQ", viewModel.FilteredStreamsList[0].Name);
-        Assert.Equal("https://kbaq.streamguys1.com/kbaq_mp3_128", viewModel.FilteredStreamsList[0].Url);
+        Assert.Empty(viewModel.AllStreamsList);
     }
 
     [Fact]
-    public void TestSearchStreams_PromptReturnsNothing()
+    public async Task TestSearchStreams_PromptReturnsMultipleStreams()
     {
         // Arrange
+        List<StreamModel> listToReturn = [
+            new() { Name = "KBAQ", Url = "https://kbaq.streamguys1.com/kbaq_mp3_128" },
+            new() { Name = "Madrigals", Url = "https://streams.calmradio.com:14228/stream" }
+        ];
         var context = Substitute.For<IPlayerContext>();
         var navigationService = Substitute.For<INavigationService>();
         var musicStreamService = Substitute.For<IMusicStreamService>();
-        musicStreamService.Streams.Returns(
-            new Dictionary<string, string>
-            {
-                { "KBAQ", "https://kbaq.streamguys1.com/kbaq_mp3_128" }
-            });
-
-        // Act
-        StreamPageViewModel viewModel = new(context, navigationService, musicStreamService);
-        viewModel.SearchQuery = "12";
-
-        // Assert
-        Assert.Empty(viewModel.FilteredStreamsList);
-    }
-
-    [Fact]
-    public void TestSearchStreams_PromptReturnsCorrectStream()
-    {
-        // Arrange
-        var context = Substitute.For<IPlayerContext>();
-        var navigationService = Substitute.For<INavigationService>();
-        var musicStreamService = Substitute.For<IMusicStreamService>();
-        musicStreamService.Streams.Returns(
-            new Dictionary<string, string>
-            {
-                { "KBAQ", "https://kbaq.streamguys1.com/kbaq_mp3_128" },
-                { "Madrigals", "https://streams.calmradio.com:14228/stream" }
-            });
+        musicStreamService.Search(Arg.Any<string>()).Returns(Task.FromResult(listToReturn));
 
         // Act
         StreamPageViewModel viewModel = new(context, navigationService, musicStreamService);
         viewModel.SearchQuery = "KB";
+        await viewModel.SearchStreamsCommand.ExecuteAsync(null);
 
         // Assert
-        Assert.Single(viewModel.FilteredStreamsList);
-        Assert.Equal("KBAQ", viewModel.FilteredStreamsList[0].Name);
-        Assert.Equal("https://kbaq.streamguys1.com/kbaq_mp3_128", viewModel.FilteredStreamsList[0].Url);
+        Assert.Equal(2, viewModel.AllStreamsList.Count);
+        Assert.Equal("KBAQ", viewModel.AllStreamsList[0].Name);
+        Assert.Equal("https://kbaq.streamguys1.com/kbaq_mp3_128", viewModel.AllStreamsList[0].Url);
+        Assert.Equal("Madrigals", viewModel.AllStreamsList[1].Name);
+        Assert.Equal("https://streams.calmradio.com:14228/stream", viewModel.AllStreamsList[1].Url);
     }
 }
 

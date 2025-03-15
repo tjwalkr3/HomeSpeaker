@@ -1,6 +1,5 @@
-using HomeSpeaker.Maui.ViewModels;
-
 namespace HomeSpeaker.Maui.Views;
+using HomeSpeaker.Maui.ViewModels;
 
 public partial class StreamPage : ContentPage
 {

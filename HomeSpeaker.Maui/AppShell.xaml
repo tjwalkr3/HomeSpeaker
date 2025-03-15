@@ -23,4 +23,8 @@
         Title="Edit Playlists"
         ContentTemplate="{DataTemplate local:PlaylistPage}"
         Route="PlaylistPage" />
+    <ShellContent
+        Title="Streams"
+        ContentTemplate="{DataTemplate local:StreamPage}"
+        Route="StreamPage" />
 </Shell>

@@ -82,4 +82,10 @@ public partial class MainPageViewModel : ObservableObject
     {
         await _navigationService.GoToAsync("///PlaylistPage");
     }
+
+    [RelayCommand]
+    private async Task NavigateToStream()
+    {
+        await _navigationService.GoToAsync("///StreamPage");
+    }
 }

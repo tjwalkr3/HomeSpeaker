@@ -54,6 +54,7 @@ namespace HomeSpeaker.Maui
         {
             builder.Services.AddSingleton<IPlayerContext, PlayerContext>();
             builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
+            builder.Services.AddSingleton<IMusicStreamService, MusicStreamService>();
             return builder;
         }
     }
