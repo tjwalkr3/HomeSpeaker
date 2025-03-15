@@ -8,8 +8,8 @@ namespace HomeSpeaker.Server;
 
 public class WindowsMusicPlayer : IMusicPlayer
 {
+    //const string vlc = @"C:\Program Files\VideoLAN\VLC\vlc.exe";
     const string vlc = @"C:\Program Files (x86)\VideoLAN\VLC\vlc.exe";
-    //const string vlc = @"C:\Program Files (x86)\VideoLAN\VLC\vlc.exe";
     private readonly ILogger<WindowsMusicPlayer> logger;
     private readonly Mp3Library library;
     private Process? playerProcess;
