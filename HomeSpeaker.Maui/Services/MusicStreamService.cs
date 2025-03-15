@@ -49,7 +49,7 @@ public class MusicStreamService : IMusicStreamService
         List<StreamModel> streams = [];
         try
         {
-            using HttpResponseMessage response = await _httpClient.GetAsync($"/json/stations/byname/{query}");
+            using HttpResponseMessage response = await _httpClient.GetAsync($"/json/stations/byname/{query}?order=clickcount&limit=10");
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadAsStringAsync();

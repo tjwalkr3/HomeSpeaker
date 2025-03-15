@@ -26,7 +26,7 @@
                        Margin="0,10" />
 
             <VerticalStackLayout>
-                <Label Text="List of Songs:"
+                <Label Text="List of Streams:"
                        FontAttributes="Bold"
                        FontSize="24" />
 
@@ -37,10 +37,12 @@
                                 <Button Command="{Binding PlayStreamCommand, 
                                                   Source={RelativeSource AncestorType={x:Type local:StreamPageViewModel}}}"
                                         CommandParameter="{Binding Url}"
-                                        Text="{Binding }"
-                                        HorizontalOptions="Start"
-                                        FontSize="16"
-                                        Padding="15,5,10,5" />
+                                        Text="{Binding Name}"
+                                        FontSize="14"
+                                        Padding="5"
+                                        Margin="0,8,0,0"
+                                        HorizontalOptions="Fill"
+                                        LineBreakMode="TailTruncation" />
                             </VerticalStackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

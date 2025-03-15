@@ -16,7 +16,10 @@ public partial class StreamPageViewModel : ObservableObject
     [ObservableProperty]
     private string _searchQuery = string.Empty;
 
-    public StreamPageViewModel(IPlayerContext playerContext, INavigationService navigationService, IMusicStreamService musicStreamService)
+    public StreamPageViewModel(
+        IPlayerContext playerContext, 
+        INavigationService navigationService, 
+        IMusicStreamService musicStreamService)
     {
         _context = playerContext;
         _navigationService = navigationService;
@@ -28,11 +31,11 @@ public partial class StreamPageViewModel : ObservableObject
     {
         AllStreamsList.Clear();
 
-        List<StreamModel> searchResult = string.IsNullOrWhiteSpace(SearchQuery)
+        List<StreamModel> searchResults = string.IsNullOrWhiteSpace(SearchQuery)
             ? []
             : await _musicStreamService.Search(SearchQuery);
 
-        foreach (var stream in searchResult)
+        foreach (var stream in searchResults.Take(10))
         {
             AllStreamsList.Add(stream);
         }
@@ -43,11 +46,6 @@ public partial class StreamPageViewModel : ObservableObject
     {
         if (_context.CurrentService == null) return;
         await _context.CurrentService.PlayStreamAsync(streamUrl);
-    }
-
-    private bool SearchQueryValid()
-    {
-        return !string.IsNullOrWhiteSpace(SearchQuery);
     }
 
     [RelayCommand]
